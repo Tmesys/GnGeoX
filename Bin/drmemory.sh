@@ -1,0 +1,1 @@
+/home/mourad/Projets/DrMemory-Linux-2.6.0/bin64/drmemory -count_leaks -- ./GnGeoX_Debug_X86_64 -f mslug

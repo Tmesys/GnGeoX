@@ -1,0 +1,144 @@
+How to set up a ROM file for Gngeo2x, or how to make the game work if it doesn't when you just put it in.
+
+There are 2 things you can do to fix this:
+
+1.Edit the files for the romrc
+2.Edit the romrc for the files
+
+Here's how to do 1:
+
+Open the romrc file that is inside the Gngeo2x folder. Next, search for the game name in question in the romrc. Let's just say I'm trying to get King of Fighters 2002 to run for this example 
+(go ahead and extract it in a new folder or some other place):
+
+Here's the whole contents of the zip file of my version that I have:
+
+265-m1d.bin
+265_c1.bin
+265_c2.bin
+265_c3.bin
+265_c4.bin
+265_c5.bin
+265_c6.bin
+265_c7.bin
+265_c8.bin
+265_p1.bin
+265_p2.bin
+265_s1.bin
+265_v1.bin
+265_v2.bin
+265_v3.bin
+265_v4.bin
+
+Here's what the romrc is asking for:
+
+game kof2k2 MVS "The King of Fighter 2002"
+CPU 0x500000
+kof2k2_p1.rom 0x0 0x100000 NORM
+kof2k2_p2.rom 0x100000 0x400000 NORM
+END
+SFIX 0x20000
+kof2k2_s1.rom 0x0 0x20000 NORM
+END
+SM1 0x40000
+kof2k2_m1.rom 0x0 0x40000 NORM
+END
+SOUND1 0x1000000
+kof2k2_v1.rom 0x0 0x400000 NORM
+kof2k2_v2.rom 0x400000 0x400000 NORM
+kof2k2_v3.rom 0x800000 0x400000 NORM
+kof2k2_v4.rom 0xc00000 0x400000 NORM
+END
+GFX 0x4000000
+kof2k2_c1.rom 0x0000000 0x800000 ALTERNATE
+kof2k2_c2.rom 0x0000001 0x800000 ALTERNATE
+kof2k2_c3.rom 0x1000000 0x800000 ALTERNATE
+kof2k2_c4.rom 0x1000001 0x800000 ALTERNATE
+kof2k2_c5.rom 0x2000000 0x800000 ALTERNATE
+kof2k2_c6.rom 0x2000001 0x800000 ALTERNATE
+kof2k2_c7.rom 0x3000000 0x800000 ALTERNATE
+kof2k2_c8.rom 0x3000001 0x800000 ALTERNATE
+END
+END
+
+As you can see, there is a kind of basic structure here for the filenaming:
+
+*gamecode*_[letter of data type]#.bin or rom
+
+The d before the . means it is decrypted, which is good for us. Now we have to change everything to match the romrc. Nothing too complicated, make sure it is .bin or .rom if it says so in the romrc, 
+change the p's that match with the p's, s's with s's, v's with v's, c's with c's, you get the drill, it's just simple renaming. I renamed them in the order that it goes down the romrc.
+
+kof2k2_p1.rom
+kof2k2_p2.rom
+kof2k2_s1.rom
+kof2k2_m1.rom
+kof2k2_v1.rom
+kof2k2_v2.rom
+kof2k2_v3.rom
+kof2k2_v4.rom
+kof2k2_c1.rom
+kof2k2_c2.rom
+kof2k2_c3.rom
+kof2k2_c4.rom
+kof2k2_c5.rom
+kof2k2_c6.rom
+kof2k2_c7.rom
+kof2k2_c8.rom
+
+Now, here's the tricky part: there may be more or less m's, p's, or s's. If there is, and if there isn't another set that matches this, or if the sizes do not match with the size in hexadecimal in the romrc 
+(it might not work if so, but try it anyway) we have to add the ROM to the romrc ourselves.
+
+Here's how to do 2:
+
+We gotta use a little hexadecimal for this, so bear with me here.
+
+Here's how to add your own entry to the romrc. Note that you need the sizes for the files, and that you need to look up the game line, and GFX portion in romrc from the same game, 
+and copy it to the new one, changing the GFX filenames as needed. Pretending that King of Fighters 2002 didn't work, we start with this:
+
+game kof2k2v2 MVS "The King of Fighter 2002"
+GFX 0x4000000
+265_c1.bin 0x0000000 0x800000 ALTERNATE
+265_c2.bin 0x0000001 0x800000 ALTERNATE
+265_c3.bin 0x1000000 0x800000 ALTERNATE
+265_c4.bin 0x1000001 0x800000 ALTERNATE
+265_c5.bin 0x2000000 0x800000 ALTERNATE
+265_c6.bin 0x2000001 0x800000 ALTERNATE
+265_c7.bin 0x3000000 0x800000 ALTERNATE
+265_c8.bin 0x3000001 0x800000 ALTERNATE
+END
+END
+
+Notice the 2 ends, and the CHANGED game name for the game. The zip has to be named this (kof2k2v2.zip), and there cannot be duplicate game names in the romrc.
+
+Next, we have to add the other parts. However, you are going to have to check the size yourself, and see how big it is. This is where the hexadecimal comes in, but it is not complicated at all. 
+Let's analyze some parts of the romrc to understand it a little better:
+
+If there is only 1 file, it's quite simple:
+
+SFIX 0x20000
+kof2k2_s1.rom 0x0 0x20000 NORM
+END
+
+Since the only file is 128 KB (0x20000), we have to allocate only that file. SFIX 0x20000 means begin preparing to load the file with a total of 0x20000. kof2k2_s1.rom 0x0 0x20000 NORM means load 
+the file kof2k2_s1.rom beginning at 0 that is 0x20000 large, completing it with END.
+
+However, there is usually multiple files, so here's how to handle that:
+
+SOUND1 0x1000000
+kof2k2_v1.rom 0x0 0x400000 NORM
+kof2k2_v2.rom 0x400000 0x400000 NORM
+kof2k2_v3.rom 0x800000 0x400000 NORM
+kof2k2_v4.rom 0xc00000 0x400000 NORM
+END
+
+The SOUND1 parts in total takes 16 MB (from SOUND1 0x1000000). These 16 MB are comprised of 4 files: kof2k2_v1.rom, kof2k2_v2.rom, kof2k2_v3.rom and kof2k2_v4.rom. 
+kof2k2_v1.rom 0x0 0x400000 NORM means this: begin loading kof2k2_v1.rom at 0, and load the whole file which is 0x400000 (4 MB). kof2k2_v2.rom 0x400000 0x400000 NORM means this: now 
+from 0x400000 because we have loaded the previous file already, add this 0x400000 (4 MB) file as well, making the whole 0x800000. kof2k2_v3.rom 0x800000 0x400000 NORM means this: 
+now from 0x800000 because we have loaded the previous files already, add this 0x400000 (4 MB) file as well, making the whole 0xc00000. kof2k2_v4.rom 0xc00000 0x400000 NORM means this: 
+now from 0xc00000 because we have loaded the previous files already, add this 0x400000 (4 MB) file as well, making the whole 0x1000000 and thus completing the whole SOUND1 with END.
+
+Basically, add each part yourself using these guidelines, and looking at the romrc for examples. It's not too complicated, but there is 1 thing you have to make sure you do EVERYTIME: 
+SAVE IN UNIX FORMAT! Use Programmer's Notepad to save the romrc in Unix Format, or use this tool:
+
+http://www.gp2x.de/cgi-bin/cfiles.cgi?0,0,0,0,15,1422
+
+Hopefully this will be helpful to lots of people, I had to figure all this out on my own =)

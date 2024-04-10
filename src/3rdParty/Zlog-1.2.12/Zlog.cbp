@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Zlog" />
+		<Option platforms="Windows;Unix;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Linux X86_64 Debug">
+				<Option platforms="Unix;" />
+				<Option output="../Lib/$(TARGET_NAME)/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Environment>
+					<Variable name="config" value="Debug" />
+					<Variable name="platform" value="X86_64" />
+				</Environment>
+			</Target>
+			<Target title="Linux X86_64 Release">
+				<Option platforms="Unix;" />
+				<Option output="../Lib/$(TARGET_NAME)/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+				<Environment>
+					<Variable name="config" value="Release" />
+					<Variable name="platform" value="X86_64" />
+				</Environment>
+			</Target>
+		</Build>
+		<Unit filename="src/buf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/buf.h" />
+		<Unit filename="src/category.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/category.h" />
+		<Unit filename="src/category_table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/category_table.h" />
+		<Unit filename="src/conf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/conf.h" />
+		<Unit filename="src/event.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/event.h" />
+		<Unit filename="src/fmacros.h" />
+		<Unit filename="src/format.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/format.h" />
+		<Unit filename="src/level.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/level.h" />
+		<Unit filename="src/level_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/level_list.h" />
+		<Unit filename="src/mdc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mdc.h" />
+		<Unit filename="src/record.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/record.h" />
+		<Unit filename="src/record_table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/record_table.h" />
+		<Unit filename="src/rotater.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/rotater.h" />
+		<Unit filename="src/rule.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/rule.h" />
+		<Unit filename="src/spec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/spec.h" />
+		<Unit filename="src/thread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/thread.h" />
+		<Unit filename="src/version.h" />
+		<Unit filename="src/zc_arraylist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zc_arraylist.h" />
+		<Unit filename="src/zc_defs.h" />
+		<Unit filename="src/zc_hashtable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zc_hashtable.h" />
+		<Unit filename="src/zc_profile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zc_profile.h" />
+		<Unit filename="src/zc_util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zc_util.h" />
+		<Unit filename="src/zc_xplatform.h" />
+		<Unit filename="src/zlog-chk-conf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zlog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zlog.h" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

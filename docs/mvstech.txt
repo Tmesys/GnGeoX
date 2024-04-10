@@ -1,0 +1,1043 @@
+ ----------------------------------------------------------------------------
+ Neo*Geo MVS Hardware Notes
+ (C) 2007 Charles MacDonald
+ ----------------------------------------------------------------------------
+
+ Revision history:
+
+ [04/10/07]
+ - Initial relase
+ [04/19/07]
+ - Added DTACK delay information, interrupt section
+ [04/22/07]
+ - Added VRAM read buffer and access timing information
+ - Changed display area of fix layer name table.
+ - Added programming tips
+ - Added fix layer rendering notes
+
+ Introduction
+
+ All tests were done on a NTSC 2-slot (MV2F) system.
+
+ ----------------------------------------------------------------------------
+ Memory
+ ----------------------------------------------------------------------------
+
+ Type             Amount  Device         Config.     Notes
+
+ 68K work RAM     64K    CXK58257AM-12L  2x 32Kx8
+ Backup RAM       64K    CXK58257AM-12L  2x 32Kx8    Battery backed, write protected
+ Color RAM        16K    CXK5864BSP-10L  2x 8Kx8     Split into two banks
+ Video RAM        64K    CXK58257AM-12L  2x 32Kx8    Port addressable only
+ Sprite RAM       4K     CXK5814P-35     2x 2Kx8     Port addressable only
+ Z80 work RAM     2K     BR6216B-10LL    1x 2Kx8     
+ Zoom ROM (LO)    128K   TC531000CP      1x 128Kx8   Zoom look-up table ROM
+ Fix ROM (SFIX)   128K   27C1000         1x 128Kx8   Text layer graphics ROM
+ Sound ROM (SM1)  128K   27C1000/23C1000 1x 128Kx8   Z80 program ROM
+ BIOS ROM (SP1)   128K   TC531024P-15    1x 64Kx16   68000 program ROM
+
+ ----------------------------------------------------------------------------
+ Custom chips
+ ----------------------------------------------------------------------------
+
+ #  Name        Package         Description
+
+ 3x NEO-257      64-pin PQFP    n/a
+ 1x NEO-B1      160-pin PQFP    n/a
+ 1x NEO-C1      100-pin PQFP    n/a
+ 1x NEO-D0       64-pin PQFP    n/a
+ 5x NEO-E0       64-pin PQFP    n/a
+ 1x NEO-F0       64-pin PQFP    n/a
+ 3x NEO-G0       64-pin PQFP    n/a
+ 1x NEO-IO       64-pin PQFP    n/a
+ 1x NEO-ZMC2     80-pin PQFP    n/a
+ 1x LSPC2-A2    176-pin PQFP    Line sprite generator / VRAM interface
+
+ ----------------------------------------------------------------------------
+ Timing
+ ----------------------------------------------------------------------------
+
+ A 24 MHz oscillator provides the timing for all other components in
+ the system, except the uPD4990 which has it's own 32.768 KHz crystal
+ to keep the RTC updated.
+
+ Name           Speed               Device type
+
+ System clock   24.000 MHz          24.000 MHz OSC
+ 68000          12.000 MHz (/2)     TMP68HC000N-12
+ Z80             4.000 MHz (/6)     Z0840004PSC
+ YM2610          8.000 MHz (/3)     YM2610
+ Pixel clock     6.000 MHz (/4)     32.768 KHz OSC
+ uPD4990        32.768 KHz          uPD4990AC
+
+ ----------------------------------------------------------------------------
+ Display timing
+ ----------------------------------------------------------------------------
+
+ Pixel clock is 6.000 MHz.
+ Active display is 320x224 pixels.
+
+ Measured in reference to main 24 MHz clock (mclk):
+
+ Horizontal timing
+
+ Pulse widths:                                  
+  111 mclks horizontal sync                    27.75 pixels 
+  256 mclks horizontal blanking                   64 pixels
+ 1280 mclks active display                       320 pixels
+ 1536 mclks per scanline                         384 pixels
+
+ State to state timing:
+  118 mclks /HSYNC rising to /HBLANK rising     29.5 pixels (left border)
+ 1280 mclks /HBLANK rising to /HBLANK falling    320 pixels (display)
+   27 mclks /HBLANK falling to /HSYNC falling   6.75 pixels (right border)
+  111 mclks /HSYNC falling to /HSYNC rising    27.75 pixels (horizontal sync)
+
+ 384 pixels per scanline: (rounding up)
+
+  28 pixels horizontal sync pulse width
+  29 pixels /HSYNC low to /HBLANK high
+ 320 pixels /HBLANK high to /HBLANK low
+   7 pixels /HBLANK low to /HSYNC low
+
+ Vertical timing
+
+ 264 scanlines per frame:
+
+   8 scanlines vertical sync pulse
+  16 scanlines top border
+ 224 scanlines active display
+  16 scanlines bottom border
+
+ Frame timing
+
+ Frame rate is 6 MHz / 384 / 264 = 59.18 Hz.
+
+ Display blanking
+
+ During all 40 lines of the vertical blanking/sync period, the latches
+ that hold color data for the video DAC have /CLR asserted so they are
+ reset to zero. The screen brightness register is still effective during
+ this time.
+
+ ----------------------------------------------------------------------------
+ Reset and watchdog
+ ----------------------------------------------------------------------------
+
+ A PST518B reset generator provides a global reset signal for the system.
+ As long as the global reset is asserted, the watchdog is also held in a
+ reset state and won't be active.
+
+ The watchdog controls a secondary reset line that is shared between the
+ following devices:
+
+ - 68000 /RESET
+ - Z80 /RST
+ - YM2610 /IC
+ - 74HC259 /CLR
+
+ After a reset, consider the system state to be the same as if all 8
+ addresses from $3A0001 to $3A000F were written to, such that each
+ of the 8 addressable latches in the '259 were reset.
+
+ Because this line is common with the 68000, issuing a RESET instruction
+ will reset the system in the same way a watchdog will, including
+ the 68000 as /HALT is asserted in response to /RESET going low.
+
+ Here are watchdog measurements based on the 24 MHz system clock:
+
+ Total time         11,364,890 cycles 
+ /RESET low          3,244,030 cycles
+ /RESET high         8,120,860 cycles
+
+ To reset the watchdog, do a byte write to any odd address or a word write
+ to any even address within the $300000-$31FFFF range. The value written
+ does not matter.
+
+ Reads of any width and byte writes to even addresses will not reset
+ the watchdog.
+
+ ----------------------------------------------------------------------------
+ System control register
+ ----------------------------------------------------------------------------
+
+ An 8-bit addressable latch is assigned to the $3A0000-$3BFFFF range,
+ configured such that writing with A4 low resets the addressed bit, and
+ writing with A4 high sets it. The commonly used addresses are:
+
+ Reset     Set       Description
+
+ $3A0001 / $3A0011 : Screen brightness (0= normal, 1= dark)
+ $3A0003 / $3A0013 : Vector table select (0= BIOS, 1= Cartridge)
+ $3A0005 / $3A0015 : ? (HC32 middle pin 1)
+ $3A0007 / $3A0017 : ? (uPD49990 pin ?)
+ $3A0009 / $3A0019 : ? (HC32 middle pin 10)
+ $3A000B / $3A001B : FIX ROM select (0= BIOS, 1= Cartridge)
+ $3A000D / $3A001D : SRAM write-protect (0= protected, 1= write enabled)
+ $3A000F / $3A001F : Color RAM banking (0= bank 0, 1= bank 1)
+
+ The first 128 bytes of the BIOS ROM vector table and cartridge P1 ROM
+ vector table can be toggled using this register.
+
+ See the color RAM section for information on the screen brightness control
+ and RAM banking.
+
+ See the reset and watchdog section for information about when this latch
+ is reset.
+
+ ----------------------------------------------------------------------------
+ Color RAM
+ ----------------------------------------------------------------------------
+
+ Overview
+
+ There is 16K of color RAM, split into two 8K banks. Only one bank can be
+ used for the current display, but the banks can be changed at any time.
+ Each word of color RAM has the following format:
+
+ MSB             LSB
+ s--- ---- ---- ---- : Global color component bit 0
+ -r-- rrrr ---- ---- : Red color component bits 1, then 5,4,3,2
+ --g- ---- gggg ---- : Green color component bits 1, then 5,4,3,2
+ ---b ---- ---- bbbb : Blue color component bits 1, then 5,4,3,2
+
+ NOTE: Bit 0 of each 6-bit color value can't be uniquely defined, it
+ is common to all components.
+
+ Color allocation
+
+ Each bank defines 256 palettes of 16 colors each. The 4096 colors of
+ a bank are allocated like so (these are word offsets, not byte offsets):
+
+ $0000-$00FF : Fix layer palettes (16 palettes of 16 colors)
+ $0000-$0FFF : Sprite palettes (256 palettes of 16 colors)
+ $0000       : Blanking color
+ $0FFF       : Backdrop color
+
+ The blanking color is displayed for every pixel outside of the 320x224
+ visible range. The video DAC latch that holds the current color value
+ being displayed is forcibly reset to zero during the entire vertical
+ blanking period, so it is only applicable to the horizontal blanking
+ and horizontal retrace periods.
+
+ Monitors reference their black level from the RGB video signal during
+ horizontal blank. Setting a non-zero color for any color component will
+ offset the black level for the duration of the scanline, resulting in
+ distorted colors that will be too dark or too bright depending on
+ how the monitor clips/clamps voltage at minimum and maximum thresholds.
+
+ The blanking color should always be set to zero or for an slightly
+ darker black, use $8000.
+
+ The backdrop color is displayed for every pixel where the fix and line
+ sprite layers are transparent. Think of it as the backmost layer of
+ the display.
+
+ Access priority
+
+ The CPU has a higher priority when accessing color RAM than the video
+ hardware. When color RAM is accesse during the active display, the color
+ shown for the pixel in question will be the same data the CPU is writing
+ or reading.
+
+ Color RAM should only be updated during vertical blanking to prevent
+ flicker from appearing on the display.
+
+ DAC details
+
+ During display, the current data from color RAM is held in two latches
+ that output to a DAC. The DAC is a simple R/2R ladder. Resistor values
+ and input sources per resistor are:
+
+ Resistor   Input                                 Source
+ ---------- ------------------------------------- ----------
+ 8.2K ohm   Latched global color component bit 0  HD74LS05P
+ 3.9K ohm   Latched color component bit 1         SN74LS273N
+ 2.2K ohm   Latched color component bit 2         SN74LS273N
+   1K ohm   Latched color component bit 3         SN74LS273N
+  470 ohm   Latched color component bit 4         SN74LS273N
+  220 ohm   Latched color component bit 5         SN74LS273N
+  150 ohm   Screen brightness control             HD74HC259P
+
+ The output from the DAC goes directly to the JAMMA edge connector pins
+ without any amplification, so voltage levels depend on the drive capability
+ of the ICs connected to the DAC.
+
+ NOTE: Color RAM bit 15 is input to a open collector inverter. The output is
+ tied to the 8.2K ohm resistor in the R/2R ladder. When bit 15 is zero, the
+ inverter goes high and the resistor appears to be unconnected, rather
+ than a pull-up. When bit 15 is one, the inverter goes low and the resistor
+ appears to be a pull-down to ground.
+
+ ----------------------------------------------------------------------------
+ 68000 Memory Map
+ ----------------------------------------------------------------------------
+
+ /DTACK delay by region
+
+ 000000-0FFFFF : 1-cycle delay (10 mclks/access)
+ 100000-1FFFFF : Full speed (8 mclks/access)
+ 200000-2FFFFF : Full speed (8 mclks/access)
+ 300000-3FFFFF : Full speed (8 mclks/access)
+ 400000-7FFFFF : Full speed (8 mclks/access)
+ 800000-BFFFFF : 2-cycle delay (12 mclks/access)
+ C00000-CFFFFF : Full speed (8 mclks/access)
+ D00000-DFFFFF : Full speed (8 mclks/access)
+ E00000-FFFFFF : Full speed (8 mclks/access)
+
+ These delays enable use of slower memories. Only the program ROM area
+ and JEIDA card space are affected. All registers in the $3xxxxx range
+ are accessible at full speed, even those used for VRAM I/O.
+
+ Memory map, just a rough outline for now:
+
+ 000000-0FFFFF : Cartridge P1 ROM
+ 100000-1FFFFF : Work RAM (64K, mirrored every 64K)
+ 200000-2FFFFF : Unused ($4E71)
+ 300000-31FFFF : I/O port #1        *** $DFBF  word of io ports / write to kick wdt
+ 320000-33FFFF : I/O port #2        *** $3F1F/$3F5F
+ 340000-35FFFF : I/O port #3        *** $FF71 read io
+ 360000-37FFFF : Unused ($4E71)
+ 380000-39FFFF : I/O port #4
+ 3A0000-3BFFFF : Write to set system control latch / Read is unused ($4E71)
+ 3C0000-3DFFFF : Video registers
+ 3E0000-3FFFFF : Unused ($4E71)
+ 400000-7FFFFF : Color RAM (8K bank, mirrored every 8K)
+ 800000-BFFFFF : JEIDA card interface
+ C00000-CFFFFF : BIOS ROM (128K, mirorred every 128K)
+ D00000-DFFFFF : Save RAM (64K, mirrored every 64K)
+ E00000-FFFFFF : Unused ($4E71)
+
+ ----------------------------------------------------------------------------
+ JEIDA card interface
+ ----------------------------------------------------------------------------
+
+ The $800000-$BFFFFF (4MB) range is allocated for a card conforming to the
+ JEIDA Version 3 specification. The BIOS is programmed to only handle
+ SRAM cards. Some PCMCIA SRAM cards are compatible with this spec.
+
+ The I/O port at $380001 returns the card status:
+
+ D6 : (Write Protect status)  0= /WP grounded,  1= /WP left open
+ D5 : (Card Detect #2 status) 0= /CD2 grounded, 1= /CD2 left open
+ D4 : (Card Detect #1 status) 0= /CD1 grounded, 1= /CD1 left open
+
+ Cards may have a write-protect switch, the state of which can be read
+ through bit 6. Cards will pull both /CD1 and /CD2 low when inserted.
+
+ The official Neo*Geo memory card has 2K of SRAM, mapped to odd bytes
+ within this range.
+
+ Signal information
+
+ - Valid at 1.25V rather than 1.45V
+ - All pulse widths are 380 ns
+ - /READY pulsed for any access (low during duration of access)
+ - /CE1 pulsed for any read/write access
+ - /OE pulsed for even byte reads or word reads
+
+ ----------------------------------------------------------------------------
+ Video Hardware
+ ----------------------------------------------------------------------------
+
+ Registers
+
+ Video registers are mapped within the $3C0000-$3DFFFF range. There are
+ eight offsets used; the write locations repeat every 8 words and the read
+ locations repeat every 4 words:
+
+ Offs   Read                    Write
+
+ +$00 : VRAM data               VRAM offset
+ +$02 : VRAM data               VRAM data with auto-increment
+ +$04 : VRAM modulo             VRAM modulo
+ +$06 : Status register         Control register
+ +$08 : VRAM data               IRQ2 position 1
+ +$0A : VRAM data               IRQ2 position 2
+ +$0C : VRAM modulo             IRQ acknowledge
+ +$0E : Status register         x
+
+ Display status / control register
+
+       Read                             Write
+
+ D15 : Vertical counter, bit 8          Frame counter reload value, bit 7
+ D14 : Vertical counter, bit 7          Frame counter reload value, bit 6
+ D13 : Vertical counter, bit 6          Frame counter reload value, bit 5
+ D12 : Vertical counter, bit 5          Frame counter reload value, bit 4
+ D11 : Vertical counter, bit 4          Frame counter reload value, bit 3
+ D10 : Vertical counter, bit 3          Frame counter reload value, bit 2
+ D9  : Vertical counter, bit 2          Frame counter reload value, bit 1
+ D8  : Vertical counter, bit 1          Frame counter reload value, bit 0
+ D7  : Vertical counter, bit 0          x
+ D6  : x                                x
+ D5  : x                                x
+ D4  : x                                x
+ D3  : x                                Auto animation (1= off, 0= on)
+ D2  : Animation counter, bit 2         x
+ D1  : Animation counter, bit 1         x
+ D0  : Animation counter, bit 0         x
+
+ The vertical counter is 9 bits, and the values are offset so that the last
+ 264 values of the 512-value range are used. This has the side effect that
+ bit 15 of the status register is always '0' during vertical sync and '1'
+ for any other part of the display. Ranges are:
+
+ $00F8-$00FF : Vertical sync
+ $0100-$010F : Top border
+ $0110-$01EF : Active display
+ $01F0-$01FF : Bottom border
+
+ Values $0000-$00F7 are never used.
+
+ Automatic animation
+
+ Entries in the sprite name table have two bits for selecting an automatic
+ animation mode. This is implemented by two main components in the video
+ hardware:
+
+ - Frame counter, 8-bit down counter clocked on falling edge of /VSYNC
+   When it underflows, it is reloaded with the last value written to it
+   which comes from bits 15-8 of $3C0006.
+
+ - Animation counter, 3-bit up counter clocked each time the frame
+   counter underflows. The lower 3 bits can be read by reading bits 2-0
+   of $3C0006.
+
+ The frame counter is only reloaded after it underflows, so the new reload
+ value will not immediately take effect. It also cannot be instantly
+ reloaded when automatic animation is disabled.
+
+ When automatic animation is disabled the frame counter and animation
+ counter continue to function. However tiles displayed are shown as if their
+ automatic animation mode select flags were reset to zero (so the tile
+ number specified is the tile shown).
+
+ Depending on the animation period (4 or 8 frames), the new tile number
+ has the lower 2 or 3 bits replaced with that of the animation counter.
+
+ ----------------------------------------------------------------------------
+ Interrupts
+ ----------------------------------------------------------------------------
+
+ The Neo*Geo uses three auto-vector interrupt levels, from lowest to
+ highest priority:
+
+ IRQ1 : Vertical blank interrupt.
+
+ IRQ2 : Display position interrupt.
+
+ IRQ3 : IRQ3 is pending after a cold boot only, and acknowledged by the BIOS
+        along with IRQ2-1 during startup. It doesn't appear to be used by
+        the BIOS or any games, and does not reoccur at any other time.
+        Perhaps it's used by some BIOSes to distinguish a cold boot from a
+        reset caused by the watchdog?
+
+ They are controlled by the following registers:
+
+ $3C0006 : Display counter IRQ control
+ $3C0008 : Display counter load register, bits 31-16
+ $3C000A : Display counter load register, bits 15-0
+ $3C000C : IRQ acknowledge
+           D2 : Write '1' to acknowledge IRQ1
+           D1 : Write '1' to acknowledge IRQ2
+           D0 : Write '1' to acknowledge IRQ3
+
+ You can set multiple bits to acknowledge more than one interrupt at once.
+ The BIOS writes $0007 on startup for example.
+
+ Display position interrupt
+
+ The display position interrupt hardware consists of a 32-bit down-counter
+ that causes an IRQ2 when it underflows, and a 32-bit load register.
+ The counter is clocked by the pixel clock (6 MHz).
+
+ Writing to $3C0006 sets the display position interrupt control, new
+ values written take effect immediately:
+
+ D7 : 1= The display counter is automatically reloaded with the load
+         register contents when IRQ2 occurs.
+
+      0= Reloading is disabled.
+
+ D6 : 1= The display counter is automatically reloaded with the load
+         register contents on scanline 224 (V counter = $1F0), 1146 mclks
+         from the rising edge of /HSYNC. Within the active display
+         (320 pixels) this corresponds to pixel 257 exactly.
+
+         There are two reasons why it is loaded later in the display
+         rather than being synchronous with /VBLANK or /HSYNC:
+
+         When the load register is set to zero, both IRQ1 and IRQ2 happen
+         on line 224 with IRQ1 at the start and IRQ2 near the end. Having
+         it occur later gives the IRQ1 ISR time to finish. (assuming it
+         needs less than one scanline to complete). Otherwise IRQ1
+         processing would be delayed until the IRQ2 ISR finished.
+
+         There are 126 CPU cycles left before the screen is blanked after
+         IRQ2 occurs. In a worst case scenario 88 are needed for interrupt
+         processing, leaving 40 cycles left. This would give the IRQ2 ISR
+         time to push some prepare for display changes which would then
+         be off-screen.
+
+      0= Reloading is disabled.
+
+ D5 : 1= When the load register is written to, the display counter is
+         updated at the same time.
+
+      0= When the load register is written to, the display counter is
+         not affected until one of the two reload events as specified
+         by D7 and/or D6 occur.
+
+ D4 : 1= IRQ2 enabled
+
+      0= IRQ2 disabled
+
+ If D5 is reset, one or both of D6 and D7 must be set for the display
+ counter to be loaded. Otherwise it will not be.
+
+ Typically D5 is used to position the next IRQ2 relative to the current
+ position. Because the current position can shift due to how long it took
+ the CPU to write to the load register (see jitter comments below), D6
+ provides more accurate loading of the display counter since it happens
+ at exact the same position every frame.
+
+ Display counter values range from 0 (every pixel) to $17F (every scanline)
+ to 384*264-1 (every frame) and beyond. If /VBLANK loading is enabled, any
+ larger value than 384*264-1 will never trigger an IRQ2 as the counter is
+ reloaded at line 224 before it can underflow.
+
+ As the counter is 32 bits wide, it can be used to trigger periodic or
+ one-shot interrupts over a very long period of time (up to 11.7 minutes).
+
+ Vertical blank interrupt
+
+ On scanline 224, /VBLANK goes low 56 mclks (14 pixels) from the rising edge
+ of /HSYNC. This asynchronously resets the video DAC latches and keeps them
+ in that state (both '273s outputting zero to the DAC circuit) until
+ /VBLANK goes high again.
+
+ Two mclks after /VBLANK goes low, the hardware sets a pending IRQ1
+ flip-flop. If there isn't a pending IRQ2 interrupt (which has a higher
+ priority by the video circuit's judgement and is processed immediately)
+ then /IPL2-0 is set to '110' to request a level 1 interrupt.
+
+ /IPL0 will remain low until $3C000C is written with bit 2 set, which
+ acknowledges the interrupt and resets the flip-flop. It remains set
+ until acknowledged even if transitioning out of V-Blank and into
+ the next frame and subsequent frames.
+
+ IRQ2 has a higher priority than IRQ1, which has several implications:
+
+ - If IRQ2 is pending, IRQ1 will not occur until IRQ2 is acknowledged.
+
+ - IRQ2 will occur regardless of IRQ1 being pending or not. For example
+   it can happen during the IRQ1 ISR.
+
+ Note that you do *not* get an IRQ3 interrupt if both IRQ2 and IRQ1 are
+ pending at the same time; if they are IRQ2 is processed first, then IRQ1.
+
+ Acknowledging interrupts
+
+ The Neo*Geo uses autovectored interrupts; when the /IPL2-0 pins are
+ asserted, the hardware will respond to an interrupt acknowledge cycle
+ by asserting /VPA.
+
+ The /IPL2-0 pins asserted until the interrupt is manually acknowledged by
+ the programmer. This is done by writing to bits 2-0 of $3C000C.
+
+ Note that while Motorola's documentation lists the interrupt acknowledge
+ cycle as taking 44 mclks, it varies from minimum of 26 to a maximum of 44
+ (typically 32 is the other length that happens most often). The cause of
+ the variable timing isn't known. This has implications when using the
+ display position IRQ to change screen attributes mid-scanline, as it
+ results in jitter because the ISR does not start at an absolute position
+ relative to when the interrupt was requested. (*1)
+
+ However, apart from very precise changes such as modifying the palette
+ or setting the screen brightness latch mid-scanline, this generally is not
+ a problem as long as the interrupt is generated with some extra time in
+ advance to compensate for worst-case jitter.
+
+ 1. The variable length is caused by the 68000 which negates /AS based on
+    some internal decision. It has nothing to do with the E clock phase
+    relation, nor the video hardware releasing /VPA at the wrong time
+    (/VPA is negated after /AS is). It also does not depend on the code
+    being executed before the interrupt; NOP gives the fastest response
+    time on average (26 at best), STOP is a middle case for reference
+    despite putting the system in a wait-for-interrupt condition.
+
+ For reference, here is a step-by-step account of the interrupt processing
+ sequence from Motorola's manual, with my timing comments added:
+
+ 1. Finish executing current instruction
+ 2. Stack PCL at SSP-2                  (8 cycles for RAM access)
+ 3. Interrupt acknowledge cycle         (26/32/44 cycles, variable)
+ 4. Stack SR at SSP-6                   (8 cycles for RAM access)
+ 5. Stack PCH at SSP-4                  (8 cycles for RAM access)
+ 6. Read interrupt vector low word      (10 cycles for ROM access)
+ 7. Read interrupt vector high word     (10 cycles for ROM access)
+ 8. Execute first instruction from ISR
+
+ Interrupt response time is 70 CPU cycles minimum, 88 CPU cycles maximum.
+ A display position interrupt will occur 17.5 to 22 pixels farther to
+ the right of the pixel position specified.
+
+ ----------------------------------------------------------------------------
+ VRAM access
+ ----------------------------------------------------------------------------
+
+ The VRAM area is a 128K space, accessible as 64Kx16 words. It is
+ physically split in half across two RAM pairs:
+
+ $0000-$7FFF : 64K VRAM
+ $8000-$FFFF : 4K sprite RAM (mirrored repeatedly)
+
+ Three ports are used to access VRAM:
+
+ VRAM offset    Writes load the VRAM offset register with the new offset.
+
+                Immediately afterwards a word of VRAM from the new offset
+                is loaded into the read buffer.
+
+                The offset value is write-only; when this address is
+                read it functions as a mirror for the VRAM data port.
+
+ VRAM data      Writes store data to the current VRAM offset and cause the
+                modulo register to be added to the offset register.
+
+                Bit 15 of the offset register is not used when calculating
+                the new offset register value, which causes the first and
+                last 32K areas to wrap around such that $7FFF -> $0000
+                and $FFFF -> $8000 after addition.
+
+                Immediately afterwards a word of VRAM from the new offset
+                is loaded into the read buffer.
+
+                Reads return the contents of the read buffer and no
+                auto-increment occurs.
+
+ VRAM modulo    Writes set the new VRAM modulo value.
+                Reads return the last VRAM modulo value that was written.
+
+                All 16 bits are latched but only the lower 15 bits are
+                used. Values include:
+
+                $7FFE : -2
+                $7FFF : -1
+                $0000 :  0 (no increment)
+                $0001 : +1
+                $0002 : +2
+
+ The modulo register is not initialized during a system reset, from a cold
+ boot it seems to always be zero.
+
+ Access timing
+
+ Because there is no auto-increment when reading the VRAM data port,
+ read-modify-write instructions can be directly used on it. For example:
+
+                            ; VRAM:8000 = ABCD 55AA
+    lea     $3C0000, a0     ;
+    move.w  #$8000, 0(a0)   ; Set offset = $8000, read $ABCD into buffer
+    move.w  #$0001, 4(a0)   ; Set modulo = +1
+    eori.w  #$8000, 2(a0)   ; Read buffer, XOR data, write back to VRAM,
+                            ; read $55AA into buffer
+
+ But there are timing restrictions on how many back-to-back VRAM accesses can
+ be made. It isn't possible to get exact timings, so I'll give general
+ figures.
+
+ After writing to VRAM or changing the offset register, a delay of at
+ least 56 mclks is needed (52 or lower is too short) before reading
+ the VRAM data port. If a read is done before that time the old contents of
+ the VRAM read buffer are returned.
+
+ If consecutive reads and writes are done with no delay, the read buffer
+ never has a chance to be loaded and the old value is repeatedly used
+ for each write.
+
+ Likewise two sequential writes (MOVE.L) to $3C0002,4 that store data to
+ VRAM then immediately change the modulo will cause the wrong value to be
+ used during auto-increment, either the original value or the new one
+ depending on the exact cycle that the write takes place.
+
+ Much less often, it seem that sequential writes to VRAM can cause some
+ addresses to be skipped because the write cancels the auto-increment
+ phase of a previous write. I've observed this when clearing large portions
+ of VRAM. Having a delay or using a slower instruction to write to the
+ VRAM data port will fix this problem.
+
+ Byte access
+
+ Byte writes to any even address store the same data to the MSB and LSB:
+
+ move.b #$AA, $3C0000   : Set offset to $AAAA
+ move.b #$BB, $3C0002   : Set data to $BBBB
+ move.b #$CC, $3C0004   : Set modulo to $CCCC
+
+ Byte writes to any odd address are ignored. For example writing to
+ address $3C0003 does not store data to VRAM nor is the offset incremented.
+
+ Byte reads from any even address return the MSB of the 16-bit data from
+ that register:
+
+ move.b $3C0002, d0     : Data read is $AB where word in VRAM is $ABCD
+
+ Byte reads from any odd address return the last value on the 68K data bus:
+
+ move.b $3C0003, d0     : Data read is $71
+ nop                    : Opcode is $4E71
+
+ ----------------------------------------------------------------------------
+ Fix layer
+ ----------------------------------------------------------------------------
+
+ The fix layer is a fixed, non-scrollable tilemap that is 64x32 in size
+ that occupies VRAM offsets $7000-$74FF. It uses 8x8 tiles, 4bpp, that
+ can use one of 16 palettes and reference up to 4096 tiles stored in fix ROM.
+
+ The name table is stored vertically, there are 40 entries of 32 words
+ that define a column of 32 rows each. Rows 2-29 are visible and correspond
+ to display scanlines 0-223, rows 0-1 and 30-31 are not shown.
+
+ $7000-$701F : Column #0, rows 0-31
+ $7020-$703F : Column #1, rows 0-31
+ :
+ $74C0-$74DF : Column #39, rows 0-31
+ $74E0-$74FF : Column #40, rows 0-31
+
+ Some later games have a banking control to access more fix ROM which
+ is controlled by values in the name table from $7500 to $75FF which
+ correspond to columns 40-47. Because the actual scanline length is 384
+ pixels (48 columns) this would seem to indicate that the tilemap generator
+ circuit continues to fetch and display tilemap data even though the display
+ is blanked outside of the active display area. This means the actual
+ name table area is $7000-$75FF, though for regular cartridges the
+ extra data is not utilized.
+
+ The format of each name table word is:
+
+ MSB             LSB
+ ---- nnnn nnnn nnnn : Tile number (0-4095)
+ pppp ---- ---- ---- : Palette number (0-15)
+
+ The fix layer uses the first 16 palettes of 256 available, the same area
+ is also shared with sprites. FIX ROMs are limited to 128K unless extra
+ hardware for banking is provided.
+
+ Rendering details
+
+ The fix layer is rendered in real-time, with pixels output in step with
+ the raster beam. The Neo*Geo fetches name table data for every half of a
+ tile, so that it will re-read data for the first left 4x8 pixels and
+ again for the right 4x8 pixels.
+
+ When modifying the name table in real-time such as in a raster effect,
+ it seems that the name table data is latched to display one half of
+ a tile as early as 30 mclks before that tile is displayed. If the
+ write occurs later (I could test 26 mclks) then the newly written
+ value is not used until the other half of the tile is shown.
+
+ It's more likely that these values are 32 and 28 cycles respectively,
+ but the 68000 runs at half of the master clock so it isn't possible
+ to synchronize it to trigger at exactly the right time. This would
+ correspond to the tile data being fetched 8 pixels before it is shown
+ (one full column in advance) which makes more sense.
+
+ ----------------------------------------------------------------------------
+ Sprites
+ ----------------------------------------------------------------------------
+
+ In the Neo*Geo, sprites represent a step between conventional sprites and
+ tilemaps. Each sprite can be up to 32 tiles tall, and has a corresponding
+ name table of 32 32-bit entries which store per-tile attributes like the
+ tile number, palette, flip flags, and automatic animation flags.
+
+ Furthermore multiple sprites can be 'chained' to a parent sprite from
+ which they inherit it's settings, spaced out horizontally. Large areas
+ such as backgrounds can be created this way. Sprites can also be scaled
+ horizontally and vertically, but only reduction is possible.
+
+ VRAM allocation
+
+ Range       Size   Description
+
+ VRAM
+ 0000-7FFF : 512    Sprite name tables
+ 7000-77FF : 64x32  Fix layer name table
+ 7800-7FFF : n/a    Unused
+
+ Sprite RAM
+ 8000-81FF : 512    Zoom control
+ 8200-83FF : 512    Y position, chain bit, height
+ 8400-85FF : 512    X position
+ 8600-865F : 96     Active sprite list for line buffer #0
+ 8660-867F : n/a    Unused
+ 8680-86DF : 96     Active sprite list for line buffer #1
+ 86E0-87FF : n/a    Unused
+
+ Note that name tables can be defined anywhere in VRAM, but only the
+ first 381 can be used. The latter space is shared with the fix layer
+ name table and is also partially unused.
+
+ Name table format
+
+ Each name table entry has the following format:
+
+        MSB             LSB
+ +$00 : nnnn nnnn nnnn nnnn : Tile number, bits 15-0
+ +$02 : pppp pppp ---- ---- : Palette number (0-255)
+ +$02 : ---- ---- ?--- ---- : (Unknown)
+ +$02 : ---- ---- -nnn ---- : Tile number, bits 18-16
+ +$02 : ---- ---- ---- aa-- : Automatic animation flags
+ +$02 : ---- ---- ---- --vh : Horizontal and vertical flip flags
+
+ For games with less sprite ROM than the the maximum capacity, the extra
+ tile number bits do nothing. This entirely depends on how the bits
+ are connected to the sprite ROMs, and how the upper bits are decoded
+ into individual ROM enables, which can differ from a game to game basis.
+
+ The automatic animation flags have the following settings:
+
+ D3 D2
+  0  0 : Automatic animation disabled
+  0  1 : Bits 1-0 of the tile number replaced with animation counter bits 1-0
+  1  0 : Bits 2-0 of the tile number replaced with animation counter bits 2-0
+  1  1 : Bits 2-0 of the tile number replaced with animation counter bits 2-0 (same as above)
+
+ Palettes 0-15 are shared with the fix layer, 16-255 are exclusive to the
+ sprites.
+
+ Rendering details
+
+ Because of timing and memory constraints there are limitations applied
+ to sprite rendering:
+
+ - There is enough VRAM and sprite attribute RAM to allow up to 512 sprites
+   to be defined. The fix name table occupies the last 8K of VRAM reducing
+   that amount ot 448.
+
+ - It seems to take 4 cycles to parse one sprite, so a total of 384 sprites
+   could be parsed per scanline. Due to what seems to be 12 clocks used
+   for setup before parsing, only 381 sprites can be parsed. The remaining
+   131 entries are never used by the sprite chip.
+
+ - There are 1536 cycles per scanline, and correspondingly the hardware
+   can render a total of 96 sprites (96 x 16 = 1536 pixels) per scanline.
+   Horizontal zooming does not affect rendering time even though less
+   data is written. It was probably simpler to design the renderer to take
+   a fixed amount of time per sprite, especially as all the graphics data
+   has to be fetched regardless of how many pixels of it are drawn.
+
+ - Due to the direct way the active sprite list is parsed, sprite 0 will
+   be redrawn multiple times if less than 96 sprites are shown on a scanline.
+   This alters the sprite to sprite priority scheme and makes sprite 0 less
+   useful.
+
+ So in the end, there are 380 usable sprites per frame, 96 per scanline.
+ Sprite 0 can be used with some caution for 381 sprites total, but even SNK
+ limits the sprite capacity in their official specifications to 380 sprites.
+
+ Parsing details
+
+ The sprite chip has two on-chip line buffers which provide a double
+ buffered display. While one line buffer is scanned out to the display,
+ the other has sprites rendered to it. On the next scanline they are
+ swapped and the process repeats.
+
+ The sprite chip scans through the first 381 entries in the Y position
+ list, looking for sprites that will fall on the next scanline based on
+ their height setting and vertical position (which may be inherited from
+ a previous sprite by use of the chain bit). Of the first 96 that do, it
+ will write their sprite number (0-380) to the active sprite list.
+
+ All remaining entries in the active sprite list are cleared to zero,
+ including word 97 ($8660/$86B0) even though it is not used during rendering.
+ I can't tell if the list is cleared prior to parsing the Y position list,
+ or if it is done afterward depending on how many of the 96 entries were
+ used and how many remain.
+
+ Now the list contains all the sprites that need to be rendered, so the
+ sprite chip steps through all 96 entries, rendering each sprite specified
+ by the sprite number. Because some of the latter entries in the list will
+ be set to zero, sprite 0 will be rendered multiple times.
+
+ Quirks
+
+ You can manually edit the active sprite list to specify sprites to draw,
+ and can specify any sprite number in the 0-511 range rather than being
+ limited to the first 381 sprites. However as only the first 96 entries
+ are parsed, you cannot force more than 96 sprites to be drawn per frame.
+
+ A sprite height of zero only prevents a sprite from being added to the
+ active sprite list. If manually written, or in the case of sprite #0
+ which is forcibly written by the hardware, a height of zero is the
+ same as any height setting of $20-$3F (512 pixels).
+
+ For the 2nd time sprite #0 is drawn, if it's chain bit is set it will use
+ the attributes of the last sprite rendered, which means itself for the 3rd
+ and all remaining times. This causes sprite #0 to be tiled horizontally
+ across the screen repeatedly for as many zero entries are at the end of the
+ list.
+
+ Because sprites are disabled only during parsing, the height of the last
+ sprite rendered before the multiple zero entries will not turn off a
+ chained sprite #0.
+
+ Sprite attributes
+
+ Zoom control
+
+ MSB             LSB
+ ---- hhhh ---- ---- : Horizontal zoom ($F=full width, 0= 1 pixel)
+ ---- ---- vvvv vvvv : Vertical zoom ($FF= full height, 0= 1 scanline)
+
+ Vertical position attribute
+
+ MSB             LSB
+ yyyy yyyy y--- ---- : Vertical position
+ ---- ---- -c-- ---- : Chain sprite to previous sprite
+ ---- ---- --hh hhhh : Sprite height in units of 16
+
+ The sprite height is defined in multiples of 16 pixels, regardless of
+ the vertical zoom value. Zero is a special case and disables the sprite
+ so it is not included in the render list during parsing. However if
+ the list is forced to include a sprite with a height of zero, it is
+ the same as the maximum height.
+ Values $01 through $20 correspond to a height of 16 to 512 pixels, and
+ values $21 through $3F are the same thing as $20 (512 pixels).
+
+ When the chain bit is set, the current sprite uses different attributes:
+
+ Current        Source
+
+ Y position     Previous sprite Y position
+ X position     Previous sprite X position + 16
+ Y zoom         Previous sprite Y zoom
+ X zoom         Current sprite X zoom
+ Height         Previous sprite height
+
+ This places the sprite immediately to the right of the last sprite
+ that was processed. By chaining together multiple sprites, large scrolling
+ layers can be created which are controlled by the lead sprite which all
+ others are chained to. Note that the X zoom attribute is still independant
+ on a per-sprite basis.
+
+ Because the sprite height is taken from the lead sprite, setting the lead
+ sprite height to zero will disable all chained sprites. This allows
+ a large scrolling layer to be turned on or off just be modifying the lead
+ sprite's height.
+
+ Screen coordinates 0 to 223 correspond to Y positions $01F0 downto $0111.
+ Ranges $0110 to $0000 are off-screen, and $01FF to $01F1 is a hidden
+ off-screen area above the display that allows sprites to be scrolled
+ downards vertically from the top of the screen.
+
+ 01FF-01F1 : Scanlines -15 to -1 (hidden area for refresh)
+ 01F0-0111 : Scanlines 0 to 223 (display area)
+ 0110-0000 : Off-screen
+
+ Horizontal position attribute
+
+ MSB             LSB
+ xxxx xxxx x--- ---- : Horizontal position
+
+ Screen coordinates 0 to 319 correspond to X position values $0000-$013F.
+ The X position wraps after 512, so for example a large group of chained
+ sprites scrolling right would wrap around to the left.
+
+ ----------------------------------------------------------------------------
+ Cartridge pin assignments
+ ----------------------------------------------------------------------------
+
+ B47 = (To via)
+ B48 = (To via)
+ B49 = Z80 ROM /CS
+ B50 = Z80 ROM /OE
+ B51 = Z80 D0
+ B52 = Z80 D1
+ B53 = Z80 D2
+ B54 = Z80 D3
+ B55 = Z80 D4
+ B56 = Z80 D5
+ B57 = Z80 D6
+ B58 = Z80 D7
+ B59 = GND
+ B60 = GND
+
+ A43 = Z80 A0           
+ A44 = Z80 A1
+ A45 = Z80 A2
+ A46 = Z80 A3
+ A47 = Z80 A4
+ A48 = Z80 A5
+ A49 = Z80 A6
+ A50 = Z80 A7
+ A51 = Z80 A8
+ A52 = Z80 A9
+ A53 = Z80 A10
+ A54 = Z80 A11
+ A55 = Z80 A12
+ A56 = Z80 A13
+ A57 = Z80 A14
+ A58 = Z80 A15
+ A59 = GND
+ A60 = GND
+
+ ----------------------------------------------------------------------------
+ Programming guidelines
+ ----------------------------------------------------------------------------
+
+ - Always insert a delay before reading VRAM after the offset register
+   has been changed.
+
+ - For sequential VRAM writes or back to back read-modify-write cycles,
+   add a delay between each write or RMW instruction.
+
+ - Never write a longword to write to the VRAM data port and change
+   the modulo register at once.
+
+ - IRQ3 is pending on startup, you need to provide an ISR or set bit 1
+   of $3C000C before you enable interrupts to acknowledge it.
+
+ - Depending on the Neo*Geo hardware you may have to select the cartridge
+   FIX ROM to enable the cartridge program ROM. Only selecting a cartridge
+   slot and enabling the cartridge vector table may not be enough.
+
+ - Because the offset register cannot be read, it cannot be restored after
+   being modified  by an ISR. Disable interrupts when doing VRAM I/O, or
+   arbitrate access to VRAM using a semaphore. Keep a variable holding
+   the last offset register value written if possible.
+
+ - Remember to kick the watchdog in any long loops. You can partially
+   unroll loops to still get high throughput and perodically reset the
+   watchdog, or set up the IRQ2 interrupt to write to the watchdog
+   every once in a while.
+
+ ----------------------------------------------------------------------------
+ Assistance needed
+ ----------------------------------------------------------------------------
+
+ - In the Neo*Geo AES or CD/CDZ consoles, which pin(s) of which chip(s) do
+   the PAL/NTSC jumpers pads or mode selection resistors connect to?
+
+ - Any schematics and/or board scans of the lower board of early 4
+   and 6-slot hardware (before the TTL chips were replaced with customs)
+   would be appreciated.
+
+ - Do any of the Neo*Geo boards provide connections for two memory card
+   slots instead of just one?
+
+ ----------------------------------------------------------------------------
+ Credits and Acknowledgements
+ ----------------------------------------------------------------------------
+
+ - Razoola for lots of hardware information.
+ - Jan Klassen for information about slot selection.
+ - All MAME contributors for the Neo*Geo driver.
+ - Chris MacDonald, Die Hard Game Fan, and SNK for the Neo*Geo hardware.
+
+ ----------------------------------------------------------------------------
+ End
+ ----------------------------------------------------------------------------

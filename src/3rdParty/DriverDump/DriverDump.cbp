@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DriverDump" />
+		<Option platforms="Windows;Unix;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Linux X86_64 Debug">
+				<Option platforms="Windows;Unix;" />
+				<Option output="../../../Bin/$(PROJECT_NAME)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Bin" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../Sqlite-3.8.1.11" />
+					<Add directory="../Bstrlib" />
+				</Compiler>
+				<Linker>
+					<Add library="Qlibc_Debug_X86_64" />
+					<Add library="Sqlite_Debug_X86_64" />
+					<Add library="Bstrlib_Debug_X86_64" />
+				</Linker>
+			</Target>
+			<Target title="Linux X86_64 Release">
+				<Option platforms="Windows;Unix;" />
+				<Option output="../../../Bin/$(PROJECT_NAME)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Bin" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="../Sqlite-3.8.1.11" />
+					<Add directory="../Bstrlib" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="Qlibc_Release_X86_64" />
+					<Add library="Sqlite_Release_X86_64" />
+					<Add library="Bstrlib_Release_X86_64" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../Qlibc-2.0.1/include" />
+		</Compiler>
+		<Linker>
+			<Add directory="../Lib/Linux X86_64 Debug" />
+			<Add directory="../Lib/Linux X86_64 Release" />
+		</Linker>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

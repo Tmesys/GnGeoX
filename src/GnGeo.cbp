@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GnGeoX" />
+		<Option platforms="Windows;Unix;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Linux X86_64 Debug">
+				<Option platforms="Unix;" />
+				<Option output="../Bin/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../Bin/" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-f mslug2" />
+				<Option host_application="/home/mourad/Mega/Projets/gngeo/Bin/GnGeo_Debug_X86_64" />
+				<Option run_host_application_in_terminal="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="3rdParty/Sqlite-3.8.1.11" />
+					<Add directory="3rdParty/Bstrlib" />
+				</Compiler>
+				<Linker>
+					<Add library="Generator68K_Debug_X86_64" />
+					<Add library="Z80_Debug_X86_64" />
+					<Add library="Qlibc_Debug_X86_64" />
+					<Add library="Zlog_Debug_X86_64" />
+					<Add library="Sqlite_Debug_X86_64" />
+					<Add library="Bstrlib_Debug_X86_64" />
+					<Add directory="3rdParty/Lib/Linux X86_64 Debug" />
+				</Linker>
+				<Environment>
+					<Variable name="config" value="Debug" />
+					<Variable name="platform" value="X86_64" />
+				</Environment>
+			</Target>
+			<Target title="Linux X86_64 Release">
+				<Option platforms="Unix;" />
+				<Option output="../Bin/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../Bin/" />
+				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-t aodk" />
+				<Option host_application="/home/mourad/Mega/Developpement/gngeo/Bin/GnGeo_Release_X86_64" />
+				<Option run_host_application_in_terminal="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="3rdParty/Sqlite-3.8.1.11" />
+					<Add directory="3rdParty/Bstrlib" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="Generator68K_Release_X86_64" />
+					<Add library="Z80_Release_X86_64" />
+					<Add library="Qlibc_Release_X86_64" />
+					<Add library="Zlog_Release_X86_64" />
+					<Add library="Sqlite_Release_X86_64" />
+					<Add library="Bstrlib_Release_X86_64" />
+					<Add directory="3rdParty/Lib/Linux X86_64 Release" />
+				</Linker>
+				<Environment>
+					<Variable name="config" value="Release" />
+					<Variable name="platform" value="X86_64" />
+				</Environment>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-march=native" />
+			<Add option="-mtune=native" />
+			<Add option="-Wshadow" />
+			<Add option="-Winit-self" />
+			<Add option="-Wredundant-decls" />
+			<Add option="-Wcast-align" />
+			<Add option="-Wundef" />
+			<Add option="-Wfloat-equal" />
+			<Add option="-Winline" />
+			<Add option="-Wunreachable-code" />
+			<Add option="-Wmissing-declarations" />
+			<Add option="-Wswitch-enum" />
+			<Add option="-Wswitch-default" />
+			<Add option="-Wmain" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-m64" />
+			<Add option="-DUSE_MAMEZ80" />
+			<Add directory="3rdParty/Zlog-1.2.12/src" />
+			<Add directory="3rdParty/Qlibc-2.0.1/include" />
+			<Add directory="3rdParty/Kubazip-0.2.6/src" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="pthread" />
+			<Add library="m" />
+			<Add library="z" />
+			<Add library="GL" />
+			<Add library="SDL2" />
+			<Add library="SDL2_ttf" />
+		</Linker>
+		<Unit filename="GnGeoXbios.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXbios.h" />
+		<Unit filename="GnGeoXconfig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXconfig.h" />
+		<Unit filename="GnGeoXcontroller.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXcontroller.h" />
+		<Unit filename="GnGeoXdebug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXdebug.h" />
+		<Unit filename="GnGeoXdrivers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXdrivers.h" />
+		<Unit filename="GnGeoXemu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXemu.h" />
+		<Unit filename="GnGeoXframeskip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXframeskip.h" />
+		<Unit filename="GnGeoXgen68kinterf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXgen68kinterf.h" />
+		<Unit filename="GnGeoXglslblitter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXglslblitter.h" />
+		<Unit filename="GnGeoXhq2x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXhq2x.h" />
+		<Unit filename="GnGeoXhq3x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXhq3x.h" />
+		<Unit filename="GnGeoXinterp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXinterp.h" />
+		<Unit filename="GnGeoXlq2x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXlq2x.h" />
+		<Unit filename="GnGeoXlq3x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXlq3x.h" />
+		<Unit filename="GnGeoXmain.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXmamelayer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXmamelayer.h" />
+		<Unit filename="GnGeoXmemory.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXmemory.h" />
+		<Unit filename="GnGeoXneoboot.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXneoboot.h" />
+		<Unit filename="GnGeoXneocrypt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXneocrypt.h" />
+		<Unit filename="GnGeoXneocryptdata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXneocryptdata.h" />
+		<Unit filename="GnGeoXopenglblitter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXopenglblitter.h" />
+		<Unit filename="GnGeoXpd4990a.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXpd4990a.h" />
+		<Unit filename="GnGeoXprofiler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXprofiler.h" />
+		<Unit filename="GnGeoXroms.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXroms.h" />
+		<Unit filename="GnGeoXromsgno.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXromsgno.h" />
+		<Unit filename="GnGeoXromsinit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXromsinit.h" />
+		<Unit filename="GnGeoXscale.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXscale.h" />
+		<Unit filename="GnGeoXscanline.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXscanline.h" />
+		<Unit filename="GnGeoXscreen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXscreen.h" />
+		<Unit filename="GnGeoXsoftblitter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXsoftblitter.h" />
+		<Unit filename="GnGeoXsound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXsound.h" />
+		<Unit filename="GnGeoXtimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXtimer.h" />
+		<Unit filename="GnGeoXtranspack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXtranspack.h" />
+		<Unit filename="GnGeoXversion.h" />
+		<Unit filename="GnGeoXvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXvideo.h" />
+		<Unit filename="GnGeoXvideotemplate.h" />
+		<Unit filename="GnGeoXym2610.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXym2610.h" />
+		<Unit filename="GnGeoXym2610intf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXym2610intf.h" />
+		<Unit filename="GnGeoXz80interf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXz80interf.h" />
+		<Unit filename="drivers_db.sql" />
+		<Unit filename="noop.glsl" />
+		<Unit filename="noop.glslp" />
+		<Unit filename="transpack_db.sql" />
+		<Extensions>
+			<AutoVersioning>
+				<Scheme minor_max="10" build_max="100" rev_max="10" rev_rand_max="1" build_times_to_increment_minor="100" />
+				<Settings autoincrement="1" date_declarations="1" use_define="1" update_manifest="0" do_auto_increment="0" ask_to_increment="0" language="C" svn="0" svn_directory="" header_path="GnGeoXversion.h" />
+				<Changes_Log show_changes_editor="1" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Code header_guard="GNGEOX_VERSION_H" namespace="AutoVersion" prefix="GNGEOX" />
+			</AutoVersioning>
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project project_number="0.8.3" use_auto_version="1" />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
