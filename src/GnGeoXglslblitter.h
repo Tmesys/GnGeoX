@@ -106,8 +106,8 @@ typedef struct _pass_
 }* pass_t;
 
 #ifdef _GNGEOX_GLSLBLITTER_C_
-static char* load_file_and_wrap ( char*, char* );
-static GLuint compile_shader ( char*, GLenum );
+static char* load_file_and_wrap ( const char*, const char* );
+static GLuint compile_shader ( const char*, GLenum );
 static GLuint compile_shader_program ( char* );
 static void set_texture_filter_linear ( GLuint, Sint32 );
 static GLuint create_input_texture ( void );
@@ -115,7 +115,7 @@ static void create_pass_framebuffer ( GLuint*, GLuint* );
 static void init_static_gl_coords_buffers ( void );
 static char* trim ( char*, char* );
 static Sint32 startsWith ( char*, char* );
-static SDL_bool parse_shader_preset ( char*, Sint32, Sint32, Sint32, Sint32 );
+static SDL_bool parse_shader_preset ( const char*, Sint32, Sint32, Sint32, Sint32 );
 static void render_pass ( Sint32, Sint32, GLuint, Sint32, Sint32, GLuint, Sint32, Sint32, GLuint );
 #endif // _GNGEOX_GLSLBLITTER_C_
 

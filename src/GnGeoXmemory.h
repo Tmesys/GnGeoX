@@ -38,75 +38,6 @@
 #    define READ_BYTE_ROM READ_BYTE
 #  endif
 
-/* _X_=target variable, _Y_=bit number to act upon 0-n */
-#define BIT_SET( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __C_ = 1U;  \
-        const typeof(_X_) __Y_ = (__C_<<(_Y_));  \
-        (_X_) |= __Y_;   \
-    })
-
-#define BIT_CLEAR( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __C_ = 1U;  \
-        const typeof(_X_) __Y_ = ~(__C_<<(_Y_));  \
-        (_X_) &= __Y_;   \
-    })
-
-#define BIT_FLIP( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __C_ = 1U;  \
-        const typeof(_X_) __Y_ = (__C_<<(_Y_));  \
-        (_X_) ^= __Y_;   \
-    })
-
-#define BIT_CHECK( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __C_ = 1U;  \
-        const typeof(_X_) __Y_ = (__C_<<(_Y_));  \
-        (_X_) & __Y_;   \
-    })
-
-#define BIT_POS( _X_ )      ( 1U << (_X_) )
-#define BIT_RANGE( _X_, _Y_ ) ( ( BIT_POS((_Y_ + 1) - _X_) - 1 ) << _X_ )
-
-/* _X_=target variable, _Y_=mask */
-#define BITMASK_SET( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __Y_ = (_Y_);  \
-        (_X_) |= __Y_;   \
-    })
-
-#define BITMASK_CLEAR( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __Y_ = (_Y_);  \
-        (_X_) &= ~__Y_;   \
-    })
-
-#define BITMASK_FLIP( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __Y_ = (_Y_);  \
-        (_X_) ^= __Y_;   \
-    })
-
-#define BITMASK_CHECK( _X_, _Y_ ) \
-    ({                      \
-        const typeof(_X_) __Y_ = (_Y_);  \
-        (_X_) & __Y_;   \
-    })
-
-/* _X_=source variable, _Y_=bit start 0-n, , _Z_=bit length 1-n */
-#define EXTRACT_BITS( _X_, _Y_, _Z_ ) \
-    ({                      \
-        const typeof(_X_) __C_ = 1U;  \
-        const typeof(_X_) __Y_ = (_Y_);  \
-        const typeof(_X_) __Z_ = (__C_<<(_Z_));  \
-        (_X_ >> __Y_) & (__Z_ - 1);   \
-    })
-
-#define SET_BITS( _X_, _W_, _Y_, _Z_ ) \
-    _X_ = ( ( _X_ & ( ~ ( BIT_RANGE ( _Y_, ( _Y_ + ( _Z_ - 1 ) ) ) ) ) ) | ( _W_ << _Y_ ) );
-
 typedef struct
 {
     struct_gngeoxroms_game_roms rom;
@@ -122,7 +53,8 @@ typedef struct
     Uint8* ng_lo;
     Uint32 nb_of_tiles;
     /* internal representation of inputs */
-    Uint8 intern_p1, intern_p2, status_a, status_b;
+    Uint8 p1cnt, p2cnt, status_a, status_b;
+    Uint8 test_switch;
     /* crypted rom bankswitch system */
     Uint32 bksw_handler;
     Uint8* bksw_unscramble;

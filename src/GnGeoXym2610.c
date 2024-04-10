@@ -1037,7 +1037,7 @@ static void advance_lfo ( FM_OPN* opn )
 * \param slot Todo.
 */
 /* ******************************************************************************************************************/
-static void advance_eg_channel ( FM_OPN* opn, FM_SLOT* slot )
+static void advance_eg_channel ( const FM_OPN* opn, FM_SLOT* slot )
 {
     Uint32 out = 0;
     Uint32 swap_flag = 0;

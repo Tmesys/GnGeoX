@@ -46,12 +46,12 @@ static void update_controllers_button ( enum_gngeoxcontroller_player player, enu
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.intern_p1, button );
+                    QBIT_CLEAR ( neogeo_memory.p1cnt, button );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.intern_p2, button );
+                    QBIT_CLEAR ( neogeo_memory.p2cnt, button );
                 }
                 break;
             default:
@@ -68,12 +68,12 @@ static void update_controllers_button ( enum_gngeoxcontroller_player player, enu
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_SET ( neogeo_memory.intern_p1, button );
+                    QBIT_SET ( neogeo_memory.p1cnt, button );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_SET ( neogeo_memory.intern_p2, button );
+                    QBIT_SET ( neogeo_memory.p2cnt, button );
                 }
                 break;
             default:
@@ -108,12 +108,12 @@ static void update_controllers_start ( enum_gngeoxcontroller_player player, enum
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.status_b, STATUS_B_START_P1 );
+                    QBIT_CLEAR ( neogeo_memory.status_b, STATUS_B_START_P1 );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.status_b, STATUS_B_START_P2 );
+                    QBIT_CLEAR ( neogeo_memory.status_b, STATUS_B_START_P2 );
                 }
                 break;
             default:
@@ -130,12 +130,12 @@ static void update_controllers_start ( enum_gngeoxcontroller_player player, enum
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_SET ( neogeo_memory.status_b, STATUS_B_START_P1 );
+                    QBIT_SET ( neogeo_memory.status_b, STATUS_B_START_P1 );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_SET ( neogeo_memory.status_b, STATUS_B_START_P2 );
+                    QBIT_SET ( neogeo_memory.status_b, STATUS_B_START_P2 );
                 }
                 break;
             default:
@@ -170,14 +170,14 @@ static void update_controllers_coin_select ( enum_gngeoxcontroller_player player
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
-                    BIT_CLEAR ( neogeo_memory.status_b, STATUS_B_SELECT_P1 );
+                    QBIT_CLEAR ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
+                    QBIT_CLEAR ( neogeo_memory.status_b, STATUS_B_SELECT_P1 );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_CLEAR ( neogeo_memory.status_a, STATUS_A_COIN_P2 );
-                    BIT_CLEAR ( neogeo_memory.status_b, STATUS_B_SELECT_P2 );
+                    QBIT_CLEAR ( neogeo_memory.status_a, STATUS_A_COIN_P2 );
+                    QBIT_CLEAR ( neogeo_memory.status_b, STATUS_B_SELECT_P2 );
                 }
                 break;
             default:
@@ -194,14 +194,14 @@ static void update_controllers_coin_select ( enum_gngeoxcontroller_player player
             {
             case ( CONTROLLER_PLAYER_1 ) :
                 {
-                    BIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
-                    BIT_SET ( neogeo_memory.status_b, STATUS_B_SELECT_P1 );
+                    QBIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
+                    QBIT_SET ( neogeo_memory.status_b, STATUS_B_SELECT_P1 );
                 }
                 break;
             case ( CONTROLLER_PLAYER_2 ) :
                 {
-                    BIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P2 );
-                    BIT_SET ( neogeo_memory.status_b, STATUS_B_SELECT_P2 );
+                    QBIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P2 );
+                    QBIT_SET ( neogeo_memory.status_b, STATUS_B_SELECT_P2 );
                 }
                 break;
             default:
@@ -266,8 +266,8 @@ SDL_bool neo_controllers_init ( void )
             }
 
             /* Initial values */
-            neogeo_memory.intern_p1 = 0xFF;
-            neogeo_memory.intern_p2 = 0xFF;
+            neogeo_memory.p1cnt = 0xFF;
+            neogeo_memory.p2cnt = 0xFF;
             //neogeo_memory.status_a = 0x7;
             neogeo_memory.status_a = 0;
             QBIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
@@ -343,42 +343,42 @@ void neo_controllers_dispatch ( enum_gngeoxcontroller_button_state state, SDL_Jo
                 break;
             case ( SDL_CONTROLLER_BUTTON_A ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_A );
+                    update_controllers_button ( loop, state, PCNT_A );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_B ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_B );
+                    update_controllers_button ( loop, state, PCNT_B );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_X ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_C );
+                    update_controllers_button ( loop, state, PCNT_C );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_Y ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_D );
+                    update_controllers_button ( loop, state, PCNT_D );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_DPAD_UP ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_UP );
+                    update_controllers_button ( loop, state, PCNT_UP );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_DPAD_DOWN ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_DOWN );
+                    update_controllers_button ( loop, state, PCNT_DOWN );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_DPAD_LEFT ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_LEFT );
+                    update_controllers_button ( loop, state, PCNT_LEFT );
                 }
                 break;
             case ( SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) :
                 {
-                    update_controllers_button ( loop, state, CONTROLLER_RIGHT );
+                    update_controllers_button ( loop, state, PCNT_RIGHT );
                 }
                 break;
             default:

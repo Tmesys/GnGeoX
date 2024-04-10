@@ -61,7 +61,6 @@ typedef struct
     zlog_category_t* loggingCat;
     Uint16 res_x;
     Uint16 res_y;
-    Uint16 test_switch;
     Uint8 extra_xor;
 } struct_gngeoxconfig_params;
 

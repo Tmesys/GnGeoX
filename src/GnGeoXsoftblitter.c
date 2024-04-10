@@ -45,7 +45,6 @@ SDL_bool blitter_soft_init ( void )
 {
     Uint32 width = visible_area.w;
     Uint32 height = visible_area.h;
-    Uint32 sdl_flags = 0;
 
     zlog_info ( gngeox_config.loggingCat, "Soft driver" );
 
@@ -94,7 +93,7 @@ SDL_bool blitter_soft_init ( void )
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     width, height,
-                                    ( gngeox_config.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0 ) | sdl_flags );
+                                    ( gngeox_config.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0 ) );
     sdl_renderer = SDL_CreateRenderer ( sdl_window, -1, gngeox_config.vsync ? SDL_RENDERER_PRESENTVSYNC : 0 );
     /* for preserving aspect when scaling */
     SDL_RenderSetLogicalSize ( sdl_renderer, width, height );

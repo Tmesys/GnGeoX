@@ -327,7 +327,7 @@ Uint8 z80_readport16 ( Uint16 port )
         break;
     default:
         {
-            zlog_error ( gngeox_config.loggingCat, "Unknown port %x\n", QLOBYTE ( port ) );
+            zlog_error ( gngeox_config.loggingCat, "Unknown port %x", QLOBYTE ( port ) );
         }
         break;
     };

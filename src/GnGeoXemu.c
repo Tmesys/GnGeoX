@@ -221,9 +221,9 @@ void neo_sys_main_loop ( void )
 
     while ( !neo_emu_done )
     {
-        if ( gngeox_config.test_switch == 1 )
+        if ( neogeo_memory.test_switch == 1 )
         {
-            gngeox_config.test_switch = 0;
+            neogeo_memory.test_switch = 0;
         }
 
         neo_sys_update_events();

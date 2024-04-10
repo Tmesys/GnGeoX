@@ -18,21 +18,14 @@
 
 typedef enum
 {
-    CONTROLLER_PLAYER_1 = 0,
-    CONTROLLER_PLAYER_2 = 1,
-    CONTROLLER_PLAYER_MAX = 2,
-} enum_gngeoxcontroller_player;
-
-typedef enum
-{
-    CONTROLLER_UP = 0,
-    CONTROLLER_DOWN = 1,
-    CONTROLLER_LEFT = 2,
-    CONTROLLER_RIGHT = 3,
-    CONTROLLER_A = 4,
-    CONTROLLER_B = 5,
-    CONTROLLER_C = 6,
-    CONTROLLER_D = 7,
+    PCNT_UP = 0,
+    PCNT_DOWN = 1,
+    PCNT_LEFT = 2,
+    PCNT_RIGHT = 3,
+    PCNT_A = 4,
+    PCNT_B = 5,
+    PCNT_C = 6,
+    PCNT_D = 7,
 } enum_gngeoxcontroller_button;
 
 typedef enum
@@ -68,6 +61,13 @@ typedef enum
     CONTROLLER_STATE_DOWN,
     CONTROLLER_MAX_STATE,
 } enum_gngeoxcontroller_button_state;
+
+typedef enum
+{
+    CONTROLLER_PLAYER_1 = 0,
+    CONTROLLER_PLAYER_2 = 1,
+    CONTROLLER_PLAYER_MAX = 2,
+} enum_gngeoxcontroller_player;
 
 typedef struct
 {

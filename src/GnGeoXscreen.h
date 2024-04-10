@@ -58,8 +58,8 @@ static void do_interpolation ( void );
 
 void print_blitter_list ( void );
 void print_effect_list ( void );
-Uint8 get_effect_by_name ( char* name ) __attribute__ ( ( warn_unused_result ) );
-Uint8 get_blitter_by_name ( char* name ) __attribute__ ( ( warn_unused_result ) );
+Uint8 get_effect_by_name ( const char* ) __attribute__ ( ( warn_unused_result ) );
+Uint8 get_blitter_by_name ( const char* ) __attribute__ ( ( warn_unused_result ) );
 SDL_bool screen_resize ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
 void screen_update ( void );
 void screen_close ( void );

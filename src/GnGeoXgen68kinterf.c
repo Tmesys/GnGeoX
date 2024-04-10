@@ -219,8 +219,6 @@ static Uint32 mem68k_fetch_invalid_long ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint8 mem68k_fetch_ram_byte ( Uint32 address )
 {
-    //address &= 0xFFFF;
-
     return ( READ_BYTE_ROM ( neogeo_memory.ram + QLOWORD ( address ) ) );
 }
 /* ******************************************************************************************************************/
@@ -233,8 +231,6 @@ static Uint8 mem68k_fetch_ram_byte ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint16 mem68k_fetch_ram_word ( Uint32 address )
 {
-    //address &= 0xFFFF;
-
     return ( READ_WORD_ROM ( neogeo_memory.ram + QLOWORD ( address ) ) );
 }
 /* ******************************************************************************************************************/
@@ -535,24 +531,33 @@ static Uint32 mem68k_fetch_video_long ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint8 mem68k_fetch_ctl1_byte ( Uint32 address )
 {
-    address &= 0xFFFF;
+    Uint8 return_value = 0;
 
-    if ( address == 0x00 )
+    switch ( QLOWORD ( address ) )
     {
-        return ( neogeo_memory.intern_p1 );
+    case ( 0x00 ) :
+        {
+            return_value = neogeo_memory.p1cnt;
+        }
+        break;
+    case ( 0x01 ) :
+        {
+            return_value = neogeo_memory.test_switch ? 0xFE : 0xFF;
+        }
+        break;
+    case ( 0x81 ) :
+        {
+            return_value = neogeo_memory.test_switch ? 0x00 : 0x80;
+        }
+        break;
+    default:
+        {
+            zlog_error ( gngeox_config.loggingCat, "Unknown address %x", address );
+        }
+        break;
     }
 
-    if ( address == 0x01 )
-    {
-        return ( gngeox_config.test_switch ? 0xFE : 0xFF );
-    }
-
-    if ( address == 0x81 )
-    {
-        return ( gngeox_config.test_switch ? 0x00 : 0x80 );
-    }
-
-    return ( 0 );
+    return ( return_value );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -564,9 +569,8 @@ static Uint8 mem68k_fetch_ctl1_byte ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint16 mem68k_fetch_ctl1_word ( Uint32 address )
 {
-    zlog_error ( gngeox_config.loggingCat, "Not implemented at address %x", address );
-
-    return ( 0 );
+    /* @note (Tmesys#1#10/04/2024): Experimental used by diggerma */
+    return ( QMAKEWORD16 ( mem68k_fetch_ctl1_byte ( address ), mem68k_fetch_ctl1_byte ( address ) ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -592,18 +596,28 @@ static Uint32 mem68k_fetch_ctl1_long ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint8 mem68k_fetch_ctl2_byte ( Uint32 address )
 {
-    /* @todo (Tmesys#1#12/04/2022): Optimize using switch construct. */
-    if ( ( address & 0xFFFF ) == 0x00 )
+    Uint8 return_value = 0;
+
+    switch ( QLOWORD ( address ) )
     {
-        return ( neogeo_memory.intern_p2 );
+    case ( 0x00 ) :
+        {
+            return_value = neogeo_memory.p2cnt;
+        }
+        break;
+    case ( 0x01 ) :
+        {
+            return_value = 0xFF;
+        }
+        break;
+    default:
+        {
+            zlog_error ( gngeox_config.loggingCat, "Unknown address %x", address );
+        }
+        break;
     }
 
-    if ( ( address & 0xFFFF ) == 0x01 )
-    {
-        return ( 0xFF );
-    }
-
-    return ( 0 );
+    return ( return_value );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -615,9 +629,8 @@ static Uint8 mem68k_fetch_ctl2_byte ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint16 mem68k_fetch_ctl2_word ( Uint32 address )
 {
-    zlog_error ( gngeox_config.loggingCat, "Not implemented at address %x", address );
-
-    return ( 0 );
+    /* @note (Tmesys#1#10/04/2024): Experimental used by diggerma */
+    return ( QMAKEWORD16 ( mem68k_fetch_ctl2_byte ( address ), mem68k_fetch_ctl2_byte ( address ) ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -643,12 +656,19 @@ static Uint32 mem68k_fetch_ctl2_long ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint8 mem68k_fetch_ctl3_byte ( Uint32 address )
 {
-    if ( ( address & 0xFFFF ) == 0x0 )
+    Uint8 return_value = 0;
+
+    if ( QLOWORD ( address ) == 0x0 )
     {
-        return ( neogeo_memory.status_b );
+        return_value = neogeo_memory.status_b;
+    }
+    else
+    {
+        return_value = 0;
+        zlog_error ( gngeox_config.loggingCat, "Unknown address %x", address );
     }
 
-    return ( 0 );
+    return ( return_value );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -660,9 +680,8 @@ static Uint8 mem68k_fetch_ctl3_byte ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint16 mem68k_fetch_ctl3_word ( Uint32 address )
 {
-    zlog_error ( gngeox_config.loggingCat, "Not implemented at address %x", address );
-
-    return ( 0 );
+    /* @note (Tmesys#1#10/04/2024): Experimental used by diggerma */
+    return ( QMAKEWORD16 ( mem68k_fetch_ctl3_byte ( address ), mem68k_fetch_ctl3_byte ( address ) ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -688,26 +707,26 @@ static Uint32 mem68k_fetch_ctl3_long ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint8 mem68k_fetch_coin_byte ( Uint32 address )
 {
-    Sint32 result_value = 0;
-    address &= 0xFFFF;
+    Uint8 result_value = 0;
 
-    switch ( address )
+    switch ( QLOWORD ( address ) )
     {
     case ( 0x0 ) :
         {
-            result_value |= reply_register;
+            result_value = reply_register;
 
             if ( pending_command == SDL_TRUE )
             {
+                /* @note (Tmesys#1#10/04/2024): Many sound drivers acknowledge sound commands by echoing them back with bit 7 set to 1 when they are processed. */
                 result_value &= 0x7f;
             }
         }
         break;
     case ( 0x1 ) :
         {
-            Sint32 coinflip = read_4990_testbit();
-            Sint32 databit = read_4990_databit();
-            result_value = ( neogeo_memory.status_a ^ ( coinflip << 6 ) ^ ( databit << 7 ) );
+            Sint32 rtc_time_pulse = read_4990_testbit();
+            Sint32 rtc_databit = read_4990_databit();
+            result_value = ( neogeo_memory.status_a ^ ( rtc_time_pulse << 6 ) ^ ( rtc_databit << 7 ) );
         }
         break;
     default:

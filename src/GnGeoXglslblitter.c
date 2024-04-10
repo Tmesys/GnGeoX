@@ -129,7 +129,7 @@ static GLfloat ScreenData[] =
 * \return Shader script.
 */
 /* ******************************************************************************************************************/
-static char* load_file_and_wrap ( char* file, char* shadertag )
+static char* load_file_and_wrap ( const char* file, const char* shadertag )
 {
     FILE* fptr = NULL;
     Sint64 length = 0;
@@ -169,7 +169,7 @@ static char* load_file_and_wrap ( char* file, char* shadertag )
 * \return Shader script.
 */
 /* ******************************************************************************************************************/
-static GLuint compile_shader ( char* shader_name, GLenum shader_type )
+static GLuint compile_shader ( const char* shader_name, GLenum shader_type )
 {
     //char* shader_path = NULL;
     char* full_name = NULL;
@@ -470,7 +470,7 @@ static Sint32 startsWith ( char* val, char* start )
 * \return ?.
 */
 /* ******************************************************************************************************************/
-static SDL_bool parse_shader_preset ( char* glslpname, Sint32 start_width, Sint32 start_height, Sint32 window_width, Sint32 window_height )
+static SDL_bool parse_shader_preset ( const char* glslpname, Sint32 start_width, Sint32 start_height, Sint32 window_width, Sint32 window_height )
 {
     char* stmt = NULL;
     Sint32 pos = 0;

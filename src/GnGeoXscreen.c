@@ -169,7 +169,7 @@ void print_effect_list ( void )
 * \return  Effect index.
 */
 /* ******************************************************************************************************************/
-Uint8 get_effect_by_name ( char* name )
+Uint8 get_effect_by_name ( const char* name )
 {
     Sint32 i = 0;
 
@@ -194,7 +194,7 @@ Uint8 get_effect_by_name ( char* name )
 * \return  Blitter index.
 */
 /* ******************************************************************************************************************/
-Uint8 get_blitter_by_name ( char* name )
+Uint8 get_blitter_by_name ( const char* name )
 {
     Sint32 i = 0;
 
