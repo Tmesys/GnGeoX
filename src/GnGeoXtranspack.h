@@ -13,6 +13,13 @@ typedef enum
     TILE_TRANS_MAX = 5,
 } enum_gngeoxtranspack_tile_type;
 
+typedef struct
+{
+    Uint32 begin;
+    Uint32 end;
+    Uint32 type;
+} struct_gngeoxtranspack_range;
+
 SDL_bool neo_transpack_init ( void ) __attribute__ ( ( warn_unused_result ) );
 enum_gngeoxtranspack_tile_type neo_transpack_find ( Uint32 );
 SDL_bool neo_transpack_close ( void );

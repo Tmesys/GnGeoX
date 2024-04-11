@@ -84,9 +84,8 @@ void neo_sys_init ( void )
 static void neo_sys_reset ( void )
 {
     sram_lock = SDL_FALSE;
-    sound_code = 0;
-    pending_command = SDL_FALSE;
-    reply_register = 0;
+    neogeo_memory.z80_command = 0;
+    neogeo_memory.z80_command_reply = 0;
 
     if ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size > 0x100000 )
     {

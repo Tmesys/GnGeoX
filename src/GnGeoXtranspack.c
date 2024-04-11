@@ -35,20 +35,23 @@
 /* @fixme (Tmesys#1#12/07/2022): Routines ares implemented but are not used anywhere in emulator. */
 sqlite3 * db_handle = NULL;
 sqlite3_stmt * db_stmt = NULL;
-qhashtbl_t * transpack_lookup = NULL;
+struct_gngeoxtranspack_range *range_list = NULL;
+Uint32 range_list_size = 0;
 /* ******************************************************************************************************************/
 /*!
 * \brief Loads a Nebula transparency pack.
 *
-* \note Type 1 is for 25% transparency, 2 for 50%.
 * \param filename Transparency pack path and name.
 * \return Todo.
+* \note Old codification : Type 1 is for 25% transparency, 2 for 50%.
 */
 /* ******************************************************************************************************************/
 SDL_bool neo_transpack_init ( void )
 {
     bstring bsql = NULL;
     Sint32 result_code = 0;
+    qlist_t * transpack = NULL;
+    struct_gngeoxtranspack_range range_info;
 
     result_code = sqlite3_open ( "./transpack_db", &db_handle );
     if ( result_code != SQLITE_OK )
@@ -73,7 +76,6 @@ SDL_bool neo_transpack_init ( void )
 
     bdestroy ( bsql );
 
-    /* short_name */
     result_code = sqlite3_bind_text ( db_stmt, 1, gngeox_config.gamename, -1, SQLITE_TRANSIENT );
     if ( result_code != SQLITE_OK )
     {
@@ -84,24 +86,64 @@ SDL_bool neo_transpack_init ( void )
         return ( SDL_FALSE );
     }
 
-    transpack_lookup = qhashtbl ( 0, QHASHTBL_THREADSAFE );
-    if ( transpack_lookup == NULL )
+    transpack = qlist ( QLIST_THREADSAFE );
+    if ( transpack == NULL )
     {
         sqlite3_clear_bindings ( db_stmt );
         sqlite3_reset ( db_stmt );
-        zlog_error ( gngeox_config.loggingCat, "Unable to create tree" );
+        zlog_error ( gngeox_config.loggingCat, "Unable to create list" );
 
         return ( SDL_FALSE );
     }
 
-    /*
-        while ( result_code == SQLITE_ROW )
+    while ( sqlite3_step ( db_stmt ) == SQLITE_ROW )
+    {
+        SDL_zero ( range_info );
+
+        range_info.begin = sqlite3_column_int ( db_stmt, 0 );
+        range_info.end = sqlite3_column_int ( db_stmt, 1 );
+        range_info.type = sqlite3_column_int ( db_stmt, 2 );
+
+        if ( qlist_addlast ( transpack, &range_info, sizeof ( range_info ) ) == false )
         {
-        tile_type = sqlite3_column_int ( db_stmt, 0 );
-        tile_type = sqlite3_column_int ( db_stmt, 1 );
-        tile_type = sqlite3_column_int ( db_stmt, 2 );
+            sqlite3_clear_bindings ( db_stmt );
+            sqlite3_reset ( db_stmt );
+            zlog_error ( gngeox_config.loggingCat, "Unable to create list" );
+
+            return ( SDL_FALSE );
         }
-    */
+    }
+
+    sqlite3_clear_bindings ( db_stmt );
+    sqlite3_reset ( db_stmt );
+
+    range_list_size = qlist_size ( transpack );
+
+    range_list = (struct_gngeoxtranspack_range *) qlist_toarray ( transpack, NULL );
+    if ( range_list == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Unable to create list" );
+
+        return ( SDL_FALSE );
+    }
+
+    qlist_free ( transpack );
+
+    result_code = sqlite3_finalize ( db_stmt );
+    if ( result_code != SQLITE_OK )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Finalizing SQL statement : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
+        return ( SDL_FALSE );
+    }
+    db_stmt = NULL;
+
+    result_code = sqlite3_close ( db_handle );
+    if ( result_code != SQLITE_OK )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Closing transpack : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
+        return ( SDL_FALSE );
+    }
+    db_handle = NULL;
 
     return ( SDL_TRUE );
 }
@@ -115,6 +157,19 @@ SDL_bool neo_transpack_init ( void )
 /* ******************************************************************************************************************/
 enum_gngeoxtranspack_tile_type neo_transpack_find ( Uint32 tile )
 {
+    for ( Uint32 loop = 0; loop < range_list_size ; loop++ )
+    {
+        if ( range_list[loop].begin <= tile && tile <= range_list[loop].end )
+        {
+            return ( range_list[loop].type );
+        }
+
+        if (  tile < range_list[loop].begin )
+        {
+            break;
+        }
+    }
+
     return ( TILE_TRANS_UNKNOWN );
 }
 /* ******************************************************************************************************************/
@@ -127,21 +182,30 @@ SDL_bool neo_transpack_close ( void )
 {
     Sint32 result_code = 0;
 
-    result_code = sqlite3_finalize ( db_stmt );
-    if ( result_code != SQLITE_OK )
+    if ( range_list != NULL )
     {
-        zlog_error ( gngeox_config.loggingCat, "Finalizing SQL statement : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
-        return ( SDL_FALSE );
+        free ( range_list );
     }
 
-    result_code = sqlite3_close ( db_handle );
-    if ( result_code != SQLITE_OK )
+    if ( db_stmt != NULL )
     {
-        zlog_error ( gngeox_config.loggingCat, "Closing transpack : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
-        return ( SDL_FALSE );
+        result_code = sqlite3_finalize ( db_stmt );
+        if ( result_code != SQLITE_OK )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Finalizing SQL statement : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
+            return ( SDL_FALSE );
+        }
     }
 
-    qhashtbl_free ( transpack_lookup );
+    if ( db_handle != NULL )
+    {
+        result_code = sqlite3_close ( db_handle );
+        if ( result_code != SQLITE_OK )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Closing transpack : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
+            return ( SDL_FALSE );
+        }
+    }
 
     return ( SDL_TRUE );
 }

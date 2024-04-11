@@ -55,6 +55,9 @@ typedef struct
     /* internal representation of inputs */
     Uint8 p1cnt, p2cnt, status_a, status_b;
     Uint8 test_switch;
+    /* Sound control */
+    Uint8 z80_command;
+    Uint8 z80_command_reply;
     /* crypted rom bankswitch system */
     Uint32 bksw_handler;
     Uint8* bksw_unscramble;
@@ -72,10 +75,6 @@ extern Uint8* current_fix;
 extern Uint8* fix_usage;
 /* sram */
 extern Uint8 sram_lock;
-/* Sound control */
-extern Uint8 sound_code;
-extern SDL_bool pending_command;
-extern Uint8 reply_register;
 /* 68k cpu Banking control */
 /* current bank */
 extern Uint32 bankaddress;

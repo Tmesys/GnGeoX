@@ -713,13 +713,7 @@ static Uint8 mem68k_fetch_coin_byte ( Uint32 address )
     {
     case ( 0x0 ) :
         {
-            result_value = reply_register;
-
-            if ( pending_command == SDL_TRUE )
-            {
-                /* @note (Tmesys#1#10/04/2024): Many sound drivers acknowledge sound commands by echoing them back with bit 7 set to 1 when they are processed. */
-                result_value &= 0x7f;
-            }
+            result_value = neogeo_memory.z80_command_reply;
         }
         break;
     case ( 0x1 ) :
@@ -1249,8 +1243,7 @@ static void mem68k_store_z80_byte ( Uint32 address, Uint8 data )
     */
     case ( 0x320000 ) :
         {
-            sound_code = data;
-            pending_command = SDL_TRUE;
+            neogeo_memory.z80_command = data;
 
             neo_z80_nmi();
             neo_z80_run ( 300 );
@@ -1283,8 +1276,7 @@ static void mem68k_store_z80_word ( Uint32 address, Uint16 data )
     /* @note (Tmesys#1#04/04/2024): tpgolf use word store for sound */
     case ( 0x320000 ) :
         {
-            sound_code = QHIBYTE ( data );
-            pending_command = SDL_TRUE;
+            neogeo_memory.z80_command = QHIBYTE ( data );
 
             neo_z80_nmi();
             neo_z80_run ( 300 );

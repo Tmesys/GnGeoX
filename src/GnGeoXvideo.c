@@ -70,29 +70,32 @@ static Uint8 fix_shift[40];
 /*!
 * \brief  Applies alpha blending.
 *
-* \param  dest Destination pixel.
-* \param  src Source pixel.
+* \param  dest Destination pixel in RGB24.
+* \param  src Source pixel in RGB24.
 * \param  Alpha value.
 * \return Alpha blended pixel.
 */
 /* ******************************************************************************************************************/
-static Uint16 alpha_blend ( Uint16 dest, Uint16 src, Uint8 alpha )
+static Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha )
 {
-    static Uint8 dr = 0, dg = 0, db = 0, sr = 0, sg = 0, sb = 0;
+    Uint32 or = 0, og = 0, ob = 0, dr = 0, dg = 0, db = 0, sr = 0, sg = 0, sb = 0;
+    Uint32 beta = ( 255 - alpha );
+    Uint32 blended_color = 0;
 
-    dr = ( ( dest & 0xF800 ) >> 11 ) << 3;
-    dg = ( ( dest & 0x7E0 ) >> 5 ) << 2;
-    db = ( ( dest & 0x1F ) ) << 3;
+    dr = COLOR_RGB24_R ( dest );
+    dg = COLOR_RGB24_G ( dest );
+    db = COLOR_RGB24_B ( dest );
 
-    sr = ( ( src & 0xF800 ) >> 11 ) << 3;
-    sg = ( ( src & 0x7E0 ) >> 5 ) << 2;
-    sb = ( ( src & 0x1F ) ) << 3;
+    sr = COLOR_RGB24_R ( src );
+    sg = COLOR_RGB24_G ( src );
+    sb = COLOR_RGB24_B ( src );
 
-    dr = ( ( ( sr - dr ) * ( alpha ) ) >> 8 ) + dr;
-    dg = ( ( ( sg - dg ) * ( alpha ) ) >> 8 ) + dg;
-    db = ( ( ( sb - db ) * ( alpha ) ) >> 8 ) + db;
+    or = ( ( sr * alpha ) + ( dr * beta ) ) / 255;
+    og = ( ( sg * alpha ) + ( dg * beta ) ) / 255;
+    ob = ( ( sb * alpha ) + ( db * beta ) ) / 255;
 
-    return ( ( dr >> 3 ) << 11 ) | ( ( dg >> 2 ) << 5 ) | ( db >> 3 );
+    blended_color = COLOR_RGB24_MAKE ( alpha, or, og, ob );
+    return ( blended_color );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -770,18 +773,16 @@ void draw_screen ( void )
                                     ( Uint8* ) sdl_surface_buffer->pixels );
                     }
                     break;
-
-                case ( TILE_TRANSPARENT50 ) :
+                case ( TILE_TRANSPARENT25 ) :
                     {
-                        draw_tile_50 ( tileno, sx + 16, sy, rzx, yskip, tileatr >> 8,
+                        draw_tile_25 ( tileno, sx + 16, sy, rzx, yskip, tileatr >> 8,
                                        tileatr & 0x01, tileatr & 0x02,
                                        ( Uint8* ) sdl_surface_buffer->pixels );
                     }
                     break;
-
-                case ( TILE_TRANSPARENT25 ) :
+                case ( TILE_TRANSPARENT50 ) :
                     {
-                        draw_tile_25 ( tileno, sx + 16, sy, rzx, yskip, tileatr >> 8,
+                        draw_tile_50 ( tileno, sx + 16, sy, rzx, yskip, tileatr >> 8,
                                        tileatr & 0x01, tileatr & 0x02,
                                        ( Uint8* ) sdl_surface_buffer->pixels );
                     }

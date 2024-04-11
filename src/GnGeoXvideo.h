@@ -17,12 +17,15 @@
 #define _GNGEOX_VIDEO_H_
 
 #define PIXEL_PITCH (sdl_surface_buffer->pitch >> 2)
-
 #define RASTER_LINES 261
-
 #define PEN_USAGE(tileno) ((((Uint32*) neogeo_memory.rom.spr_usage.p)[tileno>>4]>>((tileno&0xF)*2))&0x3)
 
-#define BLEND16_50(a,b) ((((a)&0xf7de)>>1)+(((b)&0xf7de)>>1))
+#define COLOR_RGB24_B(_X_) (_X_ & 0xFF)
+#define COLOR_RGB24_G(_X_) ((_X_>>8) & 0xFF)
+#define COLOR_RGB24_R(_X_) ((_X_>>16) & 0xFF)
+#define COLOR_RGB24_MAKE(_A_,_R_,_G_,_B_) ((Uint32)( _A_ << 24 ) | (Uint32)( _R_ << 16 ) | (Uint32)( _G_ << 8 ) | (Uint32)(_B_) )
+
+#define BLEND16_50(a,b) alpha_blend(a,b,127)
 #define BLEND16_25(a,b) alpha_blend(a,b,63)
 #define fix_add(x, y) ((((READ_WORD(neogeo_memory.vid.ram + 0xEA00 + (((y-1)&31)*2 + 64 * (x/6))) >> (5-(x%6))*2) & 3) ^ 3))
 
@@ -67,7 +70,7 @@ typedef struct
 } struct_gngeoxvideo_video;
 
 #ifdef _GNGEOX_VIDEO_C_
-static Uint16 alpha_blend ( Uint16, Uint16, Uint8 ) __attribute__ ( ( warn_unused_result ) );
+static Uint32 alpha_blend ( Uint32, Uint32, Uint8 ) __attribute__ ( ( warn_unused_result ) );
 static Uint8* get_cached_sprite_ptr ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static void fix_value_init ( void );
 static void draw_fix_char ( Uint8*, Sint32, Sint32 );

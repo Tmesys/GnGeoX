@@ -57,6 +57,7 @@ typedef struct
     Uint16 samplerate;
     SDL_bool debug;
     SDL_bool dump;
+    /* @todo (Tmesys#1#10/04/2024): Not implemented. */
     SDL_bool joystick;
     zlog_category_t* loggingCat;
     Uint16 res_x;

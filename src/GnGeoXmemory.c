@@ -38,10 +38,7 @@ Uint8* current_pal = NULL;
 Uint32* current_pc_pal = NULL;
 Uint8* current_fix = NULL;
 Uint8* fix_usage = NULL;
-Uint8 sound_code = 0;
 SDL_bool sram_lock = SDL_FALSE;
-SDL_bool pending_command = SDL_FALSE;
-Uint8 reply_register = 0;
 
 /* @note (Tmesys#1#12/04/2022): This one is heavily used in neoboot but commented. */
 Uint32 bankaddress = 0;

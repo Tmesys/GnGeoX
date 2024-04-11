@@ -14,7 +14,7 @@
 				<Option object_output="../Obj/$(TARGET_NAME)/$(PROJECT_NAME)/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-f mslug2" />
+				<Option parameters="-f mslug" />
 				<Option host_application="/home/mourad/Mega/Projets/gngeo/Bin/GnGeo_Debug_X86_64" />
 				<Option run_host_application_in_terminal="1" />
 				<Compiler>

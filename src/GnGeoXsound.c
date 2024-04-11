@@ -104,8 +104,11 @@ SDL_bool init_sdl_audio ( void )
         return ( SDL_FALSE );
     }
 
-    zlog_info ( gngeox_config.loggingCat, "Obtained sample rate : %d", obtain.freq );
-    gngeox_config.samplerate = obtain.freq;
+    if ( obtain.freq != gngeox_config.samplerate )
+    {
+        zlog_info ( gngeox_config.loggingCat, "Obtained sample rate : %d", obtain.freq );
+        gngeox_config.samplerate = obtain.freq;
+    }
 
     return ( SDL_TRUE );
 }

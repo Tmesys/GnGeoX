@@ -208,7 +208,7 @@ void z80_writeport16 ( Uint16 port, Uint8 value )
     {
     case ( 0x0 ) :
         {
-            sound_code = 0;
+            neogeo_memory.z80_command = 0;
         }
         break;
     case ( 0x4 ) :
@@ -241,7 +241,7 @@ void z80_writeport16 ( Uint16 port, Uint8 value )
         break;
     case ( 0xC ) :
         {
-            reply_register = value;
+            neogeo_memory.z80_command_reply = value;
         }
         break;
     case ( 0x18 ) :
@@ -286,8 +286,7 @@ Uint8 z80_readport16 ( Uint16 port )
     {
     case ( 0x0 ) :
         {
-            pending_command = SDL_FALSE;
-            return_value = sound_code;
+            return_value = neogeo_memory.z80_command;
         }
         break;
     case ( 0x4 ) :
