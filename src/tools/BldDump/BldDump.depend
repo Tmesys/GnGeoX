@@ -1,0 +1,195 @@
+# depslib dependency file v1.0
+1709729564 source:/home/mourad/Mega/Projets/gngeo/src/3rdParty/DriverDump/main.c
+	<dirent.h>
+	<stdio.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	"qlibc.h"
+	"sqlite3.h"
+	"bstrlib.h"
+
+1711898027 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/qlibc.h
+	"containers/qtreetbl.h"
+	"containers/qhashtbl.h"
+	"containers/qhasharr.h"
+	"containers/qlisttbl.h"
+	"containers/qlist.h"
+	"containers/qvector.h"
+	"containers/qqueue.h"
+	"containers/qstack.h"
+	"containers/qgrow.h"
+	"extensions/qaconf.h"
+	"extensions/qconfig.h"
+	"extensions/qdatabase.h"
+	"extensions/qlog.h"
+	"extensions/qtokenbucket.h"
+	"utilities/qcount.h"
+	"utilities/qencode.h"
+	"utilities/qfile.h"
+	"utilities/qhash.h"
+	"utilities/qio.h"
+	"utilities/qsocket.h"
+	"utilities/qstring.h"
+	"utilities/qsystem.h"
+	"utilities/qtime.h"
+	"utilities/qsort.h"
+	"utilities/qcdrom.h"
+	"utilities/qfastmem.h"
+	"utilities/qoptfetch.h"
+	"utilities/qalloc.h"
+	"utilities/qzip.h"
+	"ipc/qsem.h"
+	"ipc/qshm.h"
+
+1712072513 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qtreetbl.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qhashtbl.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qhasharr.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qlisttbl.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qlist.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1667129422 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qvector.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<pthread.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qqueue.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qstack.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qgrow.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qaconf.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1696881877 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qconfig.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"../containers/qlisttbl.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qdatabase.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qlog.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<limits.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qtokenbucket.h
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qcount.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qencode.h
+	<stdlib.h>
+	<stdbool.h>
+	"../containers/qlisttbl.h"
+
+1711931606 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qfile.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qhash.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<sys/types.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qio.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsocket.h
+	<stdlib.h>
+	<stdbool.h>
+	<netinet/in.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qstring.h
+	<stdlib.h>
+	<stdbool.h>
+	"../containers/qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsystem.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qtime.h
+	<stdlib.h>
+	<stdbool.h>
+	<time.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsort.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qcdrom.h
+
+1697693595 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qfastmem.h
+
+1711747877 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qoptfetch.h
+
+1697967722 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qalloc.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/ipc/qsem.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/ipc/qshm.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Sqlite-3.8.1.11/sqlite3.h
+	<stdarg.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Bstrlib/bstrlib.h
+	<stdarg.h>
+	<string.h>
+	<limits.h>
+	<ctype.h>
+
+1712167393 source:/home/mourad/Mega/Projets/gngeo/src/3rdParty/BldDump/main.c
+	<dirent.h>
+	<stdio.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	"qlibc.h"
+	"sqlite3.h"
+	"bstrlib.h"
+
+1711853599 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qzip.h
+	<zlib.h>
+

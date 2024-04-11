@@ -10,7 +10,5 @@
 		<Project filename="src/3rdParty/Generator68k/Generator68K.cbp" />
 		<Project filename="src/3rdParty/MameZ80/MameZ80.cbp" />
 		<Project filename="src/GnGeo.cbp" />
-		<Project filename="src/3rdParty/DriverDump/DriverDump.cbp" />
-		<Project filename="src/3rdParty/BldDump/BldDump.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

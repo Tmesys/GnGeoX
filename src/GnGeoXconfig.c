@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 02.00
 *   \date    09/10/2023
@@ -66,13 +66,6 @@ SDL_bool neo_config_init ( char* filename )
         return ( SDL_FALSE );
     }
 
-    gngeox_config.transpackpath = qlisttbl_getstr ( tbl, "path.transpackpath", true );
-    if ( gngeox_config.transpackpath == NULL )
-    {
-        zlog_error ( gngeox_config.loggingCat, "Please specify NeoGeoX transpack files directory" );
-        return ( SDL_FALSE );
-    }
-
     gngeox_config.nvrampath = qlisttbl_getstr ( tbl, "path.nvrampath", true );
     if ( gngeox_config.nvrampath == NULL )
     {
@@ -116,6 +109,8 @@ SDL_bool neo_config_init ( char* filename )
     gngeox_config.autoframeskip = qlisttbl_getint ( tbl, "graphics.autoframeskip" );
 
     gngeox_config.vsync = qlisttbl_getint ( tbl, "graphics.vsync" );
+
+    gngeox_config.transpack = qlisttbl_getint ( tbl, "graphics.transpack" );
 
     gngeox_config.raster = qlisttbl_getint ( tbl, "system.raster" );
 
@@ -184,9 +179,8 @@ SDL_bool neo_config_parse_options ( int *argc, char ***argv )
         {"rompath", 'r', OPTTYPE_STRING, &gngeox_config.rompath},
         {"biospath", 'b', OPTTYPE_STRING, &gngeox_config.biospath},
         {"shaderpath", 's', OPTTYPE_STRING, &gngeox_config.shaderpath},
-        {"transpackpath", 't', OPTTYPE_STRING, &gngeox_config.transpackpath},
-        {"nvrampath", 'v', OPTTYPE_STRING, &gngeox_config.transpackpath},
-        {"savespath", 'x', OPTTYPE_STRING, &gngeox_config.transpackpath},
+        {"nvrampath", 'v', OPTTYPE_STRING, &gngeox_config.nvrampath},
+        {"savespath", 'x', OPTTYPE_STRING, &gngeox_config.savespath},
         {"blitter", 'a', OPTTYPE_STRING, &gngeox_config.blitter},
         {"effect", 'e', OPTTYPE_STRING, &gngeox_config.effect},
         {"scale", 'h', OPTTYPE_UINT, &gngeox_config.scale},
@@ -195,6 +189,7 @@ SDL_bool neo_config_parse_options ( int *argc, char ***argv )
         {"showfps", 'p', OPTTYPE_BOOL, &gngeox_config.showfps},
         {"autoframeskip", 'k', OPTTYPE_BOOL, &gngeox_config.autoframeskip},
         {"vsync", 'y', OPTTYPE_BOOL, &gngeox_config.vsync},
+        {"transpack", 'd', OPTTYPE_BOOL, &gngeox_config.transpack},
         {"raster", 't', OPTTYPE_BOOL, &gngeox_config.raster},
         {"forcepal", 'u', OPTTYPE_BOOL, &gngeox_config.forcepal},
         {"country", 'n', OPTTYPE_UINT, &gngeox_config.country},
@@ -248,11 +243,6 @@ void neo_config_close ( void )
     if ( gngeox_config.shaderpath != NULL )
     {
         free ( gngeox_config.shaderpath );
-    }
-
-    if ( gngeox_config.transpackpath != NULL )
-    {
-        free ( gngeox_config.transpackpath );
     }
 
     if ( gngeox_config.nvrampath != NULL )

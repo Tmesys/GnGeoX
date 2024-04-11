@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date 16/10/2023
@@ -295,11 +295,10 @@ SDL_bool neo_controllers_init ( void )
                 break;
             default:
                 {
-                    zlog_error ( gngeox_config.loggingCat, "Unknown system type configuration value %d", gngeox_config.systemtype );
+                    zlog_warn ( gngeox_config.loggingCat, "Unknown system type configuration value %d", gngeox_config.systemtype );
                 }
                 break;
             }
-
 
             zlog_info ( gngeox_config.loggingCat, "Open Game controller number %d : %s", loop, SDL_GameControllerName ( players[index].controller ) );
             zlog_info ( gngeox_config.loggingCat, "-> Vendor %x - product %x", SDL_GameControllerGetVendor ( players[index].controller ), SDL_GameControllerGetProduct ( players[index].controller ) );

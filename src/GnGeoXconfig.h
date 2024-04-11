@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    09/10/2023
@@ -39,7 +39,6 @@ typedef struct
     char* rompath;
     char* biospath;
     char* shaderpath;
-    char* transpackpath;
     char* nvrampath;
     char* savespath;
     char* blitter;
@@ -52,6 +51,7 @@ typedef struct
     SDL_bool vsync;
     SDL_bool raster;
     SDL_bool forcepal;
+    SDL_bool transpack;
     Uint16 country;
     Uint16 systemtype;
     Uint16 samplerate;

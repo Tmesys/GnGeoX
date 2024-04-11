@@ -16,7 +16,6 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 				<Environment>
@@ -34,7 +33,6 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-Wall" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -45,6 +43,28 @@
 				</Environment>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-march=native" />
+			<Add option="-mtune=native" />
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Wshadow" />
+			<Add option="-Winit-self" />
+			<Add option="-Wredundant-decls" />
+			<Add option="-Wcast-align" />
+			<Add option="-Wundef" />
+			<Add option="-Wfloat-equal" />
+			<Add option="-Winline" />
+			<Add option="-Wunreachable-code" />
+			<Add option="-Wmissing-declarations" />
+			<Add option="-Wswitch-enum" />
+			<Add option="-Wswitch-default" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-m64" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="src/buf.c">
 			<Option compilerVar="CC" />
 		</Unit>

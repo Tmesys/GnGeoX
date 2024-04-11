@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    03/10/2023
@@ -15,10 +15,6 @@
 */
 #ifndef _GNGEOX_OPENGLBLITTER_H_
 #define _GNGEOX_OPENGLBLITTER_H_
-
-#define RGB24_PIXELS 1
-#define PIXEL_TYPE GL_BGRA
-#define PIXEL_SIZE GL_UNSIGNED_BYTE
 
 SDL_bool blitter_opengl_init ( void ) __attribute__ ( ( warn_unused_result ) );
 SDL_bool blitter_opengl_resize ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );

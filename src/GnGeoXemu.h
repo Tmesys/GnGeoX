@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version).
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X).
 *   \version 01.00
 *   \date    02/12/2022

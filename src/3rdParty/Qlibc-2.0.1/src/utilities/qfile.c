@@ -500,7 +500,7 @@ char * qfile_get_name ( const char * filepath )
 {
     char * filename = qfile_get_filename ( filepath );
     char * filename_radical = strdup ( filename );
-    sscanf(filename,"%[^.]",filename_radical);
+    sscanf ( filename, "%[^.]", filename_radical );
 
     return filename_radical;
 }

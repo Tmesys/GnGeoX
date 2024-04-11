@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    18/12/2022
@@ -32,9 +32,7 @@
 #include "GnGeoXmemory.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXhq2x.h"
-#include "GnGeoXhq3x.h"
-#include "GnGeoXlq2x.h"
-#include "GnGeoXlq3x.h"
+#include "GnGeoXxbr2x.h"
 #include "GnGeoXscale.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXsoftblitter.h"
@@ -83,12 +81,8 @@ struct_gngeoxscreen_effect_func effect[] =
     {"scale2x", "Scale2x effect", 2, 2, effect_scale2x_init, effect_scale2x_update}, // 3
     {"scale3x", "Scale3x effect", 3, 3, effect_scale3x_init, effect_scale3x_update}, // 3
     {"scale4x", "Scale4x effect", 4, 4, effect_scale4x_init, effect_scale4x_update}, // 3
-    {"scale2x50", "Scale2x effect with 50% scanline", 2, 2, effect_scale2x_init, effect_scale2x50_update}, // 4
-    {"scale2x75", "Scale2x effect with 75% scanline", 2, 2, effect_scale2x_init, effect_scale2x75_update}, // 5
     {"hq2x", "HQ2X effect. High quality", 2, 2, effect_hq2x_init, effect_hq2x_update},
-    {"lq2x", "LQ2X effect. Low quality", 2, 2, effect_lq2x_init, effect_lq2x_update},
-    {"hq3x", "HQ3X effect. High quality", 3, 3, effect_hq3x_init, effect_hq3x_update},
-    {"lq3x", "LQ3X effect. Low quality", 3, 3, effect_lq3x_init, effect_lq3x_update},
+    {"xbr2x", "XBR2X effect. High quality", 2, 2, effect_xbr2x_init, effect_xbr2x_update},
     {"doublex", "Double the x resolution (soft blitter only)", 2, 1, effect_scanline_init, effect_doublex_update}, //6
     {NULL, NULL, 0, 0, NULL, NULL}
 };
@@ -247,7 +241,7 @@ static SDL_bool init_screen ( void )
     }
 
     /* Interpolation surface */
-    blend = SDL_CreateRGBSurface ( 0, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
+    blend = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
     if ( blend == NULL )
     {
         zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
@@ -433,7 +427,7 @@ SDL_bool init_sdl ( void )
         return ( SDL_FALSE );
     }
 
-    sdl_surface_buffer = SDL_CreateRGBSurface ( 0, 352, 256, 32, 0, 0, 0, 0 );
+    sdl_surface_buffer = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 32, 0, 0, 0, 0 );
     if ( sdl_surface_buffer == NULL )
     {
         zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );

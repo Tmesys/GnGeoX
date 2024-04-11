@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    03/12/2022
@@ -1099,7 +1099,7 @@ void mem68k_store_pal_long ( Uint32 address, Uint32 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_video_byte ( Uint32 address, Uint8 data )
 {
-    /* @note (Tmesys#1#12/20/2022): Watchout garou write at 3c001f, 3c000f, 3c0015 / wjammers write, and fetch at 3c0000 .... */
+    /* @note (Tmesys#1#12/20/2022): Watchout garou / shocktr2 write at 3c001f, 3c000f, 3c0015 / wjammers write, and fetch at 3c0000 .... */
     zlog_warn ( gngeox_config.loggingCat, "Write at address %x, value = %x", address, data );
     mem68k_store_video_word ( address, QMAKEWORD16 ( data, data ) );
 }

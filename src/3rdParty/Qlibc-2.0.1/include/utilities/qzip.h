@@ -66,7 +66,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint16_t compression_method;
     uint16_t last_mod_file_time;
     uint16_t last_mod_file_date;
-    uint32_t crc32;
+        uint32_t crc32;
     uint32_t compressed_size;
     uint32_t uncompressed_size;
     uint16_t filename_length;
@@ -96,9 +96,9 @@ typedef struct qzip_entry_s qzip_entry_t;
 struct qzip_entry_s
 {
     qzip_cd_file_header_t file_header;
+    char file_name[FILENAME_MAX];
     FILE* file_io;
     z_streamp zlib_stream;
-    char file_name[FILENAME_MAX];
     int compressed_data_position;
     char* inbuf;
     int readed;
@@ -108,6 +108,7 @@ typedef struct qzip_file_s qzip_file_t;
 struct qzip_file_s
 {
     qzip_cd_end_record_t zip_end_record;
+    char file_name[FILENAME_MAX];
     FILE* file;
     char* map;
     int file_size;
@@ -117,9 +118,9 @@ extern qzip_entry_t* qzip_open_entry ( qzip_file_t*, const char*, uint32_t );
 extern bool qzip_seek_entry ( qzip_entry_t*, uint32_t );
 extern int32_t qzip_read_entry ( qzip_entry_t*, uint8_t*, uint32_t );
 extern uint8_t* qzip_load_entry ( qzip_file_t*, const char*, uint32_t* );
-extern void qzip_close_entry ( qzip_entry_t* );
+extern bool qzip_close_entry ( qzip_entry_t* );
 extern qzip_file_t* qzip_open_file ( const char* );
-extern void qzip_close_file ( qzip_file_t* );
+extern bool qzip_close_file ( qzip_file_t* );
 
 #ifdef __cplusplus
 }

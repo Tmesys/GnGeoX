@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    08/10/2023
@@ -35,10 +35,6 @@
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXdebug.h"
-#include "GnGeoXhq2x.h"
-#include "GnGeoXhq3x.h"
-#include "GnGeoXlq2x.h"
-#include "GnGeoXlq3x.h"
 #include "GnGeoXscale.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXtranspack.h"

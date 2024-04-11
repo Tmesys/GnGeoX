@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.40 (final beta)
 *   \date    04/12/2022
@@ -118,13 +118,15 @@ SDL_bool neo_transpack_init ( void )
     sqlite3_reset ( db_stmt );
 
     range_list_size = qlist_size ( transpack );
-
-    range_list = (struct_gngeoxtranspack_range *) qlist_toarray ( transpack, NULL );
-    if ( range_list == NULL )
+    if ( range_list_size > 0 )
     {
-        zlog_error ( gngeox_config.loggingCat, "Unable to create list" );
+        range_list = ( struct_gngeoxtranspack_range * ) qlist_toarray ( transpack, NULL );
+        if ( range_list == NULL )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Unable to create list" );
 
-        return ( SDL_FALSE );
+            return ( SDL_FALSE );
+        }
     }
 
     qlist_free ( transpack );
@@ -157,16 +159,19 @@ SDL_bool neo_transpack_init ( void )
 /* ******************************************************************************************************************/
 enum_gngeoxtranspack_tile_type neo_transpack_find ( Uint32 tile )
 {
-    for ( Uint32 loop = 0; loop < range_list_size ; loop++ )
+    if ( gngeox_config.transpack == SDL_TRUE )
     {
-        if ( range_list[loop].begin <= tile && tile <= range_list[loop].end )
+        for ( Uint32 loop = 0; loop < range_list_size ; loop++ )
         {
-            return ( range_list[loop].type );
-        }
+            if ( range_list[loop].begin <= tile && tile <= range_list[loop].end )
+            {
+                return ( range_list[loop].type );
+            }
 
-        if (  tile < range_list[loop].begin )
-        {
-            break;
+            if (  tile < range_list[loop].begin )
+            {
+                break;
+            }
         }
     }
 

@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    07/10/2023
@@ -36,10 +36,6 @@
 
 #include "GnGeoXscreen.h"
 #include "GnGeoXvideo.h"
-#include "GnGeoXhq2x.h"
-#include "GnGeoXhq3x.h"
-#include "GnGeoXlq2x.h"
-#include "GnGeoXlq3x.h"
 #include "GnGeoXscale.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXconfig.h"
@@ -722,13 +718,8 @@ SDL_bool blitter_glsl_init ( void )
     gngeox_config.res_y = current_window_height;
 
     // the surface that will be uploaded
-#ifndef RGB24_PIXELS
-    input_pixels = SDL_CreateRGBSurface ( SDL_SWSURFACE, screen_rect.w, screen_rect.h,
-                                          16, 0xF800, 0x7E0, 0x1F, 0 );
-#else
     input_pixels = SDL_CreateRGBSurface ( SDL_SWSURFACE, screen_rect.w, screen_rect.h,
                                           32, 0, 0, 0, 0 );
-#endif
 
     sdl_window = SDL_CreateWindow ( "GnGeo-X",
                                     SDL_WINDOWPOS_UNDEFINED,
@@ -851,13 +842,8 @@ void blitter_glsl_update ( void )
 
     glActiveTexture ( GL_TEXTURE0 );
     glBindTexture ( GL_TEXTURE_2D, input_tex );
-#ifndef RGB24_PIXELS
-    glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, screen_rect.w, screen_rect.h,
-                   0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, input_pixels->pixels );
-#else
     glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA, screen_rect.w, screen_rect.h,
                    0, GL_BGRA, GL_UNSIGNED_BYTE, input_pixels->pixels );
-#endif
 
     // render: TEX -> (pass1_prog) -> FBO -> ... -> (pass2_prog) -> OUTPUT
     for ( Sint32 i = 0; i < nb_passes; i++ )

@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.40 (final beta)
 *   \date    04/12/2022
@@ -48,7 +48,19 @@
 #include "GnGeoXemu.h"
 
 Sint32 neogeo_fix_bank_type = 0;
-
+char * region_name[] =
+{
+"audio cpu bios",
+"audio cpu cartridge",
+"audio cpu cartridge encrypted",
+"audio data 1",
+"audio data 2",
+"fixed layer bios",
+"fixed layer cartridge",
+"main cpu bios",
+"main cpu cartridge",
+"sprites",
+};
 /* ******************************************************************************************************************/
 /*!
 * \brief  Sets up misc patch.
@@ -264,10 +276,12 @@ static SDL_bool load_region ( qzip_file_t* pz_file, struct_gngeoxroms_game_roms*
 {
     qzip_entry_t* zip_entry = NULL;
 
+    zlog_info ( gngeox_config.loggingCat, "Loading file %s in (%s) region", drv->rom[index].filename->data, region_name[drv->rom[index].region] );
+
     zip_entry = qzip_open_entry ( pz_file, drv->rom[index].filename->data, drv->rom[index].crc );
     if ( zip_entry == NULL )
     {
-        zlog_error ( gngeox_config.loggingCat, "Unable to load file %s in region %d", drv->rom[index].filename->data, drv->rom[index].region );
+        zlog_error ( gngeox_config.loggingCat, "Unable to open entry %s", drv->rom[index].filename->data );
         return ( SDL_FALSE );
     }
 
@@ -286,20 +300,18 @@ static SDL_bool load_region ( qzip_file_t* pz_file, struct_gngeoxroms_game_roms*
 
         if ( qzip_seek_entry ( zip_entry, start_loading ) == false )
         {
-            zlog_error ( gngeox_config.loggingCat, "Unable to seek file %s in region %d", drv->rom[index].filename->data, drv->rom[index].region );
+            zlog_error ( gngeox_config.loggingCat, "Unable to seek entry %s", drv->rom[index].filename->data );
             qzip_close_entry ( zip_entry );
             return ( 1 );
         }
     }
-
-    zlog_info ( gngeox_config.loggingCat, "Trying to load file %s in region %d", drv->rom[index].filename->data, drv->rom[index].region );
 
     if ( drv->rom[index].region == REGION_SPRITES )
     {
         /* Special interleaved loading  */
         if ( read_data_i ( zip_entry, &rom->rom_region[REGION_SPRITES], drv->rom[index].dest, drv->rom[index].size ) == SDL_FALSE )
         {
-            zlog_error ( gngeox_config.loggingCat, "Unable to load file %s in region %d", drv->rom[index].filename->data, drv->rom[index].region );
+            zlog_error ( gngeox_config.loggingCat, "Unable to read file %s", drv->rom[index].filename->data );
             qzip_close_entry ( zip_entry );
             return ( SDL_FALSE );
         }
@@ -308,13 +320,13 @@ static SDL_bool load_region ( qzip_file_t* pz_file, struct_gngeoxroms_game_roms*
     {
         if ( read_data_p ( zip_entry, &rom->rom_region[drv->rom[index].region], drv->rom[index] ) == SDL_FALSE )
         {
-            zlog_error ( gngeox_config.loggingCat, "Unable to load file %s in region %d", drv->rom[index].filename->data, drv->rom[index].region );
+            zlog_error ( gngeox_config.loggingCat, "Unable to read file %s", drv->rom[index].filename->data );
             qzip_close_entry ( zip_entry );
             return ( SDL_FALSE );
         }
     }
 
-    zlog_info ( gngeox_config.loggingCat, "Load file %s in region %d: OK", drv->rom[index].filename->data, drv->rom[index].region );
+    zlog_info ( gngeox_config.loggingCat, "Loading completed uncompressed size %d bytes : OK ", zip_entry->file_header.uncompressed_size );
 
     qzip_close_entry ( zip_entry );
 

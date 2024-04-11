@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    03/12/2022
@@ -23,128 +23,147 @@
 #include "GnGeoXscreen.h"
 #include "GnGeoXinterp.h"
 
-/* ******************************************************************************************************************/
-/*!
-* \brief  Interpolate 16 521.
-*
-* \return Todo.
-*/
-/* ******************************************************************************************************************/
-Uint16 interp_16_521 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_1411 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 5 + INTERP_16_MASK_1 ( p2 ) * 2 + INTERP_16_MASK_1 ( p3 ) * 1 ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 5 + INTERP_16_MASK_2 ( p2 ) * 2 + INTERP_16_MASK_2 ( p3 ) * 1 ) / 8 );
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 14 + INTERP_32_MASK_1 ( p2 ) * 1 + INTERP_32_MASK_1 ( p3 ) * 1 ) / 16 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 14 + INTERP_32_MASK_2 ( p2 ) * 1 + INTERP_32_MASK_2 ( p3 ) * 1 ) / 16 );
 }
 
-Uint16 interp_16_332 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_11 ( Uint32 p1, Uint32 p2 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 3 + INTERP_16_MASK_1 ( p2 ) * 3 + INTERP_16_MASK_1 ( p3 ) * 2 ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 3 + INTERP_16_MASK_2 ( p2 ) * 3 + INTERP_16_MASK_2 ( p3 ) * 2 ) / 8 );
+#ifdef USE_INTERP_MASK_1
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) + INTERP_32_MASK_1 ( p2 ) ) / 2 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) + INTERP_32_MASK_2 ( p2 ) ) / 2 );
+#else
+    /*
+     * This function compute (a + b) / 2 for any rgb nibble, using the
+     * the formula (a + b) / 2 = ((a ^ b) >> 1) + (a & b).
+     * To extend this formula to a serie of packed nibbles the formula is
+     * implemented as (((v0 ^ v1) >> 1) & MASK) + (v0 & v1) where MASK
+     * is used to clear the high bit of all the packed nibbles.
+     */
+    return ( ( ( p1 ^ p2 ) >> 1 ) & INTERP_32_HNMASK ) + ( p1 & p2 );
+#endif
 }
 
-Uint16 interp_16_611 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_611 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 6 + INTERP_16_MASK_1 ( p2 ) + INTERP_16_MASK_1 ( p3 ) ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 6 + INTERP_16_MASK_2 ( p2 ) + INTERP_16_MASK_2 ( p3 ) ) / 8 );
+#ifdef USE_INTERP_MASK_3
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 6 + INTERP_32_MASK_1 ( p2 ) + INTERP_32_MASK_1 ( p3 ) ) / 8 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 6 + INTERP_32_MASK_2 ( p2 ) + INTERP_32_MASK_2 ( p3 ) ) / 8 );
+#else
+    return interp_32_11 ( p1, interp_32_11 ( p1, interp_32_11 ( p2, p3 ) ) );
+#endif
 }
 
-Uint16 interp_16_71 ( Uint16 p1, Uint16 p2 )
+Uint32 interp_32_332 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 7 + INTERP_16_MASK_1 ( p2 ) ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 7 + INTERP_16_MASK_2 ( p2 ) ) / 8 );
+#ifdef USE_INTERP_MASK_3
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 3 + INTERP_32_MASK_1 ( p2 ) * 3 + INTERP_32_MASK_1 ( p3 ) * 2 ) / 8 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 3 + INTERP_32_MASK_2 ( p2 ) * 3 + INTERP_32_MASK_2 ( p3 ) * 2 ) / 8 );
+#else
+    Uint32 t = interp_32_11 ( p1, p2 );
+    return interp_32_11 ( t, interp_32_11 ( p3, t ) );
+#endif
 }
 
-Uint16 interp_16_211 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_521 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 2 + INTERP_16_MASK_1 ( p2 ) + INTERP_16_MASK_1 ( p3 ) ) / 4 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 2 + INTERP_16_MASK_2 ( p2 ) + INTERP_16_MASK_2 ( p3 ) ) / 4 );
+#ifdef USE_INTERP_MASK_3
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 5 + INTERP_32_MASK_1 ( p2 ) * 2 + INTERP_32_MASK_1 ( p3 ) ) / 8 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 5 + INTERP_32_MASK_2 ( p2 ) * 2 + INTERP_32_MASK_2 ( p3 ) ) / 8 );
+#else
+    return interp_32_11 ( p1, interp_32_11 ( p2, interp_32_11 ( p1, p3 ) ) );
+#endif
 }
 
-Uint16 interp_16_772 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_31 ( Uint32 p1, Uint32 p2 )
 {
-    return INTERP_16_UNMASK_1 ( ( ( INTERP_16_MASK_1 ( p1 ) + INTERP_16_MASK_1 ( p2 ) ) * 7 + INTERP_16_MASK_1 ( p3 ) * 2 ) / 16 )
-           | INTERP_16_UNMASK_2 ( ( ( INTERP_16_MASK_2 ( p1 ) + INTERP_16_MASK_2 ( p2 ) ) * 7 + INTERP_16_MASK_2 ( p3 ) * 2 ) / 16 );
+#ifdef USE_INTERP_MASK_2
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 3 + INTERP_32_MASK_1 ( p2 ) ) / 4 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 3 + INTERP_32_MASK_2 ( p2 ) ) / 4 );
+#else
+    return interp_32_11 ( p1, interp_32_11 ( p1, p2 ) );
+#endif
 }
 
-Uint16 interp_16_11 ( Uint16 p1, Uint16 p2 )
+Uint32 interp_32_211 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) + INTERP_16_MASK_1 ( p2 ) ) / 2 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) + INTERP_16_MASK_2 ( p2 ) ) / 2 );
+#ifdef USE_INTERP_MASK_2
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 2 + INTERP_32_MASK_1 ( p2 ) + INTERP_32_MASK_1 ( p3 ) ) / 4 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 2 + INTERP_32_MASK_2 ( p2 ) + INTERP_32_MASK_2 ( p3 ) ) / 4 );
+#else
+    return interp_32_11 ( p1, interp_32_11 ( p2, p3 ) );
+#endif
 }
 
-Uint16 interp_16_31 ( Uint16 p1, Uint16 p2 )
+Uint32 interp_32_71 ( Uint32 p1, Uint32 p2 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 3 + INTERP_16_MASK_1 ( p2 ) ) / 4 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 3 + INTERP_16_MASK_2 ( p2 ) ) / 4 );
+    return INTERP_32_UNMASK_1 ( ( INTERP_32_MASK_1 ( p1 ) * 7 + INTERP_32_MASK_1 ( p2 ) * 1 ) / 16 )
+           | INTERP_32_UNMASK_2 ( ( INTERP_32_MASK_2 ( p1 ) * 7 + INTERP_32_MASK_2 ( p2 ) * 1 ) / 16 );
 }
 
-Uint16 interp_16_1411 ( Uint16 p1, Uint16 p2, Uint16 p3 )
+Uint32 interp_32_diff ( Uint32 p1, Uint32 p2 )
 {
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 14 + INTERP_16_MASK_1 ( p2 ) + INTERP_16_MASK_1 ( p3 ) ) / 16 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 14 + INTERP_16_MASK_2 ( p2 ) + INTERP_16_MASK_2 ( p3 ) ) / 16 );
-}
+    int r, g, b;
+    int y, u, v;
+    int i1, i2;
 
-Uint16 interp_16_431 ( Uint16 p1, Uint16 p2, Uint16 p3 )
-{
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 4 + INTERP_16_MASK_1 ( p2 ) * 3 + INTERP_16_MASK_1 ( p3 ) ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 4 + INTERP_16_MASK_2 ( p2 ) * 3 + INTERP_16_MASK_2 ( p3 ) ) / 8 );
-}
-
-Uint16 interp_16_53 ( Uint16 p1, Uint16 p2 )
-{
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 5 + INTERP_16_MASK_1 ( p2 ) * 3 ) / 8 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 5 + INTERP_16_MASK_2 ( p2 ) * 3 ) / 8 );
-}
-
-Uint16 interp_16_151 ( Uint16 p1, Uint16 p2 )
-{
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 15 + INTERP_16_MASK_1 ( p2 ) ) / 16 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 15 + INTERP_16_MASK_2 ( p2 ) ) / 16 );
-}
-
-Uint16 interp_16_97 ( Uint16 p1, Uint16 p2 )
-{
-    return INTERP_16_UNMASK_1 ( ( INTERP_16_MASK_1 ( p1 ) * 9 + INTERP_16_MASK_1 ( p2 ) * 7 ) / 16 )
-           | INTERP_16_UNMASK_2 ( ( INTERP_16_MASK_2 ( p1 ) * 9 + INTERP_16_MASK_2 ( p2 ) * 7 ) / 16 );
-}
-
-Sint32 interp_16_diff ( Uint16 p1, Uint16 p2 )
-{
-    Sint32 r = 0, g = 0, b = 0;
-    Sint32 y = 0, u = 0, v = 0;
-
-    if ( p1 == p2 )
-    {
-        /* @todo (Tmesys#1#12/17/2022): Use SDL types. */
+    /* assume standard rgb formats */
+    if ( ( p1 & 0xF8F8F8 ) == ( p2 & 0xF8F8F8 ) )
         return 0;
-    }
 
-    b = ( Sint32 ) ( ( p1 & 0x1F ) - ( p2 & 0x1F ) ) << 3;
-    g = ( Sint32 ) ( ( p1 & 0x7E0 ) - ( p2 & 0x7E0 ) ) >> 3;
-    r = ( Sint32 ) ( ( p1 & 0xF800 ) - ( p2 & 0xF800 ) ) >> 8;
+    i1 = p1;
+    i2 = p2;
 
+    b = ( ( i1 & 0xFF ) - ( i2 & 0xFF ) );
+    g = ( ( i1 & 0xFF00 ) - ( i2 & 0xFF00 ) ) >> 8;
+    r = ( ( i1 & 0xFF0000 ) - ( i2 & 0xFF0000 ) ) >> 16;
+
+    /* not exact, but fast */
     y = r + g + b;
-
-    if ( y < -INTERP_Y_LIMIT || y > INTERP_Y_LIMIT )
-    {
-        return 1;
-    }
-
     u = r - b;
-
-    if ( u < -INTERP_U_LIMIT || u > INTERP_U_LIMIT )
-    {
-        return 1;
-    }
-
     v = -r + 2 * g - b;
 
-    if ( v < -INTERP_V_LIMIT || v > INTERP_V_LIMIT )
-    {
+    if ( y < -INTERP_Y_LIMIT_S2 || y > INTERP_Y_LIMIT_S2 )
         return 1;
-    }
+
+    if ( u < -INTERP_U_LIMIT_S2 || u > INTERP_U_LIMIT_S2 )
+        return 1;
+
+    if ( v < -INTERP_V_LIMIT_S3 || v > INTERP_V_LIMIT_S3 )
+        return 1;
 
     return 0;
+}
+
+Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 )
+{
+    int r, g, b;
+    int y, u, v;
+    int i1, i2;
+
+    /* assume standard rgb formats */
+    if ( ( p1 & 0xF8F8F8 ) == ( p2 & 0xF8F8F8 ) )
+        return 0;
+
+    i1 = p1;
+    i2 = p2;
+
+    b = ( ( i1 & 0xFF ) - ( i2 & 0xFF ) );
+    g = ( ( i1 & 0xFF00 ) - ( i2 & 0xFF00 ) ) >> 8;
+    r = ( ( i1 & 0xFF0000 ) - ( i2 & 0xFF0000 ) ) >> 16;
+
+    if ( b < 0 ) b = -b;
+    if ( g < 0 ) g = -g;
+    if ( r < 0 ) r = -r;
+
+    return 3 * r + 4 * g + 2 * b;
+}
+
+Uint32 interp_32_dist3 ( Uint32 p1, Uint32 p2, Uint32 p3 )
+{
+    return interp_32_dist ( p1, p2 ) + interp_32_dist ( p2, p3 );
 }
 
 #ifdef _GNGEOX_INTERP_C_

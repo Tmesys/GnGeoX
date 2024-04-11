@@ -29,6 +29,7 @@
 					<Add library="Zlog_Debug_X86_64" />
 					<Add library="Sqlite_Debug_X86_64" />
 					<Add library="Bstrlib_Debug_X86_64" />
+					<Add library="Xbrlib_Debug_X86_64" />
 					<Add directory="3rdParty/Lib/Linux X86_64 Debug" />
 				</Linker>
 				<Environment>
@@ -89,6 +90,7 @@
 			<Add directory="3rdParty/Zlog-1.2.12/src" />
 			<Add directory="3rdParty/Qlibc-2.0.1/include" />
 			<Add directory="3rdParty/Kubazip-0.2.6/src" />
+			<Add directory="3rdParty/Xbrlib-1.0.0" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
@@ -99,6 +101,7 @@
 			<Add library="SDL2" />
 			<Add library="SDL2_ttf" />
 		</Linker>
+		<Unit filename="../README.md" />
 		<Unit filename="GnGeoXbios.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -139,22 +142,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="GnGeoXhq2x.h" />
-		<Unit filename="GnGeoXhq3x.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="GnGeoXhq3x.h" />
 		<Unit filename="GnGeoXinterp.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="GnGeoXinterp.h" />
-		<Unit filename="GnGeoXlq2x.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="GnGeoXlq2x.h" />
-		<Unit filename="GnGeoXlq3x.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="GnGeoXlq3x.h" />
 		<Unit filename="GnGeoXmain.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -236,6 +227,10 @@
 		</Unit>
 		<Unit filename="GnGeoXvideo.h" />
 		<Unit filename="GnGeoXvideotemplate.h" />
+		<Unit filename="GnGeoXxbr2x.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXxbr2x.h" />
 		<Unit filename="GnGeoXym2610.c">
 			<Option compilerVar="CC" />
 		</Unit>

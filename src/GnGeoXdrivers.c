@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 03.00
 *   \date    22/10/2023
@@ -102,7 +102,8 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
     bsql = bformat ( "SELECT region, \
                     size \
                     FROM rom_size \
-                    WHERE short_name_fk = '%s';"
+                    WHERE short_name_fk = '%s' \
+                    ORDER BY region ASC;"
                      , game_name );
 
     result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );
@@ -137,7 +138,8 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
                     size, \
                     crc \
                     FROM rom_files \
-                    WHERE short_name_fk = '%s';"
+                    WHERE short_name_fk = '%s' \
+                    ORDER BY region ASC;"
                      , game_name );
 
     result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );

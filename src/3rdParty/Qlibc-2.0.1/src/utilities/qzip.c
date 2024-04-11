@@ -176,7 +176,7 @@ static bool search_central_dir ( qzip_file_t* zip_file, qzip_entry_t *zip_entry 
  * @return ???
  *
  */
-qzip_entry_t* qzip_open_entry ( qzip_file_t* zip_file, const char* file_name, uint32_t file_crc )
+qzip_entry_t* qzip_open_entry ( qzip_file_t* zip_file, const char* filename, uint32_t file_crc )
 {
     qzip_entry_t* zip_entry = NULL;
 
@@ -187,7 +187,7 @@ qzip_entry_t* qzip_open_entry ( qzip_file_t* zip_file, const char* file_name, ui
         return NULL;
     }
 
-    strcpy ( zip_entry->file_name, file_name );
+    strcpy ( zip_entry->file_name, filename );
 
     if ( search_central_dir ( zip_file, zip_entry ) == true )
     {
@@ -238,6 +238,12 @@ bool qzip_seek_entry ( qzip_entry_t* zip_entry, uint32_t offset )
 {
     uint8_t* buf = NULL;
     uint32_t s = 4096, c = 0;
+
+    if ( zip_entry == NULL )
+    {
+        errno = EINVAL;
+        return false;
+    }
 
     buf = ( uint8_t* ) calloc ( 1, s );
     if ( buf == NULL )
@@ -334,8 +340,6 @@ int32_t qzip_read_entry ( qzip_entry_t* zip_entry, uint8_t* data, uint32_t size 
         zip_entry->readed += readed;
     }
 
-    //zip_entry->compressed_data_position = ftell ( zip_entry->file_io );
-
     return readed;
 }
 /**
@@ -390,12 +394,12 @@ uint8_t* qzip_load_entry ( qzip_file_t* zip_file, const char* filename, uint32_t
  * @return ???
  *
  */
-void qzip_close_entry ( qzip_entry_t* zip_entry )
+bool qzip_close_entry ( qzip_entry_t* zip_entry )
 {
     if ( zip_entry == NULL )
     {
         errno = EINVAL;
-        return;
+        return false;
     }
 
     if ( zip_entry->file_header.compression_method == 8 )
@@ -405,6 +409,8 @@ void qzip_close_entry ( qzip_entry_t* zip_entry )
     }
 
     free ( zip_entry );
+
+    return true;
 }
 /**
  * ????.
@@ -414,16 +420,21 @@ void qzip_close_entry ( qzip_entry_t* zip_entry )
  * @return ???
  *
  */
-qzip_file_t* qzip_open_file ( const char* file )
+qzip_file_t* qzip_open_file ( const char* filename )
 {
     qzip_file_t* zip_file = NULL;
     struct stat sb;
 
-#ifdef __linux__
-
-    if ( lstat ( file, &sb ) == -1 )
+    if ( filename == NULL )
     {
-        printf ( "Couldn't open %s\n", file );
+        errno = EINVAL;
+        return;
+    }
+
+#ifdef __linux__
+    if ( lstat ( filename, &sb ) == -1 )
+    {
+        printf ( "Couldn't open %s\n", filename );
         free ( zip_file );
         errno = EINVAL;
 
@@ -432,13 +443,12 @@ qzip_file_t* qzip_open_file ( const char* file )
 
     if ( !S_ISREG ( sb.st_mode ) && !S_ISLNK ( sb.st_mode ) )
     {
-        printf ( "%s is not a regular file\n", file );
+        printf ( "%s is not a regular file\n", filename );
         free ( zip_file );
         errno = EINVAL;
 
         return NULL;
     }
-
 #endif
 
     zip_file = calloc ( 1, sizeof ( qzip_file_t ) );
@@ -448,11 +458,14 @@ qzip_file_t* qzip_open_file ( const char* file )
         return NULL;
     }
 
-    zip_file->file = fopen ( file, "rb" );
+    strcpy ( zip_file->file_name, filename );
+
+    zip_file->file = fopen ( zip_file->file_name, "rb" );
     if ( zip_file->file == NULL )
     {
-        printf ( "Ho no! Couldn't open %s\n", file );
+        printf ( "Could not open file %s\n", zip_file->file_name );
         free ( zip_file );
+        errno = EIO;
         return NULL;
     }
 
@@ -460,10 +473,17 @@ qzip_file_t* qzip_open_file ( const char* file )
     zip_file->file_size = ftell ( zip_file->file );
 
     zip_file->map = mmap ( 0, zip_file->file_size, PROT_READ, MAP_SHARED, fileno ( zip_file->file ), 0 );
+    if ( zip_file->map == MAP_FAILED )
+    {
+        printf ( "Could not map file %s\n", zip_file->file_name );
+        free ( zip_file );
+        errno = EIO;
+        return NULL;
+    }
 
     if ( search_eof_central_dir ( zip_file ) == false )
     {
-        printf ( "Strange %s\n", file );
+        printf ( "Strange %s\n", zip_file->file_name );
         fclose ( zip_file->file );
         free ( zip_file );
         return NULL;
@@ -479,11 +499,18 @@ qzip_file_t* qzip_open_file ( const char* file )
  * @return ???
  *
  */
-void qzip_close_file ( qzip_file_t* zip_file )
+bool qzip_close_file ( qzip_file_t* zip_file )
 {
-    fseek ( zip_file->file, 0, SEEK_END );
-    int32_t size = ftell ( zip_file->file );
-    munmap ( zip_file->map, size );
+    if ( munmap ( zip_file->map, zip_file->file_size ) == -1 )
+    {
+        printf ( "Could not unmap file %s\n", zip_file->file_name );
+        free ( zip_file );
+        errno = EIO;
+        return false;
+    }
+
     fclose ( zip_file->file );
     free ( zip_file );
+
+    return true;
 }

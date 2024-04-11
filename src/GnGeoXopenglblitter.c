@@ -5,7 +5,7 @@
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
-*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/HQ3X effect).
+*   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
 *   \date    03/10/2023
@@ -25,10 +25,6 @@
 
 #include "GnGeoXscreen.h"
 #include "GnGeoXvideo.h"
-#include "GnGeoXhq2x.h"
-#include "GnGeoXhq3x.h"
-#include "GnGeoXlq2x.h"
-#include "GnGeoXlq3x.h"
 #include "GnGeoXscale.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXconfig.h"
@@ -68,8 +64,7 @@ SDL_bool blitter_opengl_init ( void )
         return ( SDL_FALSE );
     }
 
-    sdl_flags = ( gngeox_config.fullscreen ? SDL_WINDOW_FULLSCREEN : 0 ) | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-
+    /* @fixme (Tmesys#1#11/04/2024): This control should be handled in configuration parsing i think. */
     if ( ( effect[neffect].x_ratio != 2 || effect[neffect].y_ratio != 2 ) &&
             ( effect[neffect].x_ratio != 1 || effect[neffect].y_ratio != 1 ) )
     {
@@ -98,6 +93,8 @@ SDL_bool blitter_opengl_init ( void )
     */
     gngeox_config.res_x = width;
     gngeox_config.res_y = height;
+
+    sdl_flags = ( gngeox_config.fullscreen ? SDL_WINDOW_FULLSCREEN : 0 ) | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_MAXIMIZED;
 
     sdl_window = SDL_CreateWindow ( "GnGeo-X",
                                     SDL_WINDOWPOS_UNDEFINED,
@@ -153,11 +150,8 @@ SDL_bool blitter_opengl_init ( void )
 
                 c = (240.0/256.0);
         */
-#ifndef RGB24_PIXELS
-        tex_opengl = SDL_CreateRGBSurface ( SDL_SWSURFACE, 512, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
-#else
+
         tex_opengl = SDL_CreateRGBSurface ( SDL_SWSURFACE, 512, 256, 32, 0, 0, 0, 0 );
-#endif
     }
     else
     {
@@ -166,37 +160,19 @@ SDL_bool blitter_opengl_init ( void )
         b = ( ( 512.0 / ( float ) visible_area.w ) - 1.0f ) * effect[neffect].x_ratio / 2.0;
         c = ( ( ( float ) visible_area.h / 256.0 ) ) * effect[neffect].y_ratio / 2.0;
         d = ( ( ( float ) ( ( visible_area.w << 1 ) - 512 ) / 256.0 ) ) * effect[neffect].y_ratio / 2.0;
-#ifndef RGB24_PIXELS
-        sdl_surface_screen = SDL_CreateRGBSurface ( SDL_SWSURFACE, visible_area.w << 1,  /*visible_area.h<<1*/512, 16, 0xF800, 0x7E0, 0x1F, 0 );
+        sdl_surface_screen = SDL_CreateRGBSurface ( SDL_SWSURFACE, ( visible_area.w * 2 ), ( visible_area.h * 2 ) /*512*/, 32, 0, 0, 0, 0 );
         if ( sdl_surface_screen == NULL )
         {
             zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
             return ( SDL_FALSE );
         }
-#else
-        sdl_surface_screen = SDL_CreateRGBSurface ( SDL_SWSURFACE, visible_area.w << 1,  /*visible_area.h<<1*/512, 32, 0, 0, 0, 0 );
-        if ( sdl_surface_screen == NULL )
-        {
-            zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
-            return ( SDL_FALSE );
-        }
-#endif
 
-#ifndef RGB24_PIXELS
-        tex_opengl = SDL_CreateRGBSurface ( SDL_SWSURFACE, 1024, 512, 16, 0xF800, 0x7E0, 0x1F, 0 );
-        if ( tex_opengl == NULL )
-        {
-            zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
-            return ( SDL_FALSE );
-        }
-#else
         tex_opengl = SDL_CreateRGBSurface ( SDL_SWSURFACE, 1024, 512, 32, 0, 0, 0, 0 );
         if ( tex_opengl == NULL )
         {
             zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
             return ( SDL_FALSE );
         }
-#endif
 
         if ( visible_area.w == 320 )
         {
@@ -242,7 +218,7 @@ void blitter_opengl_update ( void )
     if ( neffect == 0 )
     {
         SDL_BlitSurface ( sdl_surface_buffer, &visible_area, tex_opengl, NULL );
-        glTexImage2D ( GL_TEXTURE_2D, 0, 3, 512, 256, 0, PIXEL_TYPE, PIXEL_SIZE, tex_opengl->pixels );
+        glTexImage2D ( GL_TEXTURE_2D, 0, 3, 512, 256, 0, GL_BGRA, GL_UNSIGNED_BYTE, tex_opengl->pixels );
 
         glBegin ( GL_QUADS );
         glTexCoord2f ( 0.0f, 0.0f );
@@ -261,7 +237,7 @@ void blitter_opengl_update ( void )
     else
     {
         SDL_BlitSurface ( sdl_surface_screen, &glrectef, tex_opengl, NULL );
-        glTexImage2D ( GL_TEXTURE_2D, 0, 3, 1024, 512, 0, PIXEL_TYPE, PIXEL_SIZE, tex_opengl->pixels );
+        glTexImage2D ( GL_TEXTURE_2D, 0, 3, 1024, 512, 0, GL_BGRA, GL_UNSIGNED_BYTE, tex_opengl->pixels );
 
         glBegin ( GL_QUADS );
         glTexCoord2f ( 0.0f, 0.0f );

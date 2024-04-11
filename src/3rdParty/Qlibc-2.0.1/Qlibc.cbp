@@ -44,6 +44,8 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-march=native" />
+			<Add option="-mtune=native" />
 			<Add option="-Wshadow" />
 			<Add option="-Winit-self" />
 			<Add option="-Wredundant-decls" />
