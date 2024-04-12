@@ -147,7 +147,7 @@ SDL_bool allocate_region ( struct_gngeoxroms_rom_region* rom_region, Uint32 rom_
 /* ******************************************************************************************************************/
 static void free_region ( struct_gngeoxroms_rom_region* rom_region )
 {
-    if ( rom_region->p )
+    if ( rom_region->p != NULL )
     {
         qalloc_delete ( rom_region->p );
     }
@@ -894,8 +894,11 @@ SDL_bool init_game ( char* rom_name )
 
     open_nvram ( );
     open_memcard ( );
-    sdl_set_title ( );
+
+    neo_screen_windowtitle_set ( );
+
     neo_sys_init( );
+
     setup_misc_patch ( );
 
     fix_usage = neogeo_memory.fix_board_usage;

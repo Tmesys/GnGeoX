@@ -58,6 +58,9 @@ void effect_xbr2x_update ( void )
     src3 = ( Uint32* ) src2 + 352;
     src4 = ( Uint32* ) src3 + 352;
 
+    SDL_LockSurface ( sdl_surface_buffer );
+    SDL_LockSurface ( sdl_surface_screen );
+
     while ( height-- )
     {
 
@@ -72,6 +75,9 @@ void effect_xbr2x_update ( void )
         src3 += 352;
         src4 += 352;
     }
+
+    SDL_UnlockSurface ( sdl_surface_buffer );
+    SDL_UnlockSurface ( sdl_surface_screen );
 }
 /* ******************************************************************************************************************/
 /*!

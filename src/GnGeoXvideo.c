@@ -809,7 +809,7 @@ void draw_screen ( void )
 
     neo_frame_skip_display();
 
-    screen_update();
+    neo_screen_update();
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1054,7 +1054,7 @@ void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
 
         neo_frame_skip_display();
 
-        screen_update();
+        neo_screen_update();
     }
 }
 /* ******************************************************************************************************************/

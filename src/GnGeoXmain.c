@@ -78,7 +78,7 @@ Sint32 main ( Sint32 argc, char* argv[] )
         exit ( EXIT_FAILURE );
     }
 
-    if ( init_sdl() == SDL_FALSE )
+    if ( neo_screen_init() == SDL_FALSE )
     {
         exit ( EXIT_FAILURE );
     }

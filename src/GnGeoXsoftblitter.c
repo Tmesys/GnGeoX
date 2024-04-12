@@ -27,7 +27,9 @@
 #include "GnGeoXscanline.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXsoftblitter.h"
+#include "GnGeoXeffects.h"
 
+SDL_Texture* sdl_texture = NULL;
 static SDL_Rect screen_rect =   { 0,  0, 304, 224};
 
 /* ******************************************************************************************************************/
@@ -46,7 +48,8 @@ SDL_bool blitter_soft_init ( void )
 
     if ( sdl_window != NULL )
     {
-        return ( SDL_TRUE );
+        zlog_error ( gngeox_config.loggingCat, "SDL window already initialized" );
+        return ( SDL_FALSE );
     }
 
     if ( gngeox_config.vsync )
@@ -64,15 +67,10 @@ SDL_bool blitter_soft_init ( void )
     screen_rect.w = visible_area.w;
     screen_rect.h = visible_area.h;
 
-    if ( neffect != 0 )
-    {
-        gngeox_config.scale = 1;
-    }
-
     if ( gngeox_config.scale == 1 )
     {
-        width *= effect[neffect].x_ratio;
-        height *= effect[neffect].y_ratio;
+        width *= effect[gngeox_config.effect_index].x_ratio;
+        height *= effect[gngeox_config.effect_index].y_ratio;
     }
     else
     {
@@ -100,7 +98,6 @@ SDL_bool blitter_soft_init ( void )
                                       SDL_TEXTUREACCESS_STREAMING,
                                       width, height );
     sdl_surface_screen = SDL_CreateRGBSurface ( SDL_SWSURFACE, width, height, 32, 0, 0, 0, 0 );
-
     if ( !sdl_surface_screen )
     {
         return ( SDL_FALSE );
@@ -192,7 +189,7 @@ static void update_triple ( void )
 /* ******************************************************************************************************************/
 void blitter_soft_update()
 {
-    if ( neffect == 0 )
+    if ( gngeox_config.effect_index == 0 )
     {
         switch ( gngeox_config.scale )
         {
@@ -229,7 +226,11 @@ void blitter_soft_update()
 /* ******************************************************************************************************************/
 void blitter_soft_close()
 {
-
+    if ( sdl_texture != NULL )
+    {
+        SDL_DestroyTexture ( sdl_texture );
+        sdl_texture = NULL;
+    }
 }
 /* ******************************************************************************************************************/
 /*!

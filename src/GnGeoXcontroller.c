@@ -226,11 +226,45 @@ static void update_controllers_coin_select ( enum_gngeoxcontroller_player player
 *
 */
 /* ******************************************************************************************************************/
+static SDL_bool neo_controllers_open ( Uint32 player_index, SDL_JoystickID controller_id )
+{
+    char guid_string[100];
+    char * mapping_string = NULL;
+
+    players[player_index].controller = SDL_GameControllerOpen ( controller_id );
+    if ( players[player_index].controller == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Open Game controller number %d, %s", controller_id, SDL_GetError() );
+        return ( SDL_FALSE );
+    }
+
+    players[player_index].controller_id = SDL_JoystickInstanceID ( SDL_GameControllerGetJoystick ( players[player_index].controller ) );
+    players[player_index].controller_guid = SDL_JoystickGetDeviceGUID ( controller_id );
+    SDL_JoystickGetGUIDString ( players[player_index].controller_guid, &guid_string, 100 );
+
+    mapping_string = SDL_GameControllerMappingForGUID ( players[player_index].controller_guid );
+    if ( mapping_string == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Mapping not found for Game controller number %d, %s", controller_id, SDL_GetError() );
+        return ( SDL_FALSE );
+    }
+
+    zlog_info ( gngeox_config.loggingCat, "Game controller number %d : %s", controller_id, SDL_GameControllerName ( players[player_index].controller ) );
+    zlog_info ( gngeox_config.loggingCat, "-> Vendor %x - product %x", SDL_GameControllerGetVendor ( players[player_index].controller ), SDL_GameControllerGetProduct ( players[player_index].controller ) );
+    zlog_info ( gngeox_config.loggingCat, "-> Guid : %s", guid_string );
+    zlog_info ( gngeox_config.loggingCat, "-> Mapping : %s", mapping_string );
+
+    SDL_free ( mapping_string );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Initializes event system.
+*
+*/
+/* ******************************************************************************************************************/
 SDL_bool neo_controllers_init ( void )
 {
     Uint32 index = 0;
-    char guid_string[100];
-    char * mapping_string = NULL;
 
     if ( SDL_GameControllerAddMappingsFromFile ( "./gamecontrollerdb.txt" ) < 0 )
     {
@@ -247,34 +281,20 @@ SDL_bool neo_controllers_init ( void )
     {
         if ( SDL_IsGameController ( loop ) )
         {
-            players[index].controller = SDL_GameControllerOpen ( loop );
-            if ( players[index].controller == NULL )
+            if ( neo_controllers_open ( index, loop ) == SDL_FALSE )
             {
-                zlog_error ( gngeox_config.loggingCat, "Open Game controller number %d, %s", loop, SDL_GetError() );
-                return ( SDL_FALSE );
-            }
-
-            players[index].controller_id = SDL_JoystickInstanceID ( SDL_GameControllerGetJoystick ( players[index].controller ) );
-            players[index].controller_guid = SDL_JoystickGetDeviceGUID ( loop );
-            SDL_JoystickGetGUIDString ( players[index].controller_guid, &guid_string, 100 );
-
-            mapping_string = SDL_GameControllerMappingForGUID ( players[index].controller_guid );
-            if ( mapping_string == NULL )
-            {
-                zlog_error ( gngeox_config.loggingCat, "Mapping not found for Game controller number %d, %s", loop, SDL_GetError() );
                 return ( SDL_FALSE );
             }
 
             /* Initial values */
             neogeo_memory.p1cnt = 0xFF;
             neogeo_memory.p2cnt = 0xFF;
-            //neogeo_memory.status_a = 0x7;
+
             neogeo_memory.status_a = 0;
             QBIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P1 );
             QBIT_SET ( neogeo_memory.status_a, STATUS_A_COIN_P2 );
             QBIT_SET ( neogeo_memory.status_a, STATUS_A_SERVICE_P2 );
 
-            //neogeo_memory.status_b = 0x8F;
             neogeo_memory.status_b = 0;
             QBIT_SET ( neogeo_memory.status_b, STATUS_B_START_P1 );
             QBIT_SET ( neogeo_memory.status_b, STATUS_B_SELECT_P1 );
@@ -300,13 +320,6 @@ SDL_bool neo_controllers_init ( void )
                 break;
             }
 
-            zlog_info ( gngeox_config.loggingCat, "Open Game controller number %d : %s", loop, SDL_GameControllerName ( players[index].controller ) );
-            zlog_info ( gngeox_config.loggingCat, "-> Vendor %x - product %x", SDL_GameControllerGetVendor ( players[index].controller ), SDL_GameControllerGetProduct ( players[index].controller ) );
-            zlog_info ( gngeox_config.loggingCat, "-> Guid : %s", guid_string );
-            zlog_info ( gngeox_config.loggingCat, "-> Mapping : %s", mapping_string );
-
-            SDL_free ( mapping_string );
-
             index++;
             if ( index >= CONTROLLER_PLAYER_MAX )
             {
@@ -322,9 +335,79 @@ SDL_bool neo_controllers_init ( void )
 *
 */
 /* ******************************************************************************************************************/
-void neo_controllers_dispatch ( enum_gngeoxcontroller_button_state state, SDL_JoystickID controller_id, Uint8 button )
+SDL_bool neo_controllers_plug ( SDL_JoystickID controller_id )
 {
-    for ( int loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
+    Sint32 empty_slot = -1;
+
+    if ( SDL_IsGameController ( controller_id ) == SDL_FALSE )
+    {
+        return ( SDL_TRUE );
+    }
+
+    /* Check if already connected */
+    for ( Uint32 loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
+    {
+        if ( players[loop].controller_id == controller_id )
+        {
+            zlog_warn ( gngeox_config.loggingCat, "Game controller already connected %d", controller_id );
+            return ( SDL_TRUE );
+        }
+    }
+
+    /* find an empty player slot */
+    for ( Uint32 loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
+    {
+        if ( players[loop].controller_id == -1 )
+        {
+            empty_slot = loop;
+            break;
+        }
+    }
+
+    if ( empty_slot == -1 )
+    {
+        zlog_warn ( gngeox_config.loggingCat, "All game controller slots connected" );
+        return ( SDL_TRUE );
+    }
+
+    if ( neo_controllers_open ( empty_slot, controller_id ) == SDL_FALSE )
+    {
+        return ( SDL_FALSE );
+    }
+
+    return ( SDL_TRUE );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Initializes event system.
+*
+*/
+/* ******************************************************************************************************************/
+SDL_bool neo_controllers_unplug ( SDL_JoystickID controller_id )
+{
+    /* Check if already connected */
+    for ( Uint32 loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
+    {
+        if ( players[loop].controller_id == controller_id )
+        {
+            SDL_GameControllerClose ( players[loop].controller );
+            players[loop].controller_id = -1;
+            SDL_zero ( players[loop].controller_guid );
+            return ( SDL_TRUE );
+        }
+    }
+
+    return ( SDL_TRUE );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Initializes event system.
+*
+*/
+/* ******************************************************************************************************************/
+void neo_controllers_update ( enum_gngeoxcontroller_button_state state, SDL_JoystickID controller_id, Uint8 button )
+{
+    for ( Uint32 loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
     {
         if ( players[loop].controller_id == controller_id )
         {
@@ -402,6 +485,7 @@ void neo_controllers_close ( void )
         if ( players[loop].controller != NULL )
         {
             SDL_GameControllerClose ( players[loop].controller );
+            players[loop].controller_id = -1;
         }
     }
 }

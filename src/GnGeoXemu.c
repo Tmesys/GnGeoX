@@ -146,12 +146,12 @@ void neo_sys_update_events ( void )
         {
         case ( SDL_CONTROLLERBUTTONDOWN ) :
             {
-                neo_controllers_dispatch ( CONTROLLER_STATE_DOWN, event.cdevice.which, event.cbutton.button );
+                neo_controllers_update ( CONTROLLER_STATE_DOWN, event.cdevice.which, event.cbutton.button );
             }
             break;
         case ( SDL_CONTROLLERBUTTONUP ) :
             {
-                neo_controllers_dispatch ( CONTROLLER_STATE_UP, event.cdevice.which, event.cbutton.button );
+                neo_controllers_update ( CONTROLLER_STATE_UP, event.cdevice.which, event.cbutton.button );
             }
             break;
         case ( SDL_WINDOWEVENT ) :
@@ -163,7 +163,7 @@ void neo_sys_update_events ( void )
                     {
                         gngeox_config.res_x = event.window.data1;
                         gngeox_config.res_y = event.window.data2;
-                        screen_resize ( event.window.data1, event.window.data2 );
+                        neo_screen_resize ( event.window.data1, event.window.data2 );
                     }
                     break;
                 case ( SDL_WINDOWEVENT_CLOSE ) :
@@ -177,11 +177,13 @@ void neo_sys_update_events ( void )
         case ( SDL_JOYDEVICEADDED ) :
             {
                 zlog_info ( gngeox_config.loggingCat, "Joy plugged %d", event.jdevice.which );
+                neo_controllers_plug ( event.cdevice.which );
             }
             break;
         case ( SDL_JOYDEVICEREMOVED ) :
             {
                 zlog_info ( gngeox_config.loggingCat, "Joy Unplugged %d", event.jdevice.which );
+                neo_controllers_unplug ( event.cdevice.which );
             }
             break;
         case ( SDL_AUDIODEVICEADDED ) :

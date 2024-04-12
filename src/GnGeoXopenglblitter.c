@@ -29,6 +29,7 @@
 #include "GnGeoXscanline.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXopenglblitter.h"
+#include "GnGeoXeffects.h"
 
 static float a = 0;
 static float b = 0;
@@ -65,32 +66,19 @@ SDL_bool blitter_opengl_init ( void )
     }
 
     /* @fixme (Tmesys#1#11/04/2024): This control should be handled in configuration parsing i think. */
-    if ( ( effect[neffect].x_ratio != 2 || effect[neffect].y_ratio != 2 ) &&
-            ( effect[neffect].x_ratio != 1 || effect[neffect].y_ratio != 1 ) )
-    {
-        zlog_error ( gngeox_config.loggingCat, "Opengl support only effect with a ratio of 2x2 or 1x1" );
-        return ( SDL_FALSE );
-    }
-
     /*
       if (gngeox_config.res_x==304 && gngeox_config.res_y==224) {
     */
     if ( gngeox_config.scale < 2 )
     {
-        width *= effect[neffect].x_ratio;
-        height *= effect[neffect].y_ratio;
+        width *= effect[gngeox_config.effect_index].x_ratio;
+        height *= effect[gngeox_config.effect_index].y_ratio;
     }
 
     width *= gngeox_config.scale;
     height *= gngeox_config.scale;
     zlog_info ( gngeox_config.loggingCat, "Width : %d / Height : %d / Scale : %d / Visible width : %d / Visible height : %d", width, height, gngeox_config.scale, visible_area.w, visible_area.h );
-    /*
-        } else {
-            width = gngeox_config.res_x;
-            height=gngeox_config.res_y;
-        }
 
-    */
     gngeox_config.res_x = width;
     gngeox_config.res_y = height;
 
@@ -141,7 +129,7 @@ SDL_bool blitter_opengl_init ( void )
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-    if ( neffect == 0 )
+    if ( gngeox_config.effect_index == 0 )
     {
         /* Texture limits */
         /*
@@ -156,10 +144,11 @@ SDL_bool blitter_opengl_init ( void )
     else
     {
         /* Texture limits */
-        a = ( ( 256.0 / ( float ) visible_area.w ) - 1.0f ) * effect[neffect].x_ratio / 2.0;
-        b = ( ( 512.0 / ( float ) visible_area.w ) - 1.0f ) * effect[neffect].x_ratio / 2.0;
-        c = ( ( ( float ) visible_area.h / 256.0 ) ) * effect[neffect].y_ratio / 2.0;
-        d = ( ( ( float ) ( ( visible_area.w << 1 ) - 512 ) / 256.0 ) ) * effect[neffect].y_ratio / 2.0;
+        a = ( ( 256.0 / ( float ) visible_area.w ) - 1.0f ) * effect[gngeox_config.effect_index].x_ratio / 2.0;
+        b = ( ( 512.0 / ( float ) visible_area.w ) - 1.0f ) * effect[gngeox_config.effect_index].x_ratio / 2.0;
+        c = ( ( ( float ) visible_area.h / 256.0 ) ) * effect[gngeox_config.effect_index].y_ratio / 2.0;
+        d = ( ( ( float ) ( ( visible_area.w << 1 ) - 512 ) / 256.0 ) ) * effect[gngeox_config.effect_index].y_ratio / 2.0;
+
         sdl_surface_screen = SDL_CreateRGBSurface ( SDL_SWSURFACE, ( visible_area.w * 2 ), ( visible_area.h * 2 ) /*512*/, 32, 0, 0, 0, 0 );
         if ( sdl_surface_screen == NULL )
         {
@@ -215,7 +204,7 @@ SDL_bool blitter_opengl_resize ( Sint32 w, Sint32 h )
 /* ******************************************************************************************************************/
 void blitter_opengl_update ( void )
 {
-    if ( neffect == 0 )
+    if ( gngeox_config.effect_index == 0 )
     {
         SDL_BlitSurface ( sdl_surface_buffer, &visible_area, tex_opengl, NULL );
         glTexImage2D ( GL_TEXTURE_2D, 0, 3, 512, 256, 0, GL_BGRA, GL_UNSIGNED_BYTE, tex_opengl->pixels );

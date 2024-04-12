@@ -16,14 +16,6 @@
 #ifndef _GNGEOX_SCREEN_H_
 #define _GNGEOX_SCREEN_H_
 
-typedef struct
-{
-    const char* name;
-    const char* desc;
-    Uint8 x_ratio, y_ratio;
-    SDL_bool ( *init ) ();
-    void ( *update ) ();
-} struct_gngeoxscreen_effect_func;
 
 typedef struct
 {
@@ -39,34 +31,28 @@ typedef struct
 #ifndef _GNGEOX_SCREEN_C_
 extern SDL_Surface* sdl_surface_screen;
 extern SDL_Surface* sdl_surface_buffer;
-extern SDL_Texture* sdl_texture;
+extern SDL_Surface* sdl_surface_blend;
 extern SDL_Window* sdl_window;
 extern SDL_Renderer* sdl_renderer;
 extern SDL_Rect visible_area;
 extern TTF_Font* sys_font;
 extern Sint32 yscreenpadding;
-extern Uint8 nblitter;
-extern Uint8 neffect;
 extern Uint8 scale;
 extern Sint32 last_line;
-extern struct_gngeoxscreen_effect_func effect[];
 #else
 static SDL_bool effect_none_init ( void ) __attribute__ ( ( warn_unused_result ) );
-static SDL_bool init_screen ( void ) __attribute__ ( ( warn_unused_result ) );
-static void do_interpolation ( void );
 #endif // _GNGEOX_SCREEN_C_
 
 void print_blitter_list ( void );
-void print_effect_list ( void );
-Uint8 get_effect_by_name ( const char* ) __attribute__ ( ( warn_unused_result ) );
 Uint8 get_blitter_by_name ( const char* ) __attribute__ ( ( warn_unused_result ) );
-SDL_bool screen_resize ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
-void screen_update ( void );
-void screen_close ( void );
-void screen_fullscreen ( void );
-void sdl_set_title ( void );
-SDL_bool init_sdl ( void );
+SDL_bool neo_screen_init ( void ) __attribute__ ( ( warn_unused_result ) );
+SDL_bool neo_screen_resize ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
+void neo_screen_update ( void );
+void neo_screen_close ( void );
+void neo_screen_fullscreen ( void );
+void neo_screen_windowtitle_set ( void );
+SDL_bool neo_screen_init ( void );
 void update_screen ( void );
-void take_screenshot ( void );
+void neo_screen_capture ( void );
 
 #endif

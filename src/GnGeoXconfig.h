@@ -63,6 +63,8 @@ typedef struct
     Uint16 res_x;
     Uint16 res_y;
     Uint8 extra_xor;
+    Uint8 blitter_index;
+    Uint8 effect_index;
 } struct_gngeoxconfig_params;
 
 #ifndef _GNGEOX_CONFIG_C_

@@ -25,31 +25,28 @@
 #include <SDL2/SDL_ttf.h>
 #include "zlog.h"
 #include "qlibc.h"
+#include "bstrlib.h"
 
 #include "GnGeoXscreen.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXconfig.h"
-#include "GnGeoXhq2x.h"
-#include "GnGeoXxbr2x.h"
-#include "GnGeoXscale.h"
-#include "GnGeoXscanline.h"
 #include "GnGeoXsoftblitter.h"
 #include "GnGeoXopenglblitter.h"
 #include "GnGeoXframeskip.h"
 #include "GnGeoXpd4990a.h"
+#include "GnGeoXeffects.h"
 
 SDL_Surface* sdl_surface_screen = NULL;
 SDL_Surface* sdl_surface_buffer = NULL;
-SDL_Texture* sdl_texture = NULL;
+/* Interpolation */
+SDL_Surface* sdl_surface_blend = NULL;
 SDL_Renderer* sdl_renderer = NULL;
 SDL_Window* sdl_window = NULL;
 SDL_Rect visible_area;
 TTF_Font* sys_font = NULL;
 Sint32 yscreenpadding = 0;
-Uint8 nblitter = 0;
-Uint8 neffect = 0;
 Sint32 last_line = 0;
 
 static blitter_func blitter[] =
@@ -73,22 +70,8 @@ static blitter_func blitter[] =
     {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
 
-struct_gngeoxscreen_effect_func effect[] =
-{
-    {"none", "No effect", 1, 1, effect_none_init, NULL},
-    {"scanline", "Scanline effect", 2, 2, effect_scanline_init, effect_scanline_update}, // 1
-    {"scanline50", "Scanline 50% effect", 2, 2, effect_scanline_init, effect_scanline50_update}, // 2
-    {"scale2x", "Scale2x effect", 2, 2, effect_scale2x_init, effect_scale2x_update}, // 3
-    {"scale3x", "Scale3x effect", 3, 3, effect_scale3x_init, effect_scale3x_update}, // 3
-    {"scale4x", "Scale4x effect", 4, 4, effect_scale4x_init, effect_scale4x_update}, // 3
-    {"hq2x", "HQ2X effect. High quality", 2, 2, effect_hq2x_init, effect_hq2x_update},
-    {"xbr2x", "XBR2X effect. High quality", 2, 2, effect_xbr2x_init, effect_xbr2x_update},
-    {"doublex", "Double the x resolution (soft blitter only)", 2, 1, effect_scanline_init, effect_doublex_update}, //6
-    {NULL, NULL, 0, 0, NULL, NULL}
-};
 
-/* Interpolation */
-static SDL_Surface* tmp = NULL, *blend = NULL;
+
 static SDL_Rect left_border = {16, 16, 8, 224};
 static SDL_Rect right_border = {16 + 312, 16, 8, 224};
 /* ******************************************************************************************************************/
@@ -97,7 +80,7 @@ static SDL_Rect right_border = {16 + 312, 16, 8, 224};
 *
 */
 /* ******************************************************************************************************************/
-void take_screenshot ( void )
+void neo_screen_capture ( void )
 {
     time_t ltime = 0;
     struct tm* today = NULL;
@@ -125,278 +108,11 @@ void take_screenshot ( void )
 }
 /* ******************************************************************************************************************/
 /*!
-* \brief  Prints blitter list.
-*
-*/
-/* ******************************************************************************************************************/
-void print_blitter_list ( void )
-{
-    Sint32 i = 0;
-
-    while ( blitter[i].name != NULL )
-    {
-        zlog_info ( gngeox_config.loggingCat, "%-12s : %s", blitter[i].name, blitter[i].desc );
-        i++;
-    }
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Prints effects list.
-*
-* \param  rom Game rom.
-*/
-/* ******************************************************************************************************************/
-void print_effect_list ( void )
-{
-    Sint32 i = 0;
-
-    while ( effect[i].name != NULL )
-    {
-        zlog_info ( gngeox_config.loggingCat, "%-12s : %s", effect[i].name, effect[i].desc );
-        i++;
-    }
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Gets effect by name.
-*
-* \return  Effect index.
-*/
-/* ******************************************************************************************************************/
-Uint8 get_effect_by_name ( const char* name )
-{
-    Sint32 i = 0;
-
-    while ( effect[i].name != NULL )
-    {
-        if ( !strcmp ( effect[i].name, name ) )
-        {
-            return i;
-        }
-
-        i++;
-    }
-
-    /* invalid effect */
-    zlog_error ( gngeox_config.loggingCat, "Invalid effect" );
-    return ( 0 );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Gets blitter by name.
-*
-* \return  Blitter index.
-*/
-/* ******************************************************************************************************************/
-Uint8 get_blitter_by_name ( const char* name )
-{
-    Sint32 i = 0;
-
-    while ( blitter[i].name != NULL )
-    {
-        if ( !strcmp ( blitter[i].name, name ) )
-        {
-            return ( i );
-        }
-
-        i++;
-    }
-
-    /* invalid blitter */
-    zlog_error ( gngeox_config.loggingCat, "Invalid blitter." );
-    zlog_warn ( gngeox_config.loggingCat, "Forcing use of soft blitter." );
-
-    return ( 0 );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Initializes screen.
-*
-* \return SDL_FALSE when error, SDL_TRUE otherwise.
-*/
-/* ******************************************************************************************************************/
-static SDL_bool init_screen ( void )
-{
-    visible_area.x = 16;
-    visible_area.y = 16;
-    visible_area.w = 320;
-    visible_area.h = 224;
-
-    /* Initialization of some variables */
-    nblitter = get_blitter_by_name ( gngeox_config.blitter );
-    neffect = get_effect_by_name ( gngeox_config.effect );
-    gngeox_config.res_x = 304;
-    gngeox_config.res_y = 224;
-
-    /* Init of video blitter */
-    if ( ( *blitter[nblitter].init ) () == SDL_FALSE )
-    {
-        return ( SDL_FALSE );
-    }
-
-    /* Init of effect */
-    if ( ( *effect[neffect].init ) () == SDL_FALSE )
-    {
-        return ( SDL_FALSE );
-    }
-
-    /* Interpolation surface */
-    blend = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
-    if ( blend == NULL )
-    {
-        zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
-        return ( SDL_FALSE );
-    }
-    /*
-    if ( SDL_ShowCursor ( SDL_QUERY ) == 1 )
-    {
-        SDL_ShowCursor ( SDL_DISABLE );
-    }
-    */
-
-    return ( SDL_TRUE );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Initializes no effects.
-*
-* \return Always SDL_TRUE.
-*/
-/* ******************************************************************************************************************/
-static SDL_bool effect_none_init ( void )
-{
-    return ( SDL_TRUE );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Resizes screen.
-*
-* \return SDL_FALSE when error, SDL_TRUE otherwise..
-*/
-/* ******************************************************************************************************************/
-SDL_bool screen_resize ( Sint32 width, Sint32 height )
-{
-    if ( ( *blitter[nblitter].resize ) ( width, height ) == SDL_FALSE )
-    {
-        return ( SDL_FALSE );
-    }
-
-    return ( SDL_TRUE );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Interpolates screen.
-*
-*/
-/* ******************************************************************************************************************/
-static void do_interpolation ( void )
-{
-    Uint16* dst = ( Uint16* ) blend->pixels + 16 + ( 352 << 4 );
-    Uint16* src = ( Uint16* ) sdl_surface_buffer->pixels + 16 + ( 352 << 4 );
-    Uint32 s, d;
-
-    /* we copy pixels from buffer surface to blend surface */
-    for ( Uint8 w = 224; w > 0; w-- )
-    {
-        for ( Uint8 h = 160; h > 0; h-- )
-        {
-            s = * ( Uint32* ) src;
-            d = * ( Uint32* ) dst;
-
-            * ( Uint32* ) dst =
-                ( ( d & 0xf7def7de ) >> 1 ) + ( ( s & 0xf7def7de ) >> 1 ) +
-                ( s & d & 0x08210821 );
-
-            dst += 2;
-            src += 2;
-        }
-
-        src += 32; //(visible_area.x<<1);
-        dst += 32; //(visible_area.x<<1);
-    }
-
-    /* Swap Buffers */
-    tmp = blend;
-    blend = sdl_surface_buffer;
-    sdl_surface_buffer = tmp;
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Updates screen.
-*
-*/
-/* ******************************************************************************************************************/
-void screen_update ( void )
-{
-    if ( gngeox_config.interpolation == SDL_TRUE )
-    {
-        do_interpolation();
-    }
-
-    /* @note (Tmesys#1#12/18/2022): screen320 ? */
-    SDL_FillRect ( sdl_surface_buffer, &left_border, 0 );
-    SDL_FillRect ( sdl_surface_buffer, &right_border, 0 );
-
-    if ( effect[neffect].update != NULL )
-    {
-        ( *effect[neffect].update ) ();
-    }
-
-    ( *blitter[nblitter].update ) ();
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Closes screen.
-*
-*/
-/* ******************************************************************************************************************/
-void screen_close ( void )
-{
-    SDL_FreeSurface ( blend );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Sets screen fullscreen.
-*
-*/
-/* ******************************************************************************************************************/
-void screen_fullscreen ( void )
-{
-    gngeox_config.fullscreen ^= 1;
-    blitter[nblitter].fullscreen();
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Sets window title.
-*
-*/
-/* ******************************************************************************************************************/
-void sdl_set_title ( void )
-{
-    char* title = NULL;
-
-    if ( gngeox_config.gamename )
-    {
-        title = ( char* ) qalloc ( strlen ( "GnGeo-X : " ) + strlen ( gngeox_config.gamename ) + 1 );
-        if ( title )
-        {
-            sprintf ( title, "GnGeo-X : %s", gngeox_config.gamename );
-            SDL_SetWindowTitle ( sdl_window, title );
-            qalloc_delete ( title );
-        }
-    }
-    else
-    {
-        SDL_SetWindowTitle ( sdl_window, "GnGeo-X" );
-    }
-}
-/* ******************************************************************************************************************/
-/*!
 * \brief  Initializes SDL.
 *
 */
 /* ******************************************************************************************************************/
-SDL_bool init_sdl ( void )
+SDL_bool neo_screen_init ( void )
 {
     if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER ) < 0 )
     {
@@ -421,10 +137,35 @@ SDL_bool init_sdl ( void )
 
     TTF_SetFontStyle ( sys_font, TTF_STYLE_NORMAL );
 
-    if ( init_screen() == SDL_FALSE )
+    visible_area.x = 16;
+    visible_area.y = 16;
+    visible_area.w = 320;
+    visible_area.h = 224;
+
+    gngeox_config.res_x = 304;
+    gngeox_config.res_y = 224;
+
+    /* Init of video blitter */
+    if ( ( *blitter[gngeox_config.blitter_index].init ) () == SDL_FALSE )
     {
-        zlog_error ( gngeox_config.loggingCat, "Initializing screen" );
         return ( SDL_FALSE );
+    }
+
+    /* Init of effect */
+    if ( ( *effect[gngeox_config.effect_index].init ) () == SDL_FALSE )
+    {
+        return ( SDL_FALSE );
+    }
+
+    /* Interpolation surface */
+    if ( gngeox_config.interpolation == SDL_TRUE )
+    {
+        sdl_surface_blend = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
+        if ( sdl_surface_blend == NULL )
+        {
+            zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
+            return ( SDL_FALSE );
+        }
     }
 
     sdl_surface_buffer = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 32, 0, 0, 0, 0 );
@@ -444,10 +185,101 @@ SDL_bool init_sdl ( void )
 }
 /* ******************************************************************************************************************/
 /*!
+* \brief  Resizes screen.
+*
+* \return SDL_FALSE when error, SDL_TRUE otherwise..
+*/
+/* ******************************************************************************************************************/
+SDL_bool neo_screen_resize ( Sint32 width, Sint32 height )
+{
+    if ( ( *blitter[gngeox_config.blitter_index].resize ) ( width, height ) == SDL_FALSE )
+    {
+        return ( SDL_FALSE );
+    }
+
+    return ( SDL_TRUE );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Closes screen.
+*
+*/
+/* ******************************************************************************************************************/
+void neo_screen_close ( void )
+{
+    if ( gngeox_config.interpolation == SDL_TRUE )
+    {
+        SDL_FreeSurface ( sdl_surface_blend );
+    }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Sets screen fullscreen.
+*
+*/
+/* ******************************************************************************************************************/
+void neo_screen_fullscreen ( void )
+{
+    gngeox_config.fullscreen ^= 1;
+    blitter[gngeox_config.blitter_index].fullscreen();
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Sets window title.
+*
+*/
+/* ******************************************************************************************************************/
+void neo_screen_windowtitle_set ( void )
+{
+    bstring title = NULL;
+
+    if ( gngeox_config.gamename )
+    {
+        title = bfromcstr ( "GnGeo-X : " );
+        bcatcstr ( title, neogeo_memory.rom.info.longname );
+
+        SDL_SetWindowTitle ( sdl_window, title->data );
+
+        bdestroy ( title );
+    }
+    else
+    {
+        zlog_error ( gngeox_config.loggingCat, "Game name not set ?" );
+        SDL_SetWindowTitle ( sdl_window, "GnGeo-X" );
+    }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Updates screen.
+*
+*/
+/* ******************************************************************************************************************/
+/* @todo (Tmesys#1#12/04/2024): This is more to me like effects update */
+void neo_screen_update ( void )
+{
+    if ( gngeox_config.interpolation == SDL_TRUE )
+    {
+        interp_32_screen();
+    }
+
+    /* @note (Tmesys#1#12/18/2022): Does not seem to have any effect ? */
+    SDL_FillRect ( sdl_surface_buffer, &left_border, 0 );
+    SDL_FillRect ( sdl_surface_buffer, &right_border, 0 );
+
+    if ( effect[gngeox_config.effect_index].update != NULL )
+    {
+        ( *effect[gngeox_config.effect_index].update ) ();
+    }
+
+    ( *blitter[gngeox_config.blitter_index].update ) ();
+}
+/* ******************************************************************************************************************/
+/*!
 * \brief Updates screen.
 *
 */
 /* ******************************************************************************************************************/
+/* @todo (Tmesys#1#12/04/2024): Rename function */
 void update_screen ( void )
 {
     if ( neogeo_memory.vid.irq2control & 0x40 )
@@ -486,6 +318,49 @@ void update_screen ( void )
     frame_counter++;
 
     neo_frame_skip ( );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Prints blitter list.
+*
+*/
+/* ******************************************************************************************************************/
+void print_blitter_list ( void )
+{
+    Sint32 i = 0;
+
+    while ( blitter[i].name != NULL )
+    {
+        zlog_info ( gngeox_config.loggingCat, "%-12s : %s", blitter[i].name, blitter[i].desc );
+        i++;
+    }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Gets blitter by name.
+*
+* \return  Blitter index.
+*/
+/* ******************************************************************************************************************/
+Uint8 get_blitter_by_name ( const char* name )
+{
+    Sint32 i = 0;
+
+    while ( blitter[i].name != NULL )
+    {
+        if ( !strcmp ( blitter[i].name, name ) )
+        {
+            return ( i );
+        }
+
+        i++;
+    }
+
+    /* invalid blitter */
+    zlog_error ( gngeox_config.loggingCat, "Invalid blitter." );
+    zlog_warn ( gngeox_config.loggingCat, "Forcing use of soft blitter." );
+
+    return ( 0 );
 }
 
 #ifdef _GNGEOX_SCREEN_C_

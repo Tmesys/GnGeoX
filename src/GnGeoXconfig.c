@@ -18,11 +18,14 @@
 #endif // _GNGEOX_CONFIG_C_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "zlog.h"
 #include "qlibc.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXemu.h"
+#include "GnGeoXscreen.h"
+#include "GnGeoXeffects.h"
 
 struct_gngeoxconfig_params gngeox_config;
 
@@ -86,6 +89,7 @@ SDL_bool neo_config_init ( char* filename )
         zlog_error ( gngeox_config.loggingCat, "Please specify blitter" );
         return ( SDL_FALSE );
     }
+    gngeox_config.blitter_index = get_blitter_by_name ( gngeox_config.blitter );
 
     gngeox_config.effect = qlisttbl_getstr ( tbl, "graphics.effect", true );
     if ( gngeox_config.blitter == NULL )
@@ -93,11 +97,40 @@ SDL_bool neo_config_init ( char* filename )
         zlog_error ( gngeox_config.loggingCat, "Please specify effect" );
         return ( SDL_FALSE );
     }
+    gngeox_config.effect_index = get_effect_by_name ( gngeox_config.effect );
 
     gngeox_config.scale = qlisttbl_getint ( tbl, "graphics.scale" );
     if ( gngeox_config.scale == 0 )
     {
         gngeox_config.scale = 1;
+    }
+
+    if ( strcasecmp ( gngeox_config.blitter, "opengl" ) == 0 )
+    {
+        if ( ( effect[gngeox_config.effect_index].x_ratio != 2 || effect[gngeox_config.effect_index].y_ratio != 2 ) &&
+                ( effect[gngeox_config.effect_index].x_ratio != 1 || effect[gngeox_config.effect_index].y_ratio != 1 ) )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Please check your configuration : Opengl support only effects with a ratio of 2x2 or 1x1" );
+            return ( SDL_FALSE );
+        }
+    }
+
+    if ( strcasecmp ( gngeox_config.blitter, "glsl" ) == 0 )
+    {
+        if ( gngeox_config.effect_index != 0 )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Please check your configuration : Glsl blitter does not support effects" );
+            return ( SDL_FALSE );
+        }
+    }
+
+    if ( strcasecmp ( gngeox_config.blitter, "soft" ) == 0 )
+    {
+        if ( gngeox_config.effect_index != 0 && gngeox_config.scale != 1 )
+        {
+            zlog_warn ( gngeox_config.loggingCat, "Please check your configuration : Soft blitter does not support scale to ore than 1" );
+            gngeox_config.scale = 1;
+        }
     }
 
     gngeox_config.fullscreen = qlisttbl_getint ( tbl, "graphics.fullscreen" );

@@ -1,30 +1,35 @@
 # GnGeoX : Another fork of the Gngeo NeoGeo emulator for linux (and maybe some other unix)
 
 ## GnGeoX:
-GnGeoX is a fork of GnGeo that aims to modernize this great emulator yet giving it a new refresh.
+GnGeoX is a fork of GnGeo that aims to modernize this great emulator yet giving it a new refresh. It is not the only one, i hope it will be for some interrest.
+It has also an educationnal purpose : For me at first, to learn about Neo Geo software and hardware, but also, document all what is known to date about this piece of gaming history.
+Thanks to all those fantastic people who contributed (directly or indirectly) by their work, dedication and generosity, at making this project possible. I tried to credit all ressources used in this project, do not hesitate to inform me if i forgot about someone.
+I hope it will be useful, feel free to contribute and share.
 
-## REQUIREMENT : 
+## REQUIREMENT :
 ### SDL2
 Simple DirectMedia Layer Version 2.0.0 or above.
 ### SDL-TTF
 Version 2.0.0 or above.
 ### sqlite
-Rom driver database and tile transparency data database, version 3.8.1.11 or above.
-### bstrlib : 
+Rom driver database and tile transparency data database, version 3.8.1.11 (included in this code distribution) or above.
+### bstrlib :
 Customized version of the library by Paul Hsieh (included in this code distribution).
-### Qlib :  
+### Qlib :
 Customized version of the library by Seungyoung Kim (included in this code distribution).
-### Zlog :  
+### Zlog :
 Customized version of the library by Hardy Simpson (included in this code distribution).
-### generator68k : 
+### generator68k :
 Customized version of the library by James Ponder (included in this code distribution).
-### Z80 : 
+### Z80 :
 Customized version of the library by Juergen Buchmueller (included in this code distribution).
-### OpenGL: 
+### OpenGL:
 For hardware accelerated blitters.
+### codblocks:
+GnGeoX uses codeblocks workspace and project files to build GnGeoX.
 
 ## INSTALLATION :
-GnGeoX uses codeblocks workspace and project files to build.
+
 
 ## CONFIGURATION :
 All configuration can be done in *gngeox.ini*, please refer to this file for further details, as it is well commented.
@@ -92,32 +97,32 @@ directly from it (the ym2610 for example). As you may know, the Mame
 license forbid commercial use, and as a consequence, commercial use
 of gngeo (as a whole) is also forbided :
 
-Redistribution and use of the MAME code or any derivative works are 
+Redistribution and use of the MAME code or any derivative works are
 permitted provided that the following conditions are met:
 
 1 - Redistributions may not be sold, nor may they be used in a commercial product or activity.
-2 - Redistributions that are modified from the original source 
-must include the complete source code, including the source 
-code for all components used by a binary built from the modified 
-sources. However, as a special exception, the source code distributed 
-need not include anything that is normally distributed (in either 
-source or binary form) with the major components (compiler, kernel, 
-and so on) of the operating system on which the executable runs, 
+2 - Redistributions that are modified from the original source
+must include the complete source code, including the source
+code for all components used by a binary built from the modified
+sources. However, as a special exception, the source code distributed
+need not include anything that is normally distributed (in either
+source or binary form) with the major components (compiler, kernel,
+and so on) of the operating system on which the executable runs,
 unless that component itself accompanies the executable.
-3 - Redistributions must reproduce the above copyright notice, this 
-list of conditions and the following disclaimer in the documentation 
+3 - Redistributions must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
 
-This software is provided by the copyright holders and contributors "as is" 
-and any express or implied warranties, including, but not limited to, the 
-implied warranties of merchantability and fitness for a particular purpose 
-are disclaimed. in no event shall the copyright owner or contributors be 
-liable for any direct, indirect, incidental, special, exemplary, or 
-consequential damages (including, but not limited to, procurement of 
-substitute goods or services; loss of use, data, or profits; or business 
-interruption) however caused and on any theory of liability, whether in 
-contract, strict liability, or tort (including negligence or otherwise) 
-arising in any way out of the use of this software, even if advised of 
+This software is provided by the copyright holders and contributors "as is"
+and any express or implied warranties, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular purpose
+are disclaimed. in no event shall the copyright owner or contributors be
+liable for any direct, indirect, incidental, special, exemplary, or
+consequential damages (including, but not limited to, procurement of
+substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in
+contract, strict liability, or tort (including negligence or otherwise)
+arising in any way out of the use of this software, even if advised of
 the possibility of such damage.
 
 ### Z80

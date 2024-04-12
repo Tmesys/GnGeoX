@@ -80,10 +80,13 @@ typedef struct
 static void update_controllers_button ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state, enum_gngeoxcontroller_button );
 static void update_controllers_start ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state );
 static void update_controllers_coin_select ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state );
+static SDL_bool neo_controllers_open ( Uint32, SDL_JoystickID );
 #endif // _GNGEOX_CONTROLLER_C_
 
 SDL_bool neo_controllers_init ( void ) __attribute__ ( ( warn_unused_result ) );
-void neo_controllers_dispatch ( enum_gngeoxcontroller_button_state, SDL_JoystickID, Uint8 );
+SDL_bool neo_controllers_plug ( SDL_JoystickID );
+SDL_bool neo_controllers_unplug ( SDL_JoystickID );
+void neo_controllers_update ( enum_gngeoxcontroller_button_state, SDL_JoystickID, Uint8 );
 void neo_controllers_close ( void );
 
 #endif // _GNGEOX_CONTROLLER_H_

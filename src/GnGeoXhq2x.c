@@ -54,6 +54,9 @@ void effect_hq2x_update ( void )
     src0 = ( Uint32* ) src1 - 352;
     src2 = ( Uint32* ) src1 + 352;
 
+    SDL_LockSurface ( sdl_surface_buffer );
+    SDL_LockSurface ( sdl_surface_screen );
+
     while ( height-- )
     {
         hq2x_32_def ( dst0, dst1, src0, src1, src2, visible_area.w );
@@ -65,6 +68,9 @@ void effect_hq2x_update ( void )
         src1 += 352;
         src2 += 352;
     }
+
+    SDL_UnlockSurface ( sdl_surface_buffer );
+    SDL_UnlockSurface ( sdl_surface_screen );
 }
 /* ******************************************************************************************************************/
 /*!

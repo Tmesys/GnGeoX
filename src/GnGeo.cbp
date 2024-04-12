@@ -122,6 +122,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="GnGeoXdrivers.h" />
+		<Unit filename="GnGeoXeffects.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="GnGeoXeffects.h" />
 		<Unit filename="GnGeoXemu.c">
 			<Option compilerVar="CC" />
 		</Unit>

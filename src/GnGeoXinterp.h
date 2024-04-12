@@ -48,8 +48,10 @@ Uint32 interp_32_521 ( Uint32 p1, Uint32 p2, Uint32 p3 );
 Uint32 interp_32_211 ( Uint32 p1, Uint32 p2, Uint32 p3 );
 Uint32 interp_32_31 ( Uint32 p1, Uint32 p2 );
 Uint32 interp_32_71 ( Uint32 p1, Uint32 p2 );
+
 Uint32 interp_32_diff ( Uint32, Uint32 ) __attribute__ ( ( warn_unused_result ) );
 Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 ) __attribute__ ( ( warn_unused_result ) );
-Uint32 interp_32_dist3(Uint32 p1, Uint32 p2, Uint32 p3);
+Uint32 interp_32_dist3(Uint32 p1, Uint32 p2, Uint32 p3) __attribute__ ( ( warn_unused_result ) );
+void interp_32_screen ( void );
 
 #endif // _GNGEOX_INTERP_H_

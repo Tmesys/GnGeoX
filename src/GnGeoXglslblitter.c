@@ -701,12 +701,7 @@ SDL_bool blitter_glsl_init ( void )
 
     if ( sdl_window != NULL )
     {
-        return ( SDL_TRUE );
-    }
-
-    if ( neffect != 0 )
-    {
-        zlog_error ( gngeox_config.loggingCat, "GLSL blitter does not support effect" );
+        zlog_error ( gngeox_config.loggingCat, "SDL window already initialized" );
         return ( SDL_FALSE );
     }
 
