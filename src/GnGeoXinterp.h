@@ -16,19 +16,11 @@
 #ifndef _GNGEOX_INTERP_H_
 #define _GNGEOX_INTERP_H_
 
-#define INTERP_16_MASK_1(v) ((v) & 0xf81F)
-#define INTERP_16_MASK_2(v) ((v) & 0x7E0)
-#define INTERP_16_UNMASK_1(v) ((v) & 0xf81F)
-#define INTERP_16_UNMASK_2(v) ((v) & 0x7E0)
-
-#define INTERP_Y_LIMIT (0x30 * 4)
-#define INTERP_U_LIMIT (0x07 * 4)
-#define INTERP_V_LIMIT (0x06 * 8)
-
 /* diff */
 #define INTERP_Y_LIMIT 0x30
 #define INTERP_U_LIMIT 0x07
 #define INTERP_V_LIMIT 0x06
+
 /* Multipled version */
 #define INTERP_Y_LIMIT_S2 (INTERP_Y_LIMIT << 2)
 #define INTERP_U_LIMIT_S2 (INTERP_U_LIMIT << 2)

@@ -28,7 +28,7 @@ typedef struct
 #ifndef _GNGEOX_EFFECTS_C_
 extern struct_gngeoxscreen_effect_func effect[];
 #else
-static SDL_bool effect_none_init ( void );;
+static SDL_bool effect_none_init ( void ) __attribute__ ( ( warn_unused_result ) );
 #endif // _GNGEOX_EFFECTS_C_
 
 void print_effect_list ( void );

@@ -32,7 +32,7 @@
 #include "GnGeoXprofiler.h"
 #include "GnGeoXym2610.h"
 #include "GnGeoXconfig.h"
-#include "GnGeoXz80interf.h"
+#include "GnGeoXz80.h"
 #include "GnGeoXym2610intf.h"
 
 static Uint16 play_buffer[BUFFER_LEN];
@@ -70,7 +70,7 @@ SDL_bool init_sound ( void )
 
     neo_z80_init();
 
-    YM2610_sh_start();
+    neo_ym2610_init();
 
     pause_audio ( 0 );
 

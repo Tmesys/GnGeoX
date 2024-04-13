@@ -20,12 +20,19 @@
 #ifndef _GNGEOX_YM2610_INTERF_H_
 #define _GNGEOX_YM2610_INTERF_H_
 
+typedef struct struct_gngeoxtimer_timer struct_gngeoxtimer_timer;
+struct struct_gngeoxtimer_timer
+{
+    double target;
+    Sint32 timer_id;
+};
+
 #ifdef _GNGEOX_YM2610_INTERF_C_
-void timer_callback_2610 ( Sint32 );
-void FMTimerInit ( void );
-void neogeo_sound_irq ( Sint32 );
+static void neo_ym2610_callback ( Sint32, Sint32, double );
 #endif // _GNGEOX_YM2610_INTERF_C_
 
-void YM2610_sh_start ( void );
+void neo_ym2610_init ( void );
+double timer_get_time ( void );
+void neo_ym2610_update ( void );
 
 #endif

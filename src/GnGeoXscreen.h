@@ -39,8 +39,6 @@ extern TTF_Font* sys_font;
 extern Sint32 yscreenpadding;
 extern Uint8 scale;
 extern Sint32 last_line;
-#else
-static SDL_bool effect_none_init ( void ) __attribute__ ( ( warn_unused_result ) );
 #endif // _GNGEOX_SCREEN_C_
 
 void print_blitter_list ( void );
@@ -51,7 +49,6 @@ void neo_screen_update ( void );
 void neo_screen_close ( void );
 void neo_screen_fullscreen ( void );
 void neo_screen_windowtitle_set ( void );
-SDL_bool neo_screen_init ( void );
 void update_screen ( void );
 void neo_screen_capture ( void );
 

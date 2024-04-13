@@ -1,6 +1,6 @@
 /*!
 *
-*   \file    GnGeoXz80interf.h
+*   \file    GnGeoXz80.h
 *   \brief   Interface to the mamez80 emulator header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
@@ -14,8 +14,8 @@
 *   \note    .
 */
 
-#ifndef _GNGEOX_Z80_INTERF_H_
-#define _GNGEOX_Z80_INTERF_H_
+#ifndef _GNGEOX_Z80_H_
+#define _GNGEOX_Z80_H_
 
 typedef enum
 {
@@ -33,16 +33,14 @@ typedef enum
     Z80_BANK_3_WINDOW_SIZE = 0x4000,
 } enum_gngeoxz80_bankwindowsize;
 
-#ifdef _GNGEOX_Z80_INTERF_C_
+#ifdef _GNGEOX_Z80_C_
 static void cpu_z80_switchbank ( Uint8, Uint16 );
 static Sint32 neo_z80_irq_callback ( Sint32 );
-#endif // _GNGEOX_Z80_INTERF_C_
+#endif // _GNGEOX_Z80_C_
 
 void neo_z80_init ( void );
 void neo_z80_run ( Sint32 );
 void neo_z80_nmi ( void );
+void neo_z80_irq ( Sint32 );
 
-#ifdef _GNGEOX_Z80_INTERF_C_
-#endif // _GNGEOX_Z80_INTERF_C_
-
-#endif // _GNGEOX_Z80_INTERF_H_
+#endif // _GNGEOX_Z80_H_

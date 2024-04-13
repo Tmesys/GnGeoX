@@ -1,6 +1,6 @@
 /*!
 *
-*   \file    GnGeoXgen68kinterf.c
+*   \file    GnGeoX68k.c
 *   \brief   Interface to the generator68k emulator.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
@@ -13,9 +13,9 @@
 *            https://tldrlegal.com/license/gnu-general-public-license-v2#fulltext
 *   \note    .
 */
-#ifndef _GNGEOX_GEN68K_INTERF_C_
-#define _GNGEOX_GEN68K_INTERF_C_
-#endif // _GNGEOX_GEN68K_INTERF_C_
+#ifndef _GNGEOX_68K_C_
+#define _GNGEOX_68K_C_
+#endif // _GNGEOX_68K_C_
 
 #include <stdlib.h>
 
@@ -27,7 +27,7 @@
 #include "3rdParty/Generator68k/cpu68k.h"
 #include "3rdParty/Generator68k/reg68k.h"
 #include "3rdParty/Generator68k/mem68k.h"
-#include "GnGeoXgen68kinterf.h"
+#include "GnGeoX68k.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
@@ -35,7 +35,7 @@
 #include "GnGeoXdebug.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXpd4990a.h"
-#include "GnGeoXz80interf.h"
+#include "GnGeoXz80.h"
 #include "GnGeoXscanline.h"
 
 
@@ -438,19 +438,22 @@ static Uint8 mem68k_fetch_video_byte ( Uint32 address )
                 return ( READ_WORD ( &neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + ( lpc & 0xFFFFF ) ) );
             }
             break;
-
         case ( 0x2 ) :
             {
                 return ( READ_WORD ( &neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + bankaddress + ( lpc & 0xFFFFF ) ) );
             }
             break;
-
         case ( 0xC ) :
             {
                 if ( lpc <= 0xc1FFff )
                 {
                     return ( READ_WORD ( &neogeo_memory.rom.rom_region[REGION_MAIN_CPU_BIOS].p + ( lpc & 0xFFFFF ) ) );
                 }
+            }
+            break;
+        default:
+            {
+                zlog_error ( gngeox_config.loggingCat, "Unknown address %x", address );
             }
             break;
         }
@@ -1771,6 +1774,6 @@ Sint32 cpu_68k_getcycle ( void )
     return cpu68k_clocks;
 }
 
-#ifdef _GNGEOX_GEN68K_INTERF_C_
-#undef _GNGEOX_GEN68K_INTERF_C_
-#endif // _GNGEOX_GEN68K_INTERF_C_
+#ifdef _GNGEOX_68K_C_
+#undef _GNGEOX_68K_C_
+#endif // _GNGEOX_68K_C_

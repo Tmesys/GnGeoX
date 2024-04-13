@@ -25,103 +25,147 @@
 
 #include <SDL2/SDL.h>
 #include "zlog.h"
+#include "qlibc.h"
 
 #include "3rdParty/MameZ80/Z80.h"
 #include "GnGeoXym2610intf.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
-#include "GnGeoXtimer.h"
-#include "GnGeoXz80interf.h"
+#include "GnGeoXz80.h"
 #include "GnGeoXym2610.h"
 #include "GnGeoXconfig.h"
+#include "GnGeoXemu.h"
 
-static struct_gngeoxtimer_timer* Timer[2];
+static qlist_t * ym2610_timers = NULL;
+static double timer_count = 0;
+static double timer_increment = 0;
 
 /* ******************************************************************************************************************/
 /*!
-* \brief  TimerHandler from "fm.c".
+* \brief  Timers callback.
 *
-* \param  c Todo
+* \param  timer_id 0 or 1
 * \param  count Todo
-* \param  stepTime Todo
+* \param  step_time Todo
+*
+* \note   The YM2610 provides 2 timers called A and B.
+*         Used to time music playback by triggering Z80 interrupts.
+*         The timer A is 10 bits wide, the timer B is only 8 bits wide.
 */
 /* ******************************************************************************************************************/
-static void TimerHandler ( Sint32 c, Sint32 count, double stepTime )
+static void neo_ym2610_callback ( Sint32 timer_id, Sint32 count, double step_time )
 {
     /* Reset FM Timer */
     if ( count == 0 )
     {
-        if ( Timer[c] )
+        for ( Sint32 loop = 0; loop < ym2610_timers->num ; loop++ )
         {
-            del_timer ( Timer[c] );
-            Timer[c] = 0;
-        }
-    }
-    /* Start FM Timer */
-    else
-    {
-        double timeSec = ( double ) count * stepTime;
+            struct_gngeoxtimer_timer * timer = qlist_getat ( ym2610_timers, loop, NULL, true );
 
-        if ( Timer[c] == 0 )
+            if ( timer->timer_id == timer_id )
+            {
+                if ( qlist_removeat ( ym2610_timers, loop ) == false )
+                {
+                    zlog_error ( gngeox_config.loggingCat, "Can not remove timer at %d", loop );
+                }
+            }
+
+            free ( timer );
+        }
+    }
+    /* Start new FM Timer */
+    else
+    {
+        double duration = ( double ) count * step_time;
+        struct_gngeoxtimer_timer timer;
+
+        timer.target = ( timer_count + duration );
+        timer.timer_id = timer_id;
+
+        if ( qlist_addfirst ( ym2610_timers, &timer, sizeof ( timer ) ) == false )
         {
-            Timer[c] = insert_timer ( timeSec, c, timer_callback_2610 );
+            zlog_error ( gngeox_config.loggingCat, "Can not add new timer" );
+        }
+
+        zlog_warn ( gngeox_config.loggingCat, "Timer %d : count %d step %f", timer_id, count, step_time );
+
+        /* @todo (Tmesys#1#13/04/2024): Clean This as it is for test purposes as this new implementation is brand new. */
+        if ( ym2610_timers->num > 2 )
+        {
+            zlog_warn ( gngeox_config.loggingCat, "more than 2 timers" );
         }
     }
 }
 /* ******************************************************************************************************************/
 /*!
+* \brief  Present time in seconds unit for busy flag emulation.
+*
+* \return Present time in seconds unit.
+*/
+/* ******************************************************************************************************************/
+double timer_get_time ( void )
+{
+    return timer_count;
+}
+/* ******************************************************************************************************************/
+/*!
 * \brief  Timer overflow callback from "timer.c".
 *
-* \param  param Todo
 */
 /* ******************************************************************************************************************/
-void timer_callback_2610 ( Sint32 param )
+void neo_ym2610_init ( void )
 {
-    Timer[param] = 0;
-    YM2610TimerOver ( param );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Timer initialization.
-*
-*/
-/* ******************************************************************************************************************/
-void FMTimerInit ( void )
-{
-    Timer[0] = Timer[1] = 0;
-    free_all_timer();
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Handles NeoGeo sound Irq.
-*
-* \param  irq Irq flag ?
-*/
-/* ******************************************************************************************************************/
-void neogeo_sound_irq ( Sint32 irq )
-{
-    if ( irq )
+    /* initialize YM2610 */
+    YM2610Init ( 8000000,
+                 gngeox_config.samplerate,
+                 neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_1].p,
+                 neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_1].size,
+                 neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_2].p,
+                 neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_2].size,
+                 neo_ym2610_callback,
+                 neo_z80_irq );
+
+    ym2610_timers = qlist ( QLIST_THREADSAFE );
+    if ( ym2610_timers == NULL )
     {
-        z80_set_irq_line ( 0, ASSERT_LINE );
+        zlog_error ( gngeox_config.loggingCat, "Can not create timer list" );
+    }
+
+    if ( gngeox_config.forcepal )
+    {
+        /* *(1<<TIMER_SH);*/
+        timer_increment = ( ( double ) ( 0.02 ) / NB_INTERLACE );
     }
     else
     {
-        z80_set_irq_line ( 0, CLEAR_LINE );
+        /* *(1<<TIMER_SH);*/
+        timer_increment = ( ( double ) ( 0.01666 ) / NB_INTERLACE );
     }
 }
 /* ******************************************************************************************************************/
 /*!
-* \brief  Timer overflow callback from "timer.c".
+* \brief Executes timers.
 *
 */
 /* ******************************************************************************************************************/
-void YM2610_sh_start ( void )
+void neo_ym2610_update ( void )
 {
-    FMTimerInit();
-    /* initialize YM2610 */
-    YM2610Init ( 8000000, gngeox_config.samplerate, neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_1].p, neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_1].size,
-                 neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_2].p, neogeo_memory.rom.rom_region[REGION_AUDIO_DATA_2].size, TimerHandler, neogeo_sound_irq );
+    /* 16ms par frame */
+    timer_count += timer_increment;
+
+    for ( Sint32 loop = 0; loop < ym2610_timers->num ; loop++ )
+    {
+        struct_gngeoxtimer_timer * timer = qlist_getat ( ym2610_timers, loop, NULL, true );
+
+        if ( timer_count >= timer->target )
+        {
+            qlist_popat ( ym2610_timers, loop, NULL );
+            YM2610TimerOver ( timer->timer_id );
+        }
+
+        free ( timer );
+    }
 }
 
 #ifdef _GNGEOX_YM2610_INTERF_C_

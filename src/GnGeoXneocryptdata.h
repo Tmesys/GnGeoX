@@ -17,26 +17,26 @@
 #define _GNGEOX_NEOCRYPTDATA_H_
 
 #ifndef _GNGEOX_NEOCRYPTDATA_C_
-extern const uint8_t kof99_type0_t03[];
-extern const uint8_t kof99_type0_t12[];
-extern const uint8_t kof99_type1_t03[];
-extern const uint8_t kof99_type1_t12[];
-extern const uint8_t kof99_address_8_15_xor1[];
-extern const uint8_t kof99_address_8_15_xor2[];
-extern const uint8_t kof99_address_16_23_xor1[];
-extern const uint8_t kof99_address_16_23_xor2[];
-extern const uint8_t kof99_address_0_7_xor[];
-extern const uint8_t kof2000_type0_t03[];
-extern const uint8_t kof2000_type0_t12[];
-extern const uint8_t kof2000_type1_t03[];
-extern const uint8_t kof2000_type1_t12[];
-extern const uint8_t kof2000_address_8_15_xor1[];
-extern const uint8_t kof2000_address_8_15_xor2[];
-extern const uint8_t kof2000_address_16_23_xor1[];
-extern const uint8_t kof2000_address_16_23_xor2[];
-extern const uint8_t kof2000_address_0_7_xor[];
-extern const uint8_t m1_address_8_15_xor[];
-extern const uint8_t m1_address_0_7_xor[];
+extern const Uint8 kof99_type0_t03[];
+extern const Uint8 kof99_type0_t12[];
+extern const Uint8 kof99_type1_t03[];
+extern const Uint8 kof99_type1_t12[];
+extern const Uint8 kof99_address_8_15_xor1[];
+extern const Uint8 kof99_address_8_15_xor2[];
+extern const Uint8 kof99_address_16_23_xor1[];
+extern const Uint8 kof99_address_16_23_xor2[];
+extern const Uint8 kof99_address_0_7_xor[];
+extern const Uint8 kof2000_type0_t03[];
+extern const Uint8 kof2000_type0_t12[];
+extern const Uint8 kof2000_type1_t03[];
+extern const Uint8 kof2000_type1_t12[];
+extern const Uint8 kof2000_address_8_15_xor1[];
+extern const Uint8 kof2000_address_8_15_xor2[];
+extern const Uint8 kof2000_address_16_23_xor1[];
+extern const Uint8 kof2000_address_16_23_xor2[];
+extern const Uint8 kof2000_address_0_7_xor[];
+extern const Uint8 m1_address_8_15_xor[];
+extern const Uint8 m1_address_0_7_xor[];
 #endif // _GNGEOX_NEOCRYPTDATA_C_
 
 #endif

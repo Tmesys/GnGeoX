@@ -1,6 +1,6 @@
 /*!
 *
-*   \file    GnGeoXgen68kinterf.h
+*   \file    GnGeoX68k.h
 *   \brief   Interface to the generator68k emulator header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
 *   \author  James Ponder (68K emulation).
@@ -14,8 +14,8 @@
 *   \note    .
 */
 
-#ifndef _GNGEOX_GEN68K_INTERF_H_
-#define _GNGEOX_GEN68K_INTERF_H_
+#ifndef _GNGEOX_68K_H_
+#define _GNGEOX_68K_H_
 
 /* System registers */
 enum
@@ -96,7 +96,7 @@ enum
     REG_IRQACK_NUSED5 = 7,
 };
 
-#ifdef _GNGEOX_GEN68K_INTERF_C_
+#ifdef _GNGEOX_68K_C_
 static Uint8 mem68k_fetch_invalid_byte ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint16 mem68k_fetch_invalid_word ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint32 mem68k_fetch_invalid_long ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
@@ -171,7 +171,7 @@ static Uint8* mem68k_memptr_cpu ( Uint32 ) __attribute__ ( ( warn_unused_result 
 static Uint8* mem68k_memptr_bios ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint8* mem68k_memptr_cpu_bk ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint8* mem68k_memptr_ram ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
-#endif // _GNGEOX_GEN68K_INTERF_C_
+#endif // _GNGEOX_68K_C_
 
 void cpu_68k_bankswitch ( Uint32 );
 void cpu_68k_reset ( void );
@@ -181,4 +181,5 @@ Uint32 cpu_68k_getpc ( void ) __attribute__ ( ( warn_unused_result ) );
 Sint32 cpu_68k_run_step ( void ) __attribute__ ( ( warn_unused_result ) );
 void cpu_68k_interrupt ( Sint32 );
 Sint32 cpu_68k_getcycle ( void ) __attribute__ ( ( warn_unused_result ) );
-#endif // _GNGEOX_GEN68K_INTERF_H_
+
+#endif // _GNGEOX_68K_H_

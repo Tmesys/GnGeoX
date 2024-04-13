@@ -16,6 +16,8 @@
 #ifndef _GNGEOX_CONTROLLER_H_
 #define _GNGEOX_CONTROLLER_H_
 
+#define CONTROLLER_DEAD_ZONE 128
+
 typedef enum
 {
     PCNT_UP = 0,
@@ -74,6 +76,8 @@ typedef struct
     SDL_GameController *controller;
     SDL_JoystickID controller_id;
     SDL_JoystickGUID controller_guid;
+    Sint16 last_axis1_x_value;
+    Sint16 last_axis0_y_value;
 } struct_gngeoxcontroller_player;
 
 #ifdef _GNGEOX_CONTROLLER_C_
@@ -87,6 +91,7 @@ SDL_bool neo_controllers_init ( void ) __attribute__ ( ( warn_unused_result ) );
 SDL_bool neo_controllers_plug ( SDL_JoystickID );
 SDL_bool neo_controllers_unplug ( SDL_JoystickID );
 void neo_controllers_update ( enum_gngeoxcontroller_button_state, SDL_JoystickID, Uint8 );
+void neo_controllers_update_axis ( SDL_JoystickID, Uint8, Sint16 );
 void neo_controllers_close ( void );
 
 #endif // _GNGEOX_CONTROLLER_H_

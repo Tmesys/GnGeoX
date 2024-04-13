@@ -33,7 +33,7 @@
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXconfig.h"
-#include "GnGeoXgen68kinterf.h"
+#include "GnGeoX68k.h"
 #include "GnGeoXscreen.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXemu.h"

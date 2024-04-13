@@ -26,7 +26,6 @@
 #include <SDL2/SDL.h>
 #include <zlog.h>
 
-#include "GnGeoXtimer.h"
 #include "GnGeoXym2610intf.h"
 #include "GnGeoXym2610.h"
 
@@ -2923,7 +2922,7 @@ static void OPNB_ADPCMB_CALC ( ADPCMB* adpcmb )
 
 /* YM2610(OPNB) */
 void YM2610Init ( Sint32 clock, Sint32 rate, void* pcmroma, Sint32 pcmsizea, void* pcmromb,
-                  Sint32 pcmsizeb, FM_TIMERHANDLER TimerHandler, FM_IRQHANDLER IRQHandler )
+                  Sint32 pcmsizeb, FM_TIMERHANDLER neo_ym2610_callback, FM_IRQHANDLER IRQHandler )
 {
     /*
      sound->stack    = 0x10000;
@@ -2944,9 +2943,9 @@ void YM2610Init ( Sint32 clock, Sint32 rate, void* pcmroma, Sint32 pcmsizea, voi
     YM2610.OPN.ST.clock = clock;
     YM2610.OPN.ST.rate = rate;
     /* Extend handler */
-    YM2610.OPN.ST.Timer_Handler = TimerHandler;
+    YM2610.OPN.ST.Timer_Handler = neo_ym2610_callback;
     YM2610.OPN.ST.IRQ_Handler = IRQHandler;
-    sav_TimerHandler = TimerHandler;
+    sav_TimerHandler = neo_ym2610_callback;
     sav_IRQHandler = IRQHandler;
     /* SSG */
     SSG.step = ( ( double ) SSG_STEP * rate * 8 ) / clock;
@@ -3408,7 +3407,7 @@ void YM2610Update_stream ( Sint32 length, Uint16* buffer )
         *buffer++ = lt;
         *buffer++ = rt;
 
-        /* my_timer(); */
+        /* neo_ym2610_update(); */
 
         INTERNAL_TIMER_A ( OPN->ST, cch[1] );
     }

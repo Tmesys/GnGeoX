@@ -37,6 +37,7 @@
 #include "GnGeoXframeskip.h"
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXeffects.h"
+#include "GnGeoXinterp.h"
 
 SDL_Surface* sdl_surface_screen = NULL;
 SDL_Surface* sdl_surface_buffer = NULL;

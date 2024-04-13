@@ -59,7 +59,7 @@
 #define df3(A, B, C) interp_32_dist3(A, B, C)
 
 #ifdef _GNGEOX_XBR2X_C_
-static void hq3x_16_def ( Uint16*, Uint16*, Uint16*, Uint16*, Uint16*, Uint16*, Uint32 );
+static void xbr2x_32_def ( Uint32* restrict volatile, Uint32* restrict volatile, const Uint32* restrict, const Uint32* restrict, const Uint32* restrict, const Uint32* restrict, const Uint32* restrict, unsigned );
 #endif // _GNGEOX_XBR2X_C_
 
 SDL_bool effect_xbr2x_init ( void ) __attribute__ ( ( warn_unused_result ) );

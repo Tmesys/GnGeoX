@@ -34,15 +34,14 @@
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXprofiler.h"
 #include "GnGeoXdebug.h"
-#include "GnGeoXtimer.h"
 #include "GnGeoXym2610intf.h"
 #include "GnGeoXsound.h"
 #include "GnGeoXscreen.h"
 #include "GnGeoXneocrypt.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXcontroller.h"
-#include "GnGeoXgen68kinterf.h"
-#include "GnGeoXz80interf.h"
+#include "GnGeoX68k.h"
+#include "GnGeoXz80.h"
 #include "GnGeoXscanline.h"
 
 /* ******************************************************************************************************************/
@@ -154,6 +153,12 @@ void neo_sys_update_events ( void )
                 neo_controllers_update ( CONTROLLER_STATE_UP, event.cdevice.which, event.cbutton.button );
             }
             break;
+        case ( SDL_CONTROLLERAXISMOTION ) :
+            {
+                zlog_info ( gngeox_config.loggingCat, "Axis number %d axis %d value %d", event.caxis.which, event.caxis.axis, event.caxis.value );
+                neo_controllers_update_axis ( event.caxis.which, event.caxis.axis, event.caxis.value );
+            }
+            break;
         case ( SDL_WINDOWEVENT ) :
             {
                 switch ( event.window.event )
@@ -218,7 +223,7 @@ void neo_sys_main_loop ( void )
     Uint32 cpu_z80_timeslice_interlace = cpu_z80_timeslice / ( float ) NB_INTERLACE;
 
     neo_frame_skip_reset();
-    my_timer();
+    neo_ym2610_update();
 
     while ( !neo_emu_done )
     {
@@ -234,7 +239,7 @@ void neo_sys_main_loop ( void )
         for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
         {
             neo_z80_run ( cpu_z80_timeslice_interlace );
-            my_timer();
+            neo_ym2610_update();
         }
 
         profiler_stop ( PROF_Z80 );

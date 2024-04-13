@@ -255,6 +255,8 @@ static SDL_bool neo_controllers_open ( Uint32 player_index, SDL_JoystickID contr
     zlog_info ( gngeox_config.loggingCat, "-> Mapping : %s", mapping_string );
 
     SDL_free ( mapping_string );
+
+    return ( SDL_TRUE );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -471,6 +473,82 @@ void neo_controllers_update ( enum_gngeoxcontroller_button_state state, SDL_Joys
             }
         }
     }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Initializes event system.
+*
+*/
+/* ******************************************************************************************************************/
+void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sint16 value )
+{
+    Sint32 player_id = -1;
+
+    for ( Uint32 loop = 0; loop < CONTROLLER_PLAYER_MAX; loop++ )
+    {
+        if ( players[loop].controller_id == controller_id )
+        {
+            if ( axis == SDL_CONTROLLER_AXIS_LEFTX )
+            {
+                players[loop].last_axis1_x_value = value;
+            }
+            if ( axis == SDL_CONTROLLER_AXIS_LEFTY )
+            {
+                players[loop].last_axis0_y_value = value;
+            }
+
+            player_id = loop;
+
+            break;
+        }
+    }
+
+    update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_UP );
+    update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_DOWN );
+    update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_RIGHT );
+    update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_LEFT );
+
+    /* direction UP / LEFT */
+    if ( players[player_id].last_axis1_x_value < -CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+    }
+
+    /* direction DOWN / RIGHT */
+    if ( players[player_id].last_axis1_x_value > CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value > CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+    }
+
+    /* direction UP / RIGHT */
+    if ( players[player_id].last_axis1_x_value > CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+    }
+
+    /* direction DOWN / LEFT */
+    if ( players[player_id].last_axis1_x_value < -CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value > CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+    }
+
+    /* direction LEFT */
+    if ( players[player_id].last_axis1_x_value == -CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+    }
+
+    /* direction RIGHT */
+    /*
+    if ( players[player_id].last_axis1_x_value == -CONTROLLER_DEAD_ZONE && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    {
+        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+    }
+    */
 }
 /* ******************************************************************************************************************/
 /*!

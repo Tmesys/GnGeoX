@@ -27,60 +27,6 @@
 
 /* ******************************************************************************************************************/
 /*!
-* \brief  Initializes xbr2x effect.
-*
-* \return Always SDL_TRUE.
-*/
-/* ******************************************************************************************************************/
-SDL_bool effect_xbr2x_init ( void )
-{
-    return ( SDL_TRUE );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Updates xbr2x effect.
-*
-*/
-/* ******************************************************************************************************************/
-void effect_xbr2x_update ( void )
-{
-    Uint32* dst0 = NULL, *dst1 = NULL, *src0 = NULL, *src1 = NULL, *src2 = NULL, *src3 = NULL, *src4 = NULL;
-    Uint32 height = 0;
-
-    height = visible_area.h;
-
-    dst0 = ( Uint32* ) sdl_surface_screen->pixels + yscreenpadding;
-    dst1 = ( Uint32* ) dst0 + ( visible_area.w * 2 );
-
-    src0 = ( Uint32* ) sdl_surface_buffer->pixels + 352 * visible_area.y + visible_area.x;
-    src1 = ( Uint32* ) src0 + 352;
-    src2 = ( Uint32* ) src1 + 352;
-    src3 = ( Uint32* ) src2 + 352;
-    src4 = ( Uint32* ) src3 + 352;
-
-    SDL_LockSurface ( sdl_surface_buffer );
-    SDL_LockSurface ( sdl_surface_screen );
-
-    while ( height-- )
-    {
-
-        xbr2x_32_def ( dst0, dst1, src0, src1, src2, src3, src4, visible_area.w );
-
-        dst0 += ( visible_area.w * 4 );
-        dst1 += ( visible_area.w * 4 );
-
-        src0 += 352;
-        src1 += 352;
-        src2 += 352;
-        src3 += 352;
-        src4 += 352;
-    }
-
-    SDL_UnlockSurface ( sdl_surface_buffer );
-    SDL_UnlockSurface ( sdl_surface_screen );
-}
-/* ******************************************************************************************************************/
-/*!
 * \brief  Applies xbr2x effect.
 *
 * \param dst0 Todo.
@@ -91,7 +37,7 @@ void effect_xbr2x_update ( void )
 * \param count Todo.
 */
 /* ******************************************************************************************************************/
-void xbr2x_32_def ( Uint32* restrict volatile dst0, Uint32* restrict volatile dst1, const Uint32* restrict src0, const Uint32* restrict src1, const Uint32* restrict src2, const Uint32* restrict src3, const Uint32* restrict src4, unsigned count )
+static void xbr2x_32_def ( Uint32* restrict volatile dst0, Uint32* restrict volatile dst1, const Uint32* restrict src0, const Uint32* restrict src1, const Uint32* restrict src2, const Uint32* restrict src3, const Uint32* restrict src4, unsigned count )
 {
     unsigned i;
 
@@ -209,6 +155,60 @@ void xbr2x_32_def ( Uint32* restrict volatile dst0, Uint32* restrict volatile ds
         dst0 += 2;
         dst1 += 2;
     }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Initializes xbr2x effect.
+*
+* \return Always SDL_TRUE.
+*/
+/* ******************************************************************************************************************/
+SDL_bool effect_xbr2x_init ( void )
+{
+    return ( SDL_TRUE );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Updates xbr2x effect.
+*
+*/
+/* ******************************************************************************************************************/
+void effect_xbr2x_update ( void )
+{
+    Uint32* dst0 = NULL, *dst1 = NULL, *src0 = NULL, *src1 = NULL, *src2 = NULL, *src3 = NULL, *src4 = NULL;
+    Uint32 height = 0;
+
+    height = visible_area.h;
+
+    dst0 = ( Uint32* ) sdl_surface_screen->pixels + yscreenpadding;
+    dst1 = ( Uint32* ) dst0 + ( visible_area.w * 2 );
+
+    src0 = ( Uint32* ) sdl_surface_buffer->pixels + 352 * visible_area.y + visible_area.x;
+    src1 = ( Uint32* ) src0 + 352;
+    src2 = ( Uint32* ) src1 + 352;
+    src3 = ( Uint32* ) src2 + 352;
+    src4 = ( Uint32* ) src3 + 352;
+
+    SDL_LockSurface ( sdl_surface_buffer );
+    SDL_LockSurface ( sdl_surface_screen );
+
+    while ( height-- )
+    {
+
+        xbr2x_32_def ( dst0, dst1, src0, src1, src2, src3, src4, visible_area.w );
+
+        dst0 += ( visible_area.w * 4 );
+        dst1 += ( visible_area.w * 4 );
+
+        src0 += 352;
+        src1 += 352;
+        src2 += 352;
+        src3 += 352;
+        src4 += 352;
+    }
+
+    SDL_UnlockSurface ( sdl_surface_buffer );
+    SDL_UnlockSurface ( sdl_surface_screen );
 }
 
 #ifdef _GNGEOX_XBR2X_C_

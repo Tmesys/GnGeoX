@@ -681,6 +681,7 @@ bool qlist_getnext ( qlist_t * list, qlist_obj_t * obj, bool newmem )
     }
 
     qlist_unlock ( list );
+
     return ret;
 }
 

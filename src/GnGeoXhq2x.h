@@ -18,7 +18,6 @@
 #define _GNGEOX_HQ2X_H_
 
 #ifdef _GNGEOX_HQ2X_C_
-static void hq2x_16_def ( Uint16*, Uint16*, Uint16*, Uint16*, Uint16*, Uint32 );
 static void hq2x_32_def(Uint32* restrict volatile dst0, Uint32* restrict volatile dst1, const Uint32* restrict src0, const Uint32* restrict src1, const Uint32* restrict src2, unsigned count);
 #endif // _GNGEOX_HQ2X_C_
 

@@ -27,8 +27,8 @@
 #include "GnGeoXmemory.h"
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXtranspack.h"
-#include "GnGeoXgen68kinterf.h"
-#include "GnGeoXz80interf.h"
+#include "GnGeoX68k.h"
+#include "GnGeoXz80.h"
 #include "GnGeoXscanline.h"
 
 struct_gngeoxmemory_neogeo neogeo_memory;
