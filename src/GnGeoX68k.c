@@ -1249,7 +1249,8 @@ static void mem68k_store_z80_byte ( Uint32 address, Uint8 data )
             neogeo_memory.z80_command = data;
 
             neo_z80_nmi();
-            neo_z80_run ( 300 );
+            /* @todo (Tmesys#1#13/04/2024): Seems to do nothing ? */
+            //neo_z80_run ( 300 );
         }
         break;
     default:
@@ -1282,7 +1283,8 @@ static void mem68k_store_z80_word ( Uint32 address, Uint16 data )
             neogeo_memory.z80_command = QHIBYTE ( data );
 
             neo_z80_nmi();
-            neo_z80_run ( 300 );
+            /* @todo (Tmesys#1#13/04/2024): Seems to do nothing ? */
+            //neo_z80_run ( 300 );
         }
         break;
     default:
@@ -1556,7 +1558,7 @@ static void swap_memory ( Uint8* mem, Uint32 length )
 /*!
 * \brief Initializes memory tables.
 *
-* \return Pointer to memory to swap.
+* \return Always zero.
 */
 /* ******************************************************************************************************************/
 /* @note (Tmesys#1#12/04/2022): Never prototype as static or change, declared in gen68k library (even if no need for a return,
@@ -1703,7 +1705,7 @@ void cpu_68k_init ( void )
     cpu68k_ram = neogeo_memory.ram;
 
     mem68k_init();
-    cpu68k_init();
+    cpu68k_init ( neogeo_memory.ram );
 
     if ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size > 0x100000 )
     {

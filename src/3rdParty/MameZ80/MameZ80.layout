@@ -2,4 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="" />
+	<File name="Z80.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1377" topLine="56" />
+		</Cursor>
+	</File>
+	<File name="MameZ80.new.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="227128" topLine="8453" />
+		</Cursor>
+	</File>
+	<File name="Z80.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="193059" topLine="9220" />
+		</Cursor>
+	</File>
 </CodeBlocks_layout_file>

@@ -1,5 +1,7 @@
 # GnGeoX : Another fork of the Gngeo NeoGeo emulator for linux (and maybe some other unix)
-
+<p align="center">
+  <img src="ressources/neogeo.png" width="410" height="410">
+</p>
 ## GnGeoX:
 GnGeoX is a fork of GnGeo that aims to modernize this great emulator yet giving it a new refresh. It is not the only one, i hope it will be for some interrest.
 It has also an educationnal purpose : For me at first, to learn about Neo Geo software and hardware, but also, document all what is known to date about this piece of gaming history.
@@ -168,3 +170,7 @@ The original code is released under the GPLV2.
 
 ### Zlog
 The original code is released under the LGPL.
+
+###Titillium Web TTF
+Copyright (c) 2009-2011 by Accademia di Belle Arti di Urbino and students of MA course of Visual design. Some rights reserved.
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL

@@ -50,16 +50,16 @@
 Sint32 neogeo_fix_bank_type = 0;
 char * region_name[] =
 {
-"audio cpu bios",
-"audio cpu cartridge",
-"audio cpu cartridge encrypted",
-"audio data 1",
-"audio data 2",
-"fixed layer bios",
-"fixed layer cartridge",
-"main cpu bios",
-"main cpu cartridge",
-"sprites",
+    "audio cpu bios",
+    "audio cpu cartridge",
+    "audio cpu cartridge encrypted",
+    "audio data 1",
+    "audio data 2",
+    "fixed layer bios",
+    "fixed layer cartridge",
+    "main cpu bios",
+    "main cpu cartridge",
+    "sprites",
 };
 /* ******************************************************************************************************************/
 /*!
@@ -897,7 +897,10 @@ SDL_bool init_game ( char* rom_name )
 
     neo_screen_windowtitle_set ( );
 
-    neo_sys_init( );
+    if ( neo_sys_init( ) == SDL_FALSE )
+    {
+        return ( SDL_TRUE );
+    }
 
     setup_misc_patch ( );
 

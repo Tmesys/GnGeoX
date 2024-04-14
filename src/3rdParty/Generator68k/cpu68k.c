@@ -23,7 +23,8 @@ int cpu68k_totalfuncs;
 
 unsigned int cpu68k_clocks;
 unsigned int cpu68k_frames;
-unsigned int cpu68k_frozen;     /* cpu frozen, do not interrupt, make pending */
+/* cpu frozen, do not interrupt, make pending */
+unsigned int cpu68k_frozen;
 t_regs regs;
 uint8 movem_bit[256];
 t_ipclist* ipclist[LEN_IPCLISTTABLE];
@@ -35,13 +36,19 @@ extern uint32 bankaddress;
 
 /*** forward references ***/
 
-void cpu68k_reset ( void );
-
-int cpu68k_init ( void )
+int cpu68k_init ( uint8* ram )
 {
-    t_iib* iib;
-    uint16 bitmap;
-    int i, j, sbit, dbit, sbits, dbits;
+    t_iib* iib = NULL;
+    uint16 bitmap = 0;
+    int i = 0, j = 0, sbit = 0, dbit = 0, sbits = 0, dbits = 0;
+
+    if ( cpu68k_ram == NULL )
+    {
+        printf( "Invalid RAM pointer\n" );
+        return 1;
+    }
+
+    cpu68k_ram = ram;
 
     memset ( cpu68k_iibtable, 0, sizeof ( cpu68k_iibtable ) );
     memset ( cpu68k_functable, 0, sizeof ( cpu68k_functable ) );
@@ -62,103 +69,103 @@ int cpu68k_init ( void )
         {
             switch ( j ? iib->stype : iib->dtype )
             {
-            case dt_Dreg:
-            case dt_Areg:
-            case dt_Aind:
-            case dt_Ainc:
-            case dt_Adec:
-            case dt_Adis:
-            case dt_Aidx:
-                if ( j )
+            case ( dt_Dreg ) :
+            case ( dt_Areg ) :
+            case ( dt_Aind ) :
+            case ( dt_Ainc ) :
+            case ( dt_Adec ) :
+            case ( dt_Adis ) :
+            case ( dt_Aidx ) :
                 {
-                    bitmap ^= 7 << iib->sbitpos;
-                    sbits = 3;
+                    if ( j )
+                    {
+                        bitmap ^= 7 << iib->sbitpos;
+                        sbits = 3;
 
+                    }
+                    else
+                    {
+                        bitmap ^= 7 << iib->dbitpos;
+                        dbits = 3;
+                    }
                 }
-                else
-                {
-                    bitmap ^= 7 << iib->dbitpos;
-                    dbits = 3;
-                }
-
                 break;
-
-            case dt_AbsW:
-            case dt_AbsL:
-            case dt_Pdis:
-            case dt_Pidx:
+            case ( dt_AbsW ) :
+            case ( dt_AbsL ) :
+            case ( dt_Pdis ) :
+            case ( dt_Pidx ) :
                 break;
-
-            case dt_ImmB:
-            case dt_ImmW:
-            case dt_ImmL:
-            case dt_ImmS:
+            case ( dt_ImmB ) :
+            case ( dt_ImmW ) :
+            case ( dt_ImmL ) :
+            case ( dt_ImmS ) :
                 break;
-
-            case dt_Imm3:
-                if ( j )
+            case ( dt_Imm3 ) :
                 {
-                    bitmap ^= 7 << iib->sbitpos;
-                    sbits = 3;
+                    if ( j )
+                    {
+                        bitmap ^= 7 << iib->sbitpos;
+                        sbits = 3;
 
+                    }
+                    else
+                    {
+                        bitmap ^= 7 << iib->dbitpos;
+                        dbits = 3;
+                    }
                 }
-                else
-                {
-                    bitmap ^= 7 << iib->dbitpos;
-                    dbits = 3;
-                }
-
                 break;
-
-            case dt_Imm4:
-                if ( j )
+            case ( dt_Imm4 ) :
                 {
-                    bitmap ^= 15 << iib->sbitpos;
-                    sbits = 4;
+                    if ( j )
+                    {
+                        bitmap ^= 15 << iib->sbitpos;
+                        sbits = 4;
 
+                    }
+                    else
+                    {
+                        bitmap ^= 15 << iib->dbitpos;
+                        dbits = 4;
+                    }
                 }
-                else
-                {
-                    bitmap ^= 15 << iib->dbitpos;
-                    dbits = 4;
-                }
-
                 break;
-
-            case dt_Imm8:
-            case dt_Imm8s:
-                if ( j )
+            case ( dt_Imm8 ) :
+            case ( dt_Imm8s ) :
                 {
-                    bitmap ^= 255 << iib->sbitpos;
-                    sbits = 8;
+                    if ( j )
+                    {
+                        bitmap ^= 255 << iib->sbitpos;
+                        sbits = 8;
 
+                    }
+                    else
+                    {
+                        bitmap ^= 255 << iib->dbitpos;
+                        dbits = 8;
+                    }
                 }
-                else
+                break;
+            case ( dt_ImmV ) :
                 {
-                    bitmap ^= 255 << iib->dbitpos;
-                    dbits = 8;
+                    sbits = 12;
+                    bitmap ^= 0x0FFF;
                 }
-
                 break;
-
-            case dt_ImmV:
-                sbits = 12;
-                bitmap ^= 0x0FFF;
-                break;
-
-            case dt_Ill:
+            case ( dt_Ill ) :
                 /* no src/dst parameter */
                 break;
-
             default:
-                LOG_CRITICAL ( ( "CPU definition #%d incorrect", i ) );
+                {
+                    printf ( "CPU definition #%d incorrect\n", i );
+                }
                 return 1;
             }
         }
 
         if ( bitmap != 0xFFFF )
         {
-            LOG_CRITICAL ( ( "CPU definition #%d incorrect (0x%x)", i, bitmap ) );
+            printf ( "CPU definition #%d incorrect (0x%x)\n", i, bitmap );
             return 1;
         }
 
@@ -179,7 +186,7 @@ int cpu68k_init ( void )
 
                 if ( cpu68k_iibtable[bitmap] != NULL )
                 {
-                    LOG_CRITICAL ( ( "CPU definition #%d conflicts (0x%x)", i, bitmap ) );
+                    printf ( "CPU definition #%d conflicts (0x%x)", i, bitmap );
                     return 1;
                 }
 
@@ -204,8 +211,8 @@ int cpu68k_init ( void )
 
     if ( j != cpu68k_totalinstr )
     {
-        LOG_CRITICAL ( ( "Instruction count not verified (%d/%d)\n",
-                         cpu68k_totalinstr, i ) );
+        printf ( "Instruction count not verified (%d/%d)\n",
+                         cpu68k_totalinstr, i );
         return 1;
     }
 
@@ -222,8 +229,6 @@ int cpu68k_init ( void )
         movem_bit[i] = j;
     }
 
-    LOG_VERBOSE ( ( "CPU: %d instructions supported by %d routines",
-                    cpu68k_totalinstr, cpu68k_totalfuncs ) );
     iib = cpu68k_iibtable[0x2F39];
     return 0;
 }
@@ -245,7 +250,7 @@ void cpu68k_printipc ( t_ipc* ipc )
 void cpu68k_ipc ( uint32 addr68k, uint8* addr, t_iib* iib, t_ipc* ipc )
 {
     t_type type;
-    uint32* p;
+    uint32* p = NULL;
 
     ipc->opcode = LOCENDIAN16 ( * ( uint16* ) addr );
     ipc->wordlen = 1;
@@ -290,118 +295,142 @@ void cpu68k_ipc ( uint32 addr68k, uint8* addr, t_iib* iib, t_ipc* ipc )
     for ( type = 0; type < 2; type++ )
     {
         if ( type == tp_src )
+        {
             p = & ( ipc->src );
-
+        }
         else
+        {
             p = & ( ipc->dst );
+        }
 
         switch ( type == tp_src ? iib->stype : iib->dtype )
         {
-        case dt_Adis:
-            *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_Adis ) :
+            {
+                *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_Aidx:
-            *p = ( sint32 ) ( sint8 ) addr[1];
-            *p = ( *p & 0xFFFFFF ) | ( *addr ) << 24;
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_Aidx ) :
+            {
+                *p = ( sint32 ) ( sint8 ) addr[1];
+                *p = ( *p & 0xFFFFFF ) | ( *addr ) << 24;
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_AbsW:
-            *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_AbsW ) :
+            {
+                *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_AbsL:
-            *p = ( uint32 ) ( ( LOCENDIAN16 ( * ( uint16* ) addr ) << 16 ) +
-                              LOCENDIAN16 ( * ( uint16* ) ( addr + 2 ) ) );
-            ipc->wordlen += 2;
-            addr += 4;
-            addr68k += 4;
+        case ( dt_AbsL ) :
+            {
+                *p = ( uint32 ) ( ( LOCENDIAN16 ( * ( uint16* ) addr ) << 16 ) +
+                                  LOCENDIAN16 ( * ( uint16* ) ( addr + 2 ) ) );
+                ipc->wordlen += 2;
+                addr += 4;
+                addr68k += 4;
+            }
             break;
-
-        case dt_Pdis:
-            *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
-            *p += addr68k;            /* add PC of extension word (this word) */
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_Pdis ) :
+            {
+                *p = ( sint32 ) ( sint16 ) LOCENDIAN16 ( * ( uint16* ) addr );
+                *p += addr68k;            /* add PC of extension word (this word) */
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_Pidx:
-            *p = ( ( sint32 ) ( sint8 ) addr[1] ) + addr68k;
-            *p = ( *p & 0xFFFFFF ) | ( *addr ) << 24;
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_Pidx ) :
+            {
+                *p = ( ( sint32 ) ( sint8 ) addr[1] ) + addr68k;
+                *p = ( *p & 0xFFFFFF ) | ( *addr ) << 24;
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_ImmB:
-            /* low 8 bits of next 16 bit word is addr+1 */
-            *p = ( uint32 ) ( * ( uint8* ) ( addr + 1 ) );
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_ImmB ) :
+            {
+                /* low 8 bits of next 16 bit word is addr+1 */
+                *p = ( uint32 ) ( * ( uint8* ) ( addr + 1 ) );
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_ImmW:
-            *p = ( uint32 ) LOCENDIAN16 ( * ( uint16* ) addr );
-            ipc->wordlen++;
-            addr += 2;
-            addr68k += 2;
+        case ( dt_ImmW ) :
+            {
+                *p = ( uint32 ) LOCENDIAN16 ( * ( uint16* ) addr );
+                ipc->wordlen++;
+                addr += 2;
+                addr68k += 2;
+            }
             break;
-
-        case dt_ImmL:
-            *p = ( uint32 ) ( ( LOCENDIAN16 ( * ( uint16* ) addr ) << 16 ) +
-                              LOCENDIAN16 ( * ( uint16* ) ( addr + 2 ) ) );
-            ipc->wordlen += 2;
-            addr += 4;
-            addr68k += 4;
+        case ( dt_ImmL ) :
+            {
+                *p = ( uint32 ) ( ( LOCENDIAN16 ( * ( uint16* ) addr ) << 16 ) +
+                                  LOCENDIAN16 ( * ( uint16* ) ( addr + 2 ) ) );
+                ipc->wordlen += 2;
+                addr += 4;
+                addr68k += 4;
+            }
             break;
-
-        case dt_Imm3:
-            if ( type == tp_src )
-                *p = ( ipc->opcode >> iib->sbitpos ) & 7;
-
-            else
-                *p = ( ipc->opcode >> iib->dbitpos ) & 7;
-
+        case ( dt_Imm3 ) :
+            {
+                if ( type == tp_src )
+                {
+                    *p = ( ipc->opcode >> iib->sbitpos ) & 7;
+                }
+                else
+                {
+                    *p = ( ipc->opcode >> iib->dbitpos ) & 7;
+                }
+            }
             break;
-
-        case dt_Imm4:
-            if ( type == tp_src )
-                *p = ( ipc->opcode >> iib->sbitpos ) & 15;
-
-            else
-                *p = ( ipc->opcode >> iib->dbitpos ) & 15;
-
+        case ( dt_Imm4 ) :
+            {
+                if ( type == tp_src )
+                {
+                    *p = ( ipc->opcode >> iib->sbitpos ) & 15;
+                }
+                else
+                {
+                    *p = ( ipc->opcode >> iib->dbitpos ) & 15;
+                }
+            }
             break;
-
-        case dt_Imm8:
-            if ( type == tp_src )
-                *p = ( ipc->opcode >> iib->sbitpos ) & 255;
-
-            else
-                *p = ( ipc->opcode >> iib->dbitpos ) & 255;
-
+        case ( dt_Imm8 ) :
+            {
+                if ( type == tp_src )
+                {
+                    *p = ( ipc->opcode >> iib->sbitpos ) & 255;
+                }
+                else
+                {
+                    *p = ( ipc->opcode >> iib->dbitpos ) & 255;
+                }
+            }
             break;
-
-        case dt_Imm8s:
-            if ( type == tp_src )
-                *p = ( sint32 ) ( sint8 ) ( ( ipc->opcode >> iib->sbitpos ) & 255 );
-
-            else
-                *p = ( sint32 ) ( sint8 ) ( ( ipc->opcode >> iib->dbitpos ) & 255 );
-
+        case ( dt_Imm8s ) :
+            {
+                if ( type == tp_src )
+                {
+                    *p = ( sint32 ) ( sint8 ) ( ( ipc->opcode >> iib->sbitpos ) & 255 );
+                }
+                else
+                {
+                    *p = ( sint32 ) ( sint8 ) ( ( ipc->opcode >> iib->dbitpos ) & 255 );
+                }
+            }
             break;
-
         default:
             break;
         }
@@ -411,18 +440,21 @@ void cpu68k_ipc ( uint32 addr68k, uint8* addr, t_iib* iib, t_ipc* ipc )
 t_ipclist* cpu68k_makeipclist ( uint32 pc )
 {
     int size = 16;
-    t_ipclist* list = malloc ( sizeof ( t_ipclist ) + 16 * sizeof ( t_ipc ) + 8 );
-    t_ipc* ipc = ( t_ipc* ) ( list + 1 );
-    t_iib* iib;
+    t_ipclist* list = NULL;
+    t_ipc* ipc = NULL;
+    t_iib* iib = NULL;
     int instrs = 0;
-    uint16 required;
-    int i;
+    uint16 required = 0;
+    int i = 0;
 
+    list = calloc ( 1, sizeof ( t_ipclist ) + 16 * sizeof ( t_ipc ) + 8 );
     if ( list == NULL )
     {
-        printf ( "Out of memory" );
+        printf ( "Out of memory\n" );
         exit ( 1 );
     }
+
+    ipc = ( t_ipc* ) ( list + 1 );
 
     pc &= 0xffffff;
     list->pc = pc;
@@ -430,11 +462,13 @@ t_ipclist* cpu68k_makeipclist ( uint32 pc )
     list->norepeat = 0;
 
     if ( ( pc & 0xF00000 ) == 0x200000 )
+    {
         list->bank = bankaddress;
-
+    }
     else
+    {
         list->bank = 0;
-
+    }
 
     do
     {
@@ -444,7 +478,7 @@ t_ipclist* cpu68k_makeipclist ( uint32 pc )
         {
             if ( size > 10000 )
             {
-                printf ( "Something has gone seriously wrong @ %08X", ( unsigned ) pc );
+                printf ( "Something has gone seriously wrong @ %08X\n", ( unsigned ) pc );
                 exit ( 1 );
             }
 
@@ -453,7 +487,7 @@ t_ipclist* cpu68k_makeipclist ( uint32 pc )
 
             if ( list == NULL )
             {
-                printf ( "Out of memory whilst making ipc list @ %08X",
+                printf ( "Out of memory whilst making ipc list @ %08X\n",
                          ( unsigned ) pc );
                 exit ( 1 );
             }
@@ -527,8 +561,8 @@ t_ipclist* cpu68k_makeipclist ( uint32 pc )
 
 void cpu68k_clearcache ( void )
 {
-    int i;
-    t_ipclist* p, *n;
+    int i = 0;
+    t_ipclist* p = NULL, *n = NULL;
 
     for ( i = 0; i < LEN_IPCLISTTABLE; i++ )
     {
@@ -550,19 +584,8 @@ void cpu68k_clearcache ( void )
 
 void cpu68k_reset ( void )
 {
-    int i;
-    t_ipclist* p, *n;
-#if 0
-
-    if ( !cpu68k_ram )
-    {
-        /* +4 due to bug in DIRECTRAM hdr/mem68k.h code over-run of buffer */
-        if ( ( cpu68k_ram = malloc ( 0x10000 + 4 ) ) == NULL )
-            ui_err ( "Out of memory" );
-    }
-
-    memset ( cpu68k_ram, 0, 0x10000 );
-#endif
+    int i = 0;
+    t_ipclist* p = NULL, *n = NULL;
 
     regs.pc = fetchlong ( 4 );
     regs.regs[15] = fetchlong ( 0 );

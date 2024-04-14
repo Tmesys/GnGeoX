@@ -173,6 +173,7 @@ SDL_bool neo_config_init ( char* filename )
     case ( SYS_ARCADE_MVS ) :
     case ( SYS_HOME_AES ) :
     case ( SYS_UNIBIOS ) :
+    case ( SYS_CHECK ) :
         {
         }
         break;

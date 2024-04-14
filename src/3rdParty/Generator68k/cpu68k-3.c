@@ -6,6 +6,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "cpu68k-inline.h"
 
 void cpu_op_427a(t_ipc *ipc) /* MOVE */ {
@@ -2908,3 +2912,4 @@ void cpu_op_534a(t_ipc *ipc) /* MOVEA */ {
   PC+= 4;
 }
 
+#pragma GCC diagnostic pop

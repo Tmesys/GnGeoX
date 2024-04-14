@@ -21,7 +21,8 @@ typedef enum
     SYS_ARCADE_MVS = 0,
     SYS_HOME_AES = 1,
     SYS_UNIBIOS = 2,
-    SYS_MAX = 3,
+    SYS_CHECK = 3,
+    SYS_MAX = 4,
 } SYSTEM;
 
 typedef enum COUNTRY

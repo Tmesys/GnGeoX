@@ -245,7 +245,6 @@ int diss68k_getdumpline ( uint32 addr68k, uint8* addr, char* dumpline )
     if ( iibp )
     {
         sprintf ( p, " : %4d : %s\n", iibp->funcnum, dissline );
-
     }
     else
     {

@@ -12,3 +12,5 @@ void reg68k_external_autovector(int avno);
 
 void reg68k_internal_autovector(int avno);
 void reg68k_internal_vector(int vno, uint32 oldpc);
+
+void reg68k_printstat ( void );

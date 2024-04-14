@@ -99,13 +99,11 @@ SDL_bool neo_bios_load ( struct_gngeoxroms_game_roms* rom )
                 romfile = "uni-bios.rom";
             }
             break;
-
         case ( SYS_HOME_AES ) :
             {
                 romfile = "aes-bios.bin";
             }
             break;
-
         case ( SYS_ARCADE_MVS ) :
             {
                 switch ( gngeox_config.country )
@@ -136,7 +134,11 @@ SDL_bool neo_bios_load ( struct_gngeoxroms_game_roms* rom )
                 }
             }
             break;
-
+        case ( SYS_CHECK ) :
+            {
+                romfile = "checksys.sp1";
+            }
+            break;
         default:
             {
                 zlog_error ( gngeox_config.loggingCat, "Unknown system %d ! Please check your configuration file", gngeox_config.systemtype );

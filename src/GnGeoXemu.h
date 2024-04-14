@@ -22,7 +22,7 @@
 static void neo_sys_reset ( void );
 #endif // _GNGEOX_EMU_C_
 
-void neo_sys_init ( void );
+SDL_bool neo_sys_init ( void )  __attribute__ ( ( warn_unused_result ) );
 void neo_sys_main_loop ( void );
 void neo_sys_interrupt ( void );
 void neo_sys_update_events ( void );

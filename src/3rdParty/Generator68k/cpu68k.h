@@ -42,8 +42,7 @@ extern unsigned int cpu68k_frozen;
 extern t_iib iibs[];
 extern int iibs_num;
 
-
-int cpu68k_init ( void );
+int cpu68k_init ( uint8* );
 void cpu68k_printipc ( t_ipc* ipc );
 void cpu68k_ipc ( uint32 addr68k, uint8* addr, t_iib* iib, t_ipc* ipc );
 void cpu68k_reset ( void );

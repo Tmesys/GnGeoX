@@ -6,6 +6,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "cpu68k-inline.h"
 
 void cpu_op_1032a(t_ipc *ipc) /* Bcc */ {
@@ -356,3 +360,4 @@ void cpu_op_1063a(t_ipc *ipc) /* BSR */ {
   PC = srcdata;
 }
 
+#pragma GCC diagnostic pop

@@ -34,7 +34,7 @@
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXprofiler.h"
 #include "GnGeoXdebug.h"
-#include "GnGeoXym2610intf.h"
+#include "GnGeoXym2610.h"
 #include "GnGeoXsound.h"
 #include "GnGeoXscreen.h"
 #include "GnGeoXneocrypt.h"
@@ -50,7 +50,7 @@
 *
 */
 /* ******************************************************************************************************************/
-void neo_sys_init ( void )
+SDL_bool neo_sys_init ( void )
 {
     /*
         char * test = NULL;
@@ -70,9 +70,16 @@ void neo_sys_init ( void )
 
     pd4990a_init();
 
-    init_sound();
+    /* @note (Tmesys#1#13/04/2024): MUST always be after screen initialization. */
+    if ( neo_sound_init() == SDL_FALSE )
+    {
+        return ( SDL_FALSE );
+    }
+    atexit ( neo_sound_close );
 
     neo_sys_reset();
+
+    return ( SDL_TRUE );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -155,7 +162,7 @@ void neo_sys_update_events ( void )
             break;
         case ( SDL_CONTROLLERAXISMOTION ) :
             {
-                zlog_info ( gngeox_config.loggingCat, "Axis number %d axis %d value %d", event.caxis.which, event.caxis.axis, event.caxis.value );
+                //zlog_info ( gngeox_config.loggingCat, "Axis number %d axis %d value %d", event.caxis.which, event.caxis.axis, event.caxis.value );
                 neo_controllers_update_axis ( event.caxis.which, event.caxis.axis, event.caxis.value );
             }
             break;
@@ -308,8 +315,6 @@ void neo_sys_main_loop ( void )
 #endif
         profiler_start ( PROF_ALL );
     }
-
-    pause_audio ( 1 );
 }
 
 #ifdef _GNGEOX_EMU_C_

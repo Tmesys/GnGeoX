@@ -6,6 +6,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "cpu68k-inline.h"
 
 void cpu_op_1317a(t_ipc *ipc) /* AND */ {
@@ -2546,3 +2550,4 @@ void cpu_op_1397a(t_ipc *ipc) /* EXG */ {
   PC+= 2;
 }
 
+#pragma GCC diagnostic pop

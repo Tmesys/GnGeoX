@@ -21,7 +21,7 @@
 #include "zlog.h"
 
 #include "GnGeoXvideo.h"
-#include "GnGeoXym2610intf.h"
+#include "GnGeoXym2610.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"

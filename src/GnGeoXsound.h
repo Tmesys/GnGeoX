@@ -18,15 +18,12 @@
 
 #include <SDL2/SDL.h>
 
-#define NB_SEGMENT 20
-#define MIXER_MAX_CHANNELS 16
-#define BUFFER_LEN 16384
 /* better resolution */
+#define NB_CHANNELS 2
 #define NB_SAMPLES 512
+#define BUFFER_LEN (NB_SAMPLES*NB_CHANNELS)
 
-SDL_bool init_sound ( void );
-SDL_bool init_sdl_audio ( void ) __attribute__ ( ( warn_unused_result ) );
-void close_sdl_audio ( void );
-void pause_audio ( Sint32 );
+SDL_bool neo_sound_init ( void ) __attribute__ ( ( warn_unused_result ) );
+void neo_sound_close ( void );
 
 #endif

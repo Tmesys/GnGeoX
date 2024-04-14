@@ -5,10 +5,6 @@
 #ifndef _GENERATOR_H_
 #define _GENERATOR_H_
 
-
-/* VERSION set by autoconf */
-/* PACKAGE set by autoconf */
-
 #include <SDL2/SDL_types.h>
 #define uint8     Uint8
 #define uint16    Uint16
@@ -18,7 +14,6 @@
 #define sint32    Sint32
 
 #define GEN_RAMLENGTH 64*1024
-
 #define LEN_IPCLISTTABLE 16*1024
 
 /*
@@ -50,6 +45,20 @@
                          (((y)<<8)  & 0x00FF0000) + \
                          (((y)<<24) & 0xFF000000) )
 #endif
+
+#define IIB_FLAG_X 1<<0
+#define IIB_FLAG_N 1<<1
+#define IIB_FLAG_Z 1<<2
+#define IIB_FLAG_V 1<<3
+#define IIB_FLAG_C 1<<4
+
+#define SR_CFLAG (1<<0)
+#define SR_VFLAG (1<<1)
+#define SR_ZFLAG (1<<2)
+#define SR_NFLAG (1<<3)
+#define SR_XFLAG (1<<4)
+#define SR_SFLAG (1<<13)
+#define SR_TFLAG (1<<15)
 
 typedef enum
 {
@@ -133,12 +142,6 @@ typedef struct
     unsigned int clocks;      /* number of external clock periods */
 } t_iib;                    /* instruction information block */
 
-#define IIB_FLAG_X 1<<0
-#define IIB_FLAG_N 1<<1
-#define IIB_FLAG_Z 1<<2
-#define IIB_FLAG_V 1<<3
-#define IIB_FLAG_C 1<<4
-
 typedef struct
 {
     t_mnemonic mnemonic;
@@ -195,37 +198,5 @@ typedef struct
     uint32 regs[16];
     uint16 pending;
 } t_regs;
-
-#define SR_CFLAG (1<<0)
-#define SR_VFLAG (1<<1)
-#define SR_ZFLAG (1<<2)
-#define SR_NFLAG (1<<3)
-#define SR_XFLAG (1<<4)
-#define SR_SFLAG (1<<13)
-#define SR_TFLAG (1<<15)
-
-/* Steve Snake / Charles MacDonald (msgid <3C427237.3CEC@value.net>) -
- * TAS on Genesis 1 and 2 (but not 3) do not write back with TAS */
-//#define BROKEN_TAS
-
-#ifndef GENERATOR_LOGGING
-#  define LOG_DEBUG3(x)   /* */
-#  define LOG_DEBUG2(x)   /* */
-#  define LOG_DEBUG1(x)   /* */
-#  define LOG_USER(x)     /* */
-#  define LOG_VERBOSE(x)  /* */
-#  define LOG_NORMAL(x)   /* */
-#  define LOG_CRITICAL(x) /* */
-#  define LOG_REQUEST(x)  /* */
-#else
-#  define LOG_DEBUG3(x)   /* ui_log_debug3 ## x */
-#  define LOG_DEBUG2(x)   /* ui_log_debug2 ## x */
-#  define LOG_DEBUG1(x)   /* ui_log_debug1 ## x */
-#  define LOG_USER(x)     ui_log_user ## x
-#  define LOG_VERBOSE(x)  ui_log_verbose ## x
-#  define LOG_NORMAL(x)   ui_log_normal ## x
-#  define LOG_CRITICAL(x) ui_log_critical ## x
-#  define LOG_REQUEST(x)  ui_log_request ## x
-#endif
 
 #endif

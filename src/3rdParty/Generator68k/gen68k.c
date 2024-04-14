@@ -76,10 +76,15 @@ int main ( int argc, char* argv[] )
 
         /* output header */
         fprintf ( output, HEADER, i );
+        fprintf ( output, "#pragma GCC diagnostic push\n" );
+        fprintf ( output, "#pragma GCC diagnostic ignored \"-Wmissing-declarations\"\n" );
+        fprintf ( output, "#pragma GCC diagnostic ignored \"-Wunused-variable\"\n" );
+        fprintf ( output, "#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n" );
         fprintf ( output, "#include \"cpu68k-inline.h\"\n\n" );
 
         generate ( output, i );
 
+        fprintf ( output, "#pragma GCC diagnostic pop\n" );
         /* close output */
         if ( fclose ( output ) ) {
             perror ( "fclose output" );
