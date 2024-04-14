@@ -71,13 +71,31 @@ typedef enum
     CONTROLLER_PLAYER_MAX = 2,
 } enum_gngeoxcontroller_player;
 
+typedef enum
+{
+    VECT_X = 0,
+    VECT_Y = 1,
+} enum_gngeoxcontroller_vcord;
+
+typedef enum
+{
+    DIR_UL_L = 0,
+    DIR_UL_U = 1,
+    DIR_UR_R = 2,
+    DIR_UR_U = 3,
+    DIR_BL_B = 4,
+    DIR_BL_L = 5,
+    DIR_BR_B = 6,
+    DIR_BR_R = 7,
+} enum_gngeoxcontroller_dirindex;
+
 typedef struct
 {
     SDL_GameController *controller;
     SDL_JoystickID controller_id;
     SDL_JoystickGUID controller_guid;
-    Sint16 last_axis1_x_value;
-    Sint16 last_axis0_y_value;
+    Sint16 axis0_x_value;
+    Sint16 axis1_y_value;
 } struct_gngeoxcontroller_player;
 
 #ifdef _GNGEOX_CONTROLLER_C_

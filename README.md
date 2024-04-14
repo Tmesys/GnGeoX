@@ -44,40 +44,8 @@ You can start a game with the folowing command:
 where game is the name of the rom zip file, for example mslug for Metal Slug
 
 Usage: gngeo [OPTION]... ROMSET
-Emulate the NeoGeo rom designed by ROMSET
 
-      --68kclock=x           Overclock the 68k by x% (-x% for underclk)
-      --autoframeskip        Enable auto frameskip
-      --bench                Draw x frames, then quit and show average fps
-  -B, --biospath=PATH        Tell gngeo where your neogeo bios is
-  -b, --blitter=Blitter      Use the specified blitter (help for a list)
-      --country=...          Set the contry to japan, asia, usa or europe
-  -D, --debug                Start with inline debuger
-  -e, --effect=Effetc        Use the specified effect (help for a list)
-      --forcepc              Force the PC to a correct value at startup
-  -f, --fullscreen           Start gngeo in fullscreen
-  -d, --gngeo.dat=PATH       Tell gngeo where his ressource file is
-  -h, --help                 Print this help and exit
-  -H, --hwsurface            Use hardware surface for the screen
-  -I, --interpolation        Merge the last frame and the current
-      --joystick             Enable joystick support
-  -l, --listgame             Show all the game available in the romrc
-      --libglpath=PATH       Path to your libGL.so
-  -P, --pal                  Use PAL timing (buggy)
-  -r, --raster               Enable the raster interrupt
-  -i, --rompath=PATH         Tell gngeo where your roms are
-      --sound                Enable sound
-      --showfps              Show FPS at startup
-      --sleepidle            Sleep when idle
-      --screen320            Use 320x224 output screen (instead 304x224)
-      --system=...           Set the system to home, arcade or unibios
-      --scale=X              Scale the resolution by X
-      --samplerate=RATE      Set the sample rate to RATE
-  -t, --transpack=Transpack  Use the specified transparency pack
-  -v, --version              Show version and exit
-      --z80clock=x           Overclock the Z80 by x% (-x% for underclk)
-
-## LICENSE:
+## LICENSE :
 ### GnGeo
 Gngeo is build arround many different block with various license.
 The original code is released under the GPLV2 with this special exception:

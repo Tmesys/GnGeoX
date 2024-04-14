@@ -30,6 +30,25 @@
 #include "GnGeoXconfig.h"
 
 struct_gngeoxcontroller_player players[CONTROLLER_PLAYER_MAX];
+const Sint32 direction_vectors_2[8][2] =
+{
+    /* this is left */
+    -32767, -16384,
+        /* this is up */
+        -16384, -32767,
+        /* this is right */
+        32767, -16384,
+        /* this is up */
+        16384, -32767,
+        /* this is bottom */
+        -16384, 32767,
+        /* this is left */
+        -32767, 16384,
+        /* this is bottom */
+        16384, 32767,
+        /* this is right */
+        32767, 32767
+    };
 /* ******************************************************************************************************************/
 /*!
 * \brief  Initializes event system.
@@ -490,11 +509,11 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
         {
             if ( axis == SDL_CONTROLLER_AXIS_LEFTX )
             {
-                players[loop].last_axis1_x_value = value;
+                players[loop].axis0_x_value = value;
             }
             if ( axis == SDL_CONTROLLER_AXIS_LEFTY )
             {
-                players[loop].last_axis0_y_value = value;
+                players[loop].axis1_y_value = value;
             }
 
             player_id = loop;
@@ -517,6 +536,7 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     The square representation looks like a rectangle, but let's imagine somehow
     it's a square :
 
+          (Y)
     A------B------A1
     |*     |     *|
     | * P1 |    * |
@@ -524,14 +544,14 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     |   *  |  *   |
     | P2 * | *    |
     |     *|*     |
-    D------C------D1
+    D------C------D1 (X)
     |     *|*     |
     |    * | *    |
     |   *  |  *   |
     |  *   |   *  |
     | *    |    * |
     |*     |     *|
-   A3------B'-----A2
+    A3------B'-----A2
 
     Considering the upper left square :
     A(-32767,-32767) and c(0,0)
@@ -553,128 +573,151 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     BL CA is (-32767,32767)
     BR CA is (32767,32767)
 
+    Of course, we gonna make things more complicated ;)
     */
 
-    enum
+    if (
+        ( players[player_id].axis0_x_value == -CONTROLLER_DEAD_ZONE
+          && players[player_id].axis1_y_value == -CONTROLLER_DEAD_ZONE ) ||
+        ( players[player_id].axis0_x_value == CONTROLLER_DEAD_ZONE
+          && players[player_id].axis1_y_value == CONTROLLER_DEAD_ZONE ) ||
+        ( players[player_id].axis0_x_value == -CONTROLLER_DEAD_ZONE
+          && players[player_id].axis1_y_value == CONTROLLER_DEAD_ZONE ) ||
+        ( players[player_id].axis0_x_value == CONTROLLER_DEAD_ZONE
+          && players[player_id].axis1_y_value == -CONTROLLER_DEAD_ZONE )
+    )
     {
-        VECT_X = 0,
-        VECT_Y = 1,
-    };
-
-    enum
-    {
-        DIR_UL = 0,
-        DIR_UR = 1,
-        DIR_BL = 2,
-        DIR_BR = 3,
-    };
-
-    Uint32 direction_vectors[4][2] =
-    {
-        -32767, -32767,
-            32767, -32767,
-            -32767, 32767,
-            32767, 32767
-        };
-/*
-    enum
-    {
-        DIR_UL = 0,
-        DIR_UR = 1,
-        DIR_BL = 2,
-        DIR_BR = 3,
-    };
-*/
-    Uint32 direction_vectors_2[8][2] =
-    {
-        /* this is left */
-        -32767, -16384,
-        /* this is up */
-        -16384, -32767,
-        /* this is up */
-            32767, -16384,
-        /* this is right */
-            16384, -32767,
-        /* this is bottom */
-            -16384, 32767,
-        /* this is left */
-            -32767, 16384,
-        /* this is bottom */
-            16384, 32767,
-        /* this is right */
-            32767, 32767
-        };
+        //zlog_info ( gngeox_config.loggingCat, "CENTER" );
+        return;
+    }
 
     /* direction UP / LEFT */
-    if ( players[player_id].last_axis1_x_value < -CONTROLLER_DEAD_ZONE
-            && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value <= -CONTROLLER_DEAD_ZONE
+            && players[player_id].axis1_y_value <= -CONTROLLER_DEAD_ZONE )
     {
-        Sint32 product = ( direction_vectors[DIR_UL][VECT_X] * players[player_id].last_axis0_y_value )
-                         - ( direction_vectors[DIR_UL][VECT_Y] * players[player_id].last_axis1_x_value );
+        Sint32 product = 0;
+        product = ( direction_vectors_2[DIR_UL_L][VECT_X] * players[player_id].axis1_y_value )
+                  - ( direction_vectors_2[DIR_UL_L][VECT_Y] * players[player_id].axis0_x_value );
 
         if ( product < 0 )
         {
-            zlog_info ( gngeox_config.loggingCat, "LEFT" );
+            //zlog_info ( gngeox_config.loggingCat, "LEFT" );
+            update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
         }
-        if ( product >= 0 )
+        else
         {
-            zlog_info ( gngeox_config.loggingCat, "UP" );
+            product = ( direction_vectors_2[DIR_UL_U][VECT_X] * players[player_id].axis1_y_value )
+                      - ( direction_vectors_2[DIR_UL_U][VECT_Y] * players[player_id].axis0_x_value );
+            if ( product >= 0 )
+            {
+                //zlog_info ( gngeox_config.loggingCat, "UP" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+            }
+            else
+            {
+                zlog_info ( gngeox_config.loggingCat, "UP&LEFT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+            }
         }
+        return;
     }
 
     /* direction UP / RIGHT */
-    if ( players[player_id].last_axis1_x_value > CONTROLLER_DEAD_ZONE
-            && players[player_id].last_axis0_y_value < -CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value >= CONTROLLER_DEAD_ZONE
+            && players[player_id].axis1_y_value <= -CONTROLLER_DEAD_ZONE )
     {
-        Sint32 product = ( direction_vectors[DIR_UR][VECT_X] * players[player_id].last_axis0_y_value )
-                         - ( direction_vectors[DIR_UR][VECT_Y] * players[player_id].last_axis1_x_value );
-        if ( product < 0 )
-        {
-            zlog_info ( gngeox_config.loggingCat, "UP" );
-        }
+        Sint32 product = 0;
+        product = ( direction_vectors_2[DIR_UR_R][VECT_X] * players[player_id].axis1_y_value )
+                  - ( direction_vectors_2[DIR_UR_R][VECT_Y] * players[player_id].axis0_x_value );
         if ( product >= 0 )
         {
-            zlog_info ( gngeox_config.loggingCat, "RIGHT" );
+            //zlog_info ( gngeox_config.loggingCat, "RIGHT" );
+            update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
         }
+        else
+        {
+            product = ( direction_vectors_2[DIR_UR_U][VECT_X] * players[player_id].axis1_y_value )
+                      - ( direction_vectors_2[DIR_UR_U][VECT_Y] * players[player_id].axis0_x_value );
+
+            if ( product < 0 )
+            {
+                //zlog_info ( gngeox_config.loggingCat, "UP" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+            }
+            else
+            {
+                //zlog_info ( gngeox_config.loggingCat, "UP&RIGHT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
+            }
+        }
+        return;
     }
 
     /* direction BOTTOM / LEFT */
-    if ( players[player_id].last_axis1_x_value < -CONTROLLER_DEAD_ZONE
-            && players[player_id].last_axis0_y_value > CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value <= -CONTROLLER_DEAD_ZONE
+            && players[player_id].axis1_y_value >= CONTROLLER_DEAD_ZONE )
     {
-        Sint32 product = ( direction_vectors[DIR_BL][VECT_X] * players[player_id].last_axis0_y_value )
-                         - ( direction_vectors[DIR_BL][VECT_Y] * players[player_id].last_axis1_x_value );
+        Sint32 product = 0;
+        product = ( direction_vectors_2[DIR_BL_B][VECT_X] * players[player_id].axis1_y_value )
+                  - ( direction_vectors_2[DIR_BL_B][VECT_Y] * players[player_id].axis0_x_value );
         if ( product < 0 )
         {
-            zlog_info ( gngeox_config.loggingCat, "BOTTOM" );
+            //zlog_info ( gngeox_config.loggingCat, "BOTTOM" );
+            update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
         }
-        if ( product >= 0 )
+        else
         {
-            zlog_info ( gngeox_config.loggingCat, "LEFT" );
+            product = ( direction_vectors_2[DIR_BL_L][VECT_X] * players[player_id].axis1_y_value )
+                      - ( direction_vectors_2[DIR_BL_L][VECT_Y] * players[player_id].axis0_x_value );
+            if ( product >= 0 )
+            {
+                //zlog_info ( gngeox_config.loggingCat, "LEFT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+            }
+            else
+            {
+                //zlog_info ( gngeox_config.loggingCat, "BOTTOM&LEFT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
+            }
         }
+        return;
     }
 
     /* direction BOTTOM / RIGHT */
-    if ( players[player_id].last_axis1_x_value > CONTROLLER_DEAD_ZONE
-            && players[player_id].last_axis0_y_value > CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value >= CONTROLLER_DEAD_ZONE
+            && players[player_id].axis1_y_value >= CONTROLLER_DEAD_ZONE )
     {
-        Sint32 product = ( direction_vectors[DIR_BR][VECT_X] * players[player_id].last_axis0_y_value )
-                         - ( direction_vectors[DIR_BR][VECT_Y] * players[player_id].last_axis1_x_value );
-        if ( product < 0 )
-        {
-            zlog_info ( gngeox_config.loggingCat, "RIGHT" );
-        }
+        Sint32 product = 0;
+        product = ( direction_vectors_2[DIR_BR_B][VECT_X] * players[player_id].axis1_y_value )
+                  - ( direction_vectors_2[DIR_BR_B][VECT_Y] * players[player_id].axis0_x_value );
         if ( product >= 0 )
         {
-            zlog_info ( gngeox_config.loggingCat, "BOTTOM" );
+            //zlog_info ( gngeox_config.loggingCat, "BOTTOM" );
+            update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
         }
+        else
+        {
+            product = ( direction_vectors_2[DIR_BR_R][VECT_X] * players[player_id].axis1_y_value )
+                      - ( direction_vectors_2[DIR_BR_R][VECT_Y] * players[player_id].axis0_x_value );
+            if ( product < 0 )
+            {
+                //zlog_info ( gngeox_config.loggingCat, "RIGHT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+            }
+            else
+            {
+                //zlog_info ( gngeox_config.loggingCat, "BOTTOM&RIGHT" );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
+                update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
+            }
+        }
+        return;
     }
-    /*
-        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
-        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
-        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_DOWN );
-        update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_RIGHT );
-    */
+    zlog_info ( gngeox_config.loggingCat, "Undetected x=%d y=%d", players[player_id].axis0_x_value, players[player_id].axis1_y_value );
+
 }
 /* ******************************************************************************************************************/
 /*!

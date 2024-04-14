@@ -162,7 +162,6 @@ void neo_sys_update_events ( void )
             break;
         case ( SDL_CONTROLLERAXISMOTION ) :
             {
-                //zlog_info ( gngeox_config.loggingCat, "Axis number %d axis %d value %d", event.caxis.which, event.caxis.axis, event.caxis.value );
                 neo_controllers_update_axis ( event.caxis.which, event.caxis.axis, event.caxis.value );
             }
             break;
