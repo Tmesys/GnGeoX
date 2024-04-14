@@ -1,7 +1,8 @@
 # GnGeoX : Another fork of the Gngeo NeoGeo emulator for linux (and maybe some other unix)
 <p align="center">
-  <img src="ressources/neogeo.png" width="410" height="410">
+  <img src="ressources/neogeo.png" width="205" height="205">
 </p>
+
 ## GnGeoX:
 GnGeoX is a fork of GnGeo that aims to modernize this great emulator yet giving it a new refresh. It is not the only one, i hope it will be for some interrest.
 It has also an educationnal purpose : For me at first, to learn about Neo Geo software and hardware, but also, document all what is known to date about this piece of gaming history.
