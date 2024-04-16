@@ -2,19 +2,54 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Linux X86_64 Debug" />
-	<File name="cpu68k-4.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="diss68k.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="177080" topLine="5244" />
+			<Cursor1 position="4389" topLine="199" />
+		</Cursor>
+	</File>
+	<File name="mem68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="118" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="cpu68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="646" topLine="30" />
 		</Cursor>
 	</File>
 	<File name="cpu68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="922" topLine="271" />
+			<Cursor1 position="15463" topLine="557" />
 		</Cursor>
 	</File>
 	<File name="reg68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3916" topLine="139" />
+			<Cursor1 position="677" topLine="36" />
+		</Cursor>
+	</File>
+	<File name="tab68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="317" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="cpu68k-0.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1056" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="cpu68k-4.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="177267" topLine="5248" />
+		</Cursor>
+	</File>
+	<File name="cpu68k-b.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1017" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="cpu68k-inline.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="731" topLine="24" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

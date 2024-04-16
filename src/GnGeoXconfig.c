@@ -19,9 +19,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-
 #include "zlog.h"
 #include "qlibc.h"
+
 #include "GnGeoXconfig.h"
 #include "GnGeoXemu.h"
 #include "GnGeoXscreen.h"

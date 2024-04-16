@@ -24,6 +24,7 @@ static void neo_sys_reset ( void );
 
 SDL_bool neo_sys_init ( void )  __attribute__ ( ( warn_unused_result ) );
 void neo_sys_main_loop ( void );
+void neo_sys_main_loop_debug ( void );
 void neo_sys_interrupt ( void );
 void neo_sys_update_events ( void );
 

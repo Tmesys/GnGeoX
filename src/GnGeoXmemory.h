@@ -48,14 +48,13 @@ typedef struct
     Uint8* fix_board_usage;
     Uint8* fix_game_usage;
     Uint8 game_vector[0x80];
-    Sint32 current_vector;
     /* Put it in memory.vid? use zoom table in rom */
     Uint8* ng_lo;
     Uint32 nb_of_tiles;
-    /* internal representation of inputs */
+    /* Inputs registers representation */
     Uint8 p1cnt, p2cnt, status_a, status_b;
     Uint8 test_switch;
-    /* Sound control */
+    /* Sound control registers representation */
     Uint8 z80_command;
     Uint8 z80_command_reply;
     /* crypted rom bankswitch system */
@@ -77,7 +76,7 @@ extern Uint8* fix_usage;
 extern Uint8 sram_lock;
 /* 68k cpu Banking control */
 /* current bank */
-extern Uint32 bankaddress;
+extern Uint32 cpu_68k_bankaddress;
 #endif // _GNGEOX_MEMORY_C_
 
 /* memory handler prototype */

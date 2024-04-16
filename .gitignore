@@ -26,3 +26,7 @@
 /Bin/zlog.lock
 /Bin/transpack_db.ref
 /src/GnGeo.cscope_file_list
+/src/3rdParty/Z80/Z80.cscope_file_list
+/src/3rdParty/Z80/cscope.out
+/src/3rdParty/Generator68k/Generator68K.cscope_file_list
+/src/3rdParty/Generator68k/cscope.out

@@ -95,6 +95,7 @@ static Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha )
     ob = ( ( sb * alpha ) + ( db * beta ) ) / 255;
 
     blended_color = COLOR_RGB24_MAKE ( alpha, or, og, ob );
+
     return ( blended_color );
 }
 /* ******************************************************************************************************************/
@@ -823,9 +824,9 @@ void draw_screen ( void )
 void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
 {
     Sint32 sx = 0, sy = 0, my = 0, zx = 1, zy = 1;
-    Sint32 offs = 0, /*count,*/ y = 0;
+    Sint32 offs = 0, y = 0;
     Sint32 tileno = 0, tileatr = 0;
-    Sint32 tctl1 = 0, tctl2 = 0, tctl3 = 0;
+    Uint16 scb3 = 0, scb4 = 0, scb2 = 0;
     Uint8* vidram = neogeo_memory.vid.ram;
     static SDL_Rect clear_rect;
     Sint32 yy = 0;
@@ -855,33 +856,33 @@ void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
     /* Draw sprites */
     for ( Sint32 count = 0; count < 0x300; count += 2 )
     {
-        tctl3 = READ_WORD ( &vidram[0x10000 + count] );
-        tctl1 = READ_WORD ( &vidram[0x10400 + count] );
-        tctl2 = READ_WORD ( &vidram[0x10800 + count] );
+        scb2 = READ_WORD ( &vidram[0x10000 + count] );
+        scb3 = READ_WORD ( &vidram[0x10400 + count] );
+        scb4 = READ_WORD ( &vidram[0x10800 + count] );
 
         /* If this bit is set this new column is placed next to last one */
-        if ( tctl1 & 0x40 )
+        if ( scb3 & 0x40 )
         {
             /* new x */
             sx += zx + 1;
             /* Get new zoom for this column */
-            zx = ( tctl3 >> 8 ) & 0x0f;
+            zx = ( scb2 >> 8 ) & 0x0f;
         }
         /* nope it is a new block */
         else
         {
             /* Sprite scaling */
-            zx = ( tctl3 >> 8 ) & 0x0f; /* zomm x */
-            zy = tctl3 & 0xff; /* zoom y */
+            zx = ( scb2 >> 8 ) & 0x0f; /* zomm x */
+            zy = scb2 & 0xff; /* zoom y */
 
             /* x pos 0 - 512  */
-            sx = ( tctl2 >> 7 );
+            sx = ( scb4 >> 7 );
 
             /* Number of tiles in this strip */
-            my = tctl1 & 0x3f;
+            my = scb3 & 0x3f;
 
             /* y pos 512 - 0 */
-            sy = 512 - ( tctl1 >> 7 );
+            sy = 512 - ( scb3 >> 7 );
 
             if ( my > 0x20 )
             {

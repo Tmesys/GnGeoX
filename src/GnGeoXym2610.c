@@ -27,7 +27,7 @@
 #include "zlog.h"
 #include "qlibc.h"
 
-#include "3rdParty/MameZ80/Z80.h"
+#include "3rdParty/Z80/Z80.h"
 #include "GnGeoXym2610.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"

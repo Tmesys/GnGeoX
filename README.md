@@ -28,8 +28,8 @@ Customized version of the library by James Ponder (included in this code distrib
 Customized version of the library by Juergen Buchmueller (included in this code distribution).
 ### OpenGL:
 For hardware accelerated blitters.
-### codblocks:
-GnGeoX uses codeblocks workspace and project files to build GnGeoX.
+### code::blocks:
+GnGeoX uses codeblocks workspace and project files to build binaries.
 
 ## INSTALLATION :
 
@@ -105,6 +105,8 @@ The original code is released under this licence :
 - The author of this copywritten work reserves the right to change the terms of its usage and license at any time, including retroactively.
 - This entire notice must remain in the source code.
 
+Disassembler is copyrighted by Marat Fayzullin 1995-2007.
+
 ### Generator (68 emulation layer)
 The original code is released under the GPLV2.
 
@@ -122,7 +124,7 @@ modification, are permitted provided that the following conditions are met:
    this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
-this software is provided by the copyright holders and contributors "as is"
+This software is provided by the copyright holders and contributors "as is"
 and any express or implied warranties, including, but not limited to, the
 implied warranties of merchantability and fitness for a particular purpose
 are disclaimed. in no event shall the copyright owner or contributors be
@@ -135,11 +137,11 @@ arising in any way out of the use of this software, even if advised of the
 possibility of such damage.
 
 ### bstrlib
-The original code is released under the GPLV2.
+The original source code is released under the GPLV2.
 
 ### Zlog
-The original code is released under the LGPL.
+The original source code is released under the LGPL.
 
-###Titillium Web TTF
+### Titillium Web TTF
 Copyright (c) 2009-2011 by Accademia di Belle Arti di Urbino and students of MA course of Visual design. Some rights reserved.
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL

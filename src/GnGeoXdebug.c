@@ -43,7 +43,6 @@
 /* @fixme (Tmesys#1#12/04/2022): Prototype should be in some gen68k library header */
 Sint32 diss68k_getdumpline ( Uint32 addr68k, Uint8* addr, char* dumpline );
 
-static Sint32 gngeoxdebug_debug_step = 0;
 static Sint32 nb_breakpoints = 0;
 static Sint32 breakpoints[GNGEOXDEBUG_MAX_BREAK_POINT];
 static Uint32 backtrace[GNGEOXDEBUG_MAX_BACK_TRACE];
@@ -240,18 +239,18 @@ static Uint32 gen68k_disassemble ( Sint32 program_counter, Sint32 nb_instr )
 /* ******************************************************************************************************************/
 static void gen68k_dumpreg ( void )
 {
-    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   %c%c%c%c%c %04x\n",
+    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   %c%c%c%c%c %04x",
                  regs.regs[0], regs.regs[4], regs.regs[8], regs.regs[12],
                  ( ( regs.sr.sr_int >> 4 ) & 1 ? 'X' : '-' ),
                  ( ( regs.sr.sr_int >> 3 ) & 1 ? 'N' : '-' ),
                  ( ( regs.sr.sr_int >> 2 ) & 1 ? 'Z' : '-' ),
                  ( ( regs.sr.sr_int >> 1 ) & 1 ? 'V' : '-' ),
                  ( ( regs.sr.sr_int ) & 1 ? 'C' : '-' ), regs.sr.sr_int );
-    zlog_debug ( gngeox_config.loggingCat, "d1=%08x   d5=%08x   a1=%08x   a5=%08x\n",
+    zlog_debug ( gngeox_config.loggingCat, "d1=%08x   d5=%08x   a1=%08x   a5=%08x",
                  regs.regs[1], regs.regs[5], regs.regs[9], regs.regs[13] );
-    zlog_debug ( gngeox_config.loggingCat, "d2=%08x   d6=%08x   a2=%08x   a6=%08x\n",
+    zlog_debug ( gngeox_config.loggingCat, "d2=%08x   d6=%08x   a2=%08x   a6=%08x",
                  regs.regs[2], regs.regs[6], regs.regs[10], regs.regs[14] );
-    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   usp=%08x\n",
+    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   usp=%08x",
                  regs.regs[3], regs.regs[7], regs.regs[11], regs.regs[15], regs.sp );
 
 }
@@ -272,10 +271,10 @@ void cpu_68k_dpg_step ( void )
     if ( nb_cycle == 0 )
     {
         /* update event etc. */
-        neo_sys_main_loop();
+        neo_sys_main_loop_debug();
     }
 
-    cycle = cpu_68k_run_step();
+    cycle = reg68k_external_step();
     add_bt ( cpu_68k_getpc() );
     line_cycle += cycle;
     nb_cycle += cycle;
@@ -347,10 +346,10 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
         {
         case ( '?' ) :
             {
-                printf ( "B [address]           Add a breakpoint at [address]\n"
-                         "T                     Show backtrace\n"
-                         "N [address]           Del breakpoint at [address]\n"
-                         "R                     Run until breakpoint\n"
+                printf ( "B [address]           Add a break-point at [address]\n"
+                         "T                     Show back-trace\n"
+                         "N [address]           Del break-point at [address]\n"
+                         "R                     Run until break-point\n"
                          "b [address]           Run continuously, break at PC=[address]\n"
                          "d [address]           Dump memory, starting at [address]\n"
                          "h                     Hardware dump\n"
@@ -362,13 +361,11 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                          "u [address]           Disassemble code, starting at [address]\n" );
             }
             break;
-
         case ( 'T' ) :
             {
                 show_bt();
             }
             break;
-
         case ( 'B' ) :
             {
                 if ( args )
@@ -386,7 +383,6 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'N' ) :
             {
                 if ( args )
@@ -404,24 +400,17 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'R' ) :
             {
-                while ( check_bp ( cpu_68k_getpc() ) != SDL_TRUE && gngeoxdebug_debug_step == 0 )
+                while ( check_bp ( cpu_68k_getpc() ) != SDL_TRUE )
                 {
                     cpu_68k_dpg_step();
-                }
-
-                if ( gngeoxdebug_debug_step )
-                {
-                    gngeoxdebug_debug_step = 0;
                 }
 
                 gen68k_dumpreg();
                 gen68k_disassemble ( regs.pc, 1 );
             }
             break;
-
         case ( 'b' ) :
             {
                 if ( args )
@@ -430,22 +419,14 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
 
                     if ( args != argsend )
                     {
-                        cpu_68k_dpg_step(); /* trace 1 */
-
-                        while ( cpu_68k_getpc() != pc && gngeoxdebug_debug_step == 0 )
+                        do
                         {
                             cpu_68k_dpg_step();
-                            //if (regs.regs[8]==0xf0f0f0f0) gngeoxdebug_debug_step=1;
+                            gen68k_disassemble ( regs.pc, 1 );
                         }
-
-                        if ( gngeoxdebug_debug_step )
-                        {
-                            gngeoxdebug_debug_step = 0;
-                        }
+                        while ( cpu_68k_getpc() != pc );
 
                         gen68k_dumpreg();
-                        gen68k_disassemble ( regs.pc, 1 );
-
                     }
                     else
                     {
@@ -454,7 +435,6 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'j' ) :
             {
                 if ( args )
@@ -472,14 +452,12 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'r' ) :
             {
                 gen68k_dumpreg();
                 gen68k_disassemble ( regs.pc, 1 );
             }
             break;
-
         case ( 't' ) :
             {
                 if ( args )
@@ -488,19 +466,13 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
 
                     if ( args != argsend )
                     {
-                        for ( i = 0; i < pc && gngeoxdebug_debug_step == 0; i++ )
+                        for ( i = 0; i < pc; i++ )
                         {
                             cpu_68k_dpg_step();
                         }
 
-                        if ( gngeoxdebug_debug_step )
-                        {
-                            gngeoxdebug_debug_step = 0;
-                        }
-
                         gen68k_dumpreg();
                         gen68k_disassemble ( regs.pc, 1 );
-
                     }
                     else
                     {
@@ -509,7 +481,6 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'd' ) :
             {
                 if ( args )
@@ -526,7 +497,6 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'u' ) :
             {
                 if ( args )
@@ -542,19 +512,16 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
                 }
             }
             break;
-
         case ( 'h' ) :
             {
                 //dump_hardware_reg();
             }
             break;
-
         case ( 'q' ) :
             {
                 debug_end = 1;
             }
             break;
-
         default :
             {
                 zlog_error ( gngeox_config.loggingCat, "Invalid debugger command" );
@@ -650,7 +617,7 @@ Sint32 dbg_68k_run ( Uint32 nbcycle )
             debug_interf();
         }
 
-        i += cpu_68k_run_step();
+        i += reg68k_external_step();
     }
 
     return i;

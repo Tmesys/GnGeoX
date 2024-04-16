@@ -27,6 +27,7 @@
 
 #define BLEND16_50(a,b) alpha_blend(a,b,127)
 #define BLEND16_25(a,b) alpha_blend(a,b,63)
+
 #define fix_add(x, y) ((((READ_WORD(neogeo_memory.vid.ram + 0xEA00 + (((y-1)&31)*2 + 64 * (x/6))) >> (5-(x%6))*2) & 3) ^ 3))
 
 typedef struct

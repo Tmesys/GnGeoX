@@ -59,7 +59,7 @@ static __inline__ uint8 fetchbyte ( uint32 addr )
     if ( adup >= 0x200 && adup <= 0x2ff )   /* banked cpu */
     {
         addr &= 0xfffff;
-        return ( * ( uint8* ) ( memory.cpu + bankaddress + addr ) );
+        return ( * ( uint8* ) ( memory.cpu + *bankaddress + addr ) );
     }
 
     if ( adup >= 0x000 && adup <= 0x0ff )   /* cpu bank 0 */
@@ -89,7 +89,7 @@ static __inline__ uint16 fetchword ( uint32 addr )
     if ( adup >= 0x200 && adup <= 0x2ff )   /* banked cpu */
     {
         addr &= 0xfffff;
-        return LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + bankaddress + addr ) );
+        return LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + *bankaddress + addr ) );
     }
 
     if ( adup >= 0x000 && adup <= 0x0ff )   /* cpu bank 0 */
@@ -121,8 +121,8 @@ static __inline__ uint32 fetchlong ( uint32 addr )
     if ( adup >= 0x200 && adup <= 0x2ff )   /* banked cpu */
     {
         addr &= 0xfffff;
-        return ( LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + bankaddress + addr ) ) << 16 ) |
-               LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + bankaddress + addr + 2 ) );
+        return ( LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + *bankaddress + addr ) ) << 16 ) |
+               LOCENDIAN16 ( * ( uint16* ) ( memory.cpu + *bankaddress + addr + 2 ) );
     }
 
     if ( adup >= 0x000 && adup <= 0x0ff )   /* cpu bank 0 */
@@ -150,7 +150,7 @@ static __inline__ uint32 fetchlong ( uint32 addr )
     if ( adup >= 0x200 && adup <= 0x2ff )   /* banked cpu */
     {
         addr &= 0xfffff;
-        return LOCENDIAN32 ( * ( uint32* ) ( memory.cpu + bankaddress + addr ) );
+        return LOCENDIAN32 ( * ( uint32* ) ( memory.cpu + *bankaddress + addr ) );
     }
 
     if ( adup >= 0x000 && adup <= 0x0ff )   /* cpu bank 0 */

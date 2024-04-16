@@ -8,7 +8,7 @@
 		<Project filename="src/3rdParty/Generator68k/Def68K.cbp" />
 		<Project filename="src/3rdParty/Generator68k/Gen68KOps.cbp" />
 		<Project filename="src/3rdParty/Generator68k/Generator68K.cbp" />
-		<Project filename="src/3rdParty/MameZ80/MameZ80.cbp" />
+		<Project filename="src/3rdParty/Z80/Z80.cbp" />
 		<Project filename="src/GnGeo.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

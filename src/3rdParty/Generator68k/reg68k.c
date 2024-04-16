@@ -12,10 +12,6 @@
 #include "mem68k.h"
 #include "compile.h"
 
-/*** global variables ***/
-
-extern uint32 bankaddress;
-
 /*** forward references ***/
 
 void reg68k_printstat ( void )
@@ -96,7 +92,7 @@ unsigned int reg68k_external_execute ( unsigned int clocks )
 //      if ((pc24 & 0xff0000) == 0xff0000) {
         if ( ( pc24 & 0xF00000 ) == 0x200000 )
         {
-            bank = bankaddress;
+            bank = *bankaddress;
         }
         else
         {

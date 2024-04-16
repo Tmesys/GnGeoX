@@ -38,7 +38,6 @@
 #include "GnGeoXz80.h"
 #include "GnGeoXscanline.h"
 
-
 t_mem68k_def mem68k_def[] =
 {
     {
@@ -59,7 +58,8 @@ t_mem68k_def mem68k_def[] =
     /* BANKED CPU */
     {
         0x200, 0x2FF, mem68k_memptr_cpu_bk,
-        NULL, NULL, NULL, NULL, NULL, NULL
+        mem68k_fetch_bk_normal_byte, mem68k_fetch_bk_normal_word, mem68k_fetch_bk_normal_long,
+        mem68k_store_bk_normal_byte, mem68k_store_bk_normal_word, mem68k_store_bk_normal_long
     },
 
     /* CPU BANK 0 */
@@ -440,7 +440,7 @@ static Uint8 mem68k_fetch_video_byte ( Uint32 address )
             break;
         case ( 0x2 ) :
             {
-                return ( READ_WORD ( &neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + bankaddress + ( lpc & 0xFFFFF ) ) );
+                return ( READ_WORD ( &neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + cpu_68k_bankaddress + ( lpc & 0xFFFFF ) ) );
             }
             break;
         case ( 0xC ) :
@@ -940,8 +940,8 @@ static void mem68k_store_bk_normal_word ( Uint32 address, Uint16 data )
             ( ( ( data  >> neogeo_memory.bksw_unscramble[5] ) & 1 ) << 4 ) +
             ( ( ( data  >> neogeo_memory.bksw_unscramble[6] ) & 1 ) << 5 );
 
-        bankaddress = 0x100000 + neogeo_memory.bksw_offset[data];
-        cpu_68k_bankswitch ( bankaddress );
+        cpu_68k_bankaddress = 0x100000 + neogeo_memory.bksw_offset[data];
+        cpu_68k_bankswitch ( cpu_68k_bankaddress );
     }
     else
     {
@@ -1250,7 +1250,7 @@ static void mem68k_store_z80_byte ( Uint32 address, Uint8 data )
 
             neo_z80_nmi();
             /* @todo (Tmesys#1#13/04/2024): Seems to do nothing ? */
-            //neo_z80_run ( 300 );
+            //z80_run ( 300 );
         }
         break;
     default:
@@ -1284,7 +1284,7 @@ static void mem68k_store_z80_word ( Uint32 address, Uint16 data )
 
             neo_z80_nmi();
             /* @todo (Tmesys#1#13/04/2024): Seems to do nothing ? */
-            //neo_z80_run ( 300 );
+            //z80_run ( 300 );
         }
         break;
     default:
@@ -1325,22 +1325,17 @@ static void mem68k_store_setting_byte ( Uint32 address, Uint8 data )
         break;
     case ( REG_SWPBIOS ) :
         {
-            zlog_info ( gngeox_config.loggingCat, "Selecting Bios Vector" );
             memcpy ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p, neogeo_memory.rom.rom_region[REGION_MAIN_CPU_BIOS].p, 0x80 );
-            neogeo_memory.current_vector = 0;
         }
         break;
     case ( REG_SWPROM ) :
         {
-            zlog_info ( gngeox_config.loggingCat, "Selecting Game Vector" );
             memcpy ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p, neogeo_memory.game_vector, 0x80 );
-            neogeo_memory.current_vector = 1;
         }
         break;
     /* select board fix */
     case ( REG_BRDFIX ) :
         {
-            zlog_info ( gngeox_config.loggingCat, "Selecting board fix" );
             current_fix = neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_BIOS].p;
             fix_usage = neogeo_memory.fix_board_usage;
             neogeo_memory.vid.currentfix = 0;
@@ -1349,7 +1344,6 @@ static void mem68k_store_setting_byte ( Uint32 address, Uint8 data )
     /* select game fix */
     case ( REG_CRTFIX ) :
         {
-            zlog_info ( gngeox_config.loggingCat, "Selecting game fix" );
             current_fix = neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_CARTRIDGE].p;
             fix_usage = neogeo_memory.fix_game_usage;
             neogeo_memory.vid.currentfix = 1;
@@ -1488,7 +1482,7 @@ static Uint8 mem68k_fetch_bk_normal_byte ( Uint32 address )
     }
 
     address &= 0xFFFFF;
-    return ( READ_BYTE_ROM ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + bankaddress + address ) );
+    return ( READ_BYTE_ROM ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + cpu_68k_bankaddress + address ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1519,7 +1513,7 @@ static Uint16 mem68k_fetch_bk_normal_word ( Uint32 address )
     }
 
     address &= 0xFFFFF;
-    return ( READ_WORD_ROM ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + bankaddress + address ) );
+    return ( READ_WORD_ROM ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + cpu_68k_bankaddress + address ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1566,13 +1560,6 @@ keep it like this). */
 Sint32 mem68k_init ( void )
 {
     Sint32 index2 = 0;
-
-    mem68k_def[2].fetch_byte = mem68k_fetch_bk_normal_byte;
-    mem68k_def[2].fetch_word = mem68k_fetch_bk_normal_word;
-    mem68k_def[2].fetch_long = mem68k_fetch_bk_normal_long;
-    mem68k_def[2].store_byte = mem68k_store_bk_normal_byte;
-    mem68k_def[2].store_word = mem68k_store_bk_normal_word;
-    mem68k_def[2].store_long = mem68k_store_bk_normal_long;
 
     do
     {
@@ -1643,7 +1630,7 @@ static Uint8* mem68k_memptr_bios ( Uint32 address )
 static Uint8* mem68k_memptr_cpu_bk ( Uint32 addr )
 {
     addr &= 0xFFFFF;
-    return ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + addr + bankaddress );
+    return ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p + addr + cpu_68k_bankaddress );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1667,7 +1654,7 @@ static Uint8* mem68k_memptr_ram ( Uint32 address )
 /* ******************************************************************************************************************/
 void cpu_68k_bankswitch ( Uint32 address )
 {
-    bankaddress = address;
+    cpu_68k_bankaddress = address;
 };
 /* ******************************************************************************************************************/
 /*!
@@ -1705,7 +1692,7 @@ void cpu_68k_init ( void )
     cpu68k_ram = neogeo_memory.ram;
 
     mem68k_init();
-    cpu68k_init ( neogeo_memory.ram );
+    cpu68k_init ( neogeo_memory.ram, &cpu_68k_bankaddress );
 
     if ( neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size > 0x100000 )
     {
@@ -1741,18 +1728,6 @@ Uint32 cpu_68k_getpc ( void )
 {
     return regs.pc;
 }
-/* ******************************************************************************************************************/
-/*!
-* \brief Executes one instruction.
-*
-* \return Number of clock cycles elapsed.
-**/
-/* ******************************************************************************************************************/
-Sint32 cpu_68k_run_step ( void )
-{
-    return reg68k_external_step();
-}
-
 /* ******************************************************************************************************************/
 /*!
 * \brief Todo.

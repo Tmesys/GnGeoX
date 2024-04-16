@@ -178,7 +178,6 @@ void cpu_68k_reset ( void );
 void cpu_68k_init ( void );
 Sint32 cpu_68k_run ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 Uint32 cpu_68k_getpc ( void ) __attribute__ ( ( warn_unused_result ) );
-Sint32 cpu_68k_run_step ( void ) __attribute__ ( ( warn_unused_result ) );
 void cpu_68k_interrupt ( Sint32 );
 Sint32 cpu_68k_getcycle ( void ) __attribute__ ( ( warn_unused_result ) );
 

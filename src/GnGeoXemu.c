@@ -231,7 +231,7 @@ void neo_sys_main_loop ( void )
     neo_frame_skip_reset();
     neo_ym2610_update();
 
-    while ( !neo_emu_done )
+    while ( 1 )
     {
         if ( neogeo_memory.test_switch == 1 )
         {
@@ -244,75 +244,99 @@ void neo_sys_main_loop ( void )
 
         for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
         {
-            neo_z80_run ( cpu_z80_timeslice_interlace );
+            z80_run ( cpu_z80_timeslice_interlace, 0 );
             neo_ym2610_update();
         }
 
         profiler_stop ( PROF_Z80 );
 
-        if ( !gngeox_config.debug )
+        if ( gngeox_config.raster )
         {
-            if ( gngeox_config.raster )
+            current_line = 0;
+
+            for ( Uint32 i = 0; i < 264; i++ )
             {
-                current_line = 0;
-
-                for ( Uint32 i = 0; i < 264; i++ )
-                {
-                    tm_cycle = cpu_68k_run ( cpu_68k_timeslice_scanline - tm_cycle );
-
-                    if ( update_scanline() )
-                    {
-                        cpu_68k_interrupt ( 2 );
-                    }
-                }
-
                 tm_cycle = cpu_68k_run ( cpu_68k_timeslice_scanline - tm_cycle );
-                //state_handling(pending_save_state, pending_load_state);
 
-                update_screen();
-                neogeo_memory.watchdog++;
-
-                if ( neogeo_memory.watchdog > 7 )
+                if ( update_scanline() )
                 {
-                    zlog_info ( gngeox_config.loggingCat, "Watchdog Reset" );
-                    cpu_68k_reset();
+                    cpu_68k_interrupt ( 2 );
                 }
-
-                cpu_68k_interrupt ( 1 );
             }
-            else
+
+            tm_cycle = cpu_68k_run ( cpu_68k_timeslice_scanline - tm_cycle );
+
+            update_screen();
+            neogeo_memory.watchdog++;
+
+            if ( neogeo_memory.watchdog > 7 )
             {
-                profiler_start ( PROF_68K );
-                tm_cycle = cpu_68k_run ( cpu_68k_timeslice - tm_cycle );
-                profiler_stop ( PROF_68K );
-
-                neo_sys_interrupt();
-
-                /* state handling (we save/load before interrupt) */
-                //state_handling(pending_save_state, pending_load_state);
-
-                neogeo_memory.watchdog++;
-
-                /* Watchdog reset after ~0.13 == ~7.8 frames */
-                if ( neogeo_memory.watchdog > 7 )
-                {
-                    zlog_info ( gngeox_config.loggingCat, "Watchdog Reset %d", neogeo_memory.watchdog );
-                    cpu_68k_reset();
-                }
-
-                cpu_68k_interrupt ( interrupt );
+                zlog_info ( gngeox_config.loggingCat, "Watchdog Reset" );
+                cpu_68k_reset();
             }
+
+            cpu_68k_interrupt ( 1 );
         }
         else
         {
-            /* we are in debug mode -> we are just here for event handling */
-            neo_emu_done = 1;
+            profiler_start ( PROF_68K );
+            tm_cycle = cpu_68k_run ( cpu_68k_timeslice - tm_cycle );
+            profiler_stop ( PROF_68K );
+
+            neo_sys_interrupt();
+
+            /* state handling (we save/load before interrupt) */
+            //state_handling(pending_save_state, pending_load_state);
+
+            neogeo_memory.watchdog++;
+
+            /* Watchdog reset after ~0.13 == ~7.8 frames */
+            if ( neogeo_memory.watchdog > 7 )
+            {
+                zlog_info ( gngeox_config.loggingCat, "Watchdog Reset %d", neogeo_memory.watchdog );
+                cpu_68k_reset();
+            }
+
+            cpu_68k_interrupt ( interrupt );
         }
 
 #ifdef ENABLE_PROFILER
         profiler_show_stat();
 #endif
         profiler_start ( PROF_ALL );
+    }
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief Main loop for debugging
+*
+*/
+/* ******************************************************************************************************************/
+void neo_sys_main_loop_debug ( void )
+{
+    Sint32 interrupt = 0;
+
+    Uint32 cpu_68k_timeslice = 200000;
+    Uint32 cpu_68k_timeslice_scanline = ( cpu_68k_timeslice / 264.0 );
+    Uint32 cpu_z80_timeslice = 73333;
+    Uint32 tm_cycle = 0;
+
+    Uint32 cpu_z80_timeslice_interlace = cpu_z80_timeslice / ( float ) NB_INTERLACE;
+
+    neo_frame_skip_reset();
+    neo_ym2610_update();
+
+    if ( neogeo_memory.test_switch == 1 )
+    {
+        neogeo_memory.test_switch = 0;
+    }
+
+    neo_sys_update_events();
+
+    for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
+    {
+        z80_run ( cpu_z80_timeslice_interlace, 1 );
+        neo_ym2610_update();
     }
 }
 

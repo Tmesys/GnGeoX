@@ -39,7 +39,6 @@ static Sint32 neo_z80_irq_callback ( Sint32 );
 #endif // _GNGEOX_Z80_C_
 
 void neo_z80_init ( void );
-void neo_z80_run ( Sint32 );
 void neo_z80_nmi ( void );
 void neo_z80_irq ( Sint32 );
 

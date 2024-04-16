@@ -586,15 +586,15 @@ void decrypt_cthd2003 ( struct_gngeoxroms_game_roms* machine )
 /* TODO:
 static WRITE16_HANDLER ( cthd2003_bankswitch_w )
 {
-    Sint32 bankaddress;
+    Sint32 cpu_68k_bankaddress;
     static const Sint32 cthd2003_banks[8] =
     {
         1,0,1,0,1,0,3,2,
     };
     if (offset == 0)
     {
-        bankaddress = 0x100000 + cthd2003_banks[data&7]*0x100000;
-        neogeo_set_main_cpu_bank_address(space, bankaddress);
+        cpu_68k_bankaddress = 0x100000 + cthd2003_banks[data&7]*0x100000;
+        neogeo_set_main_cpu_bank_address(space, cpu_68k_bankaddress);
     }
 }
 
@@ -861,21 +861,21 @@ static READ16_HANDLER( mslug5_prot_r )
 
 static WRITE16_HANDLER ( ms5plus_bankswitch_w )
 {
-    Sint32 bankaddress;
+    Sint32 cpu_68k_bankaddress;
     logerror("offset: %06x PC %06x: set banking %04x\n",offset,cpu_get_pc(space->cpu),data);
     if ((offset == 0)&&(data == 0xa0))
     {
-        bankaddress=0xa0;
-        neogeo_set_main_cpu_bank_address(space, bankaddress);
-        logerror("offset: %06x PC %06x: set banking %04x\n\n",offset,cpu_get_pc(space->cpu),bankaddress);
+        cpu_68k_bankaddress=0xa0;
+        neogeo_set_main_cpu_bank_address(space, cpu_68k_bankaddress);
+        logerror("offset: %06x PC %06x: set banking %04x\n\n",offset,cpu_get_pc(space->cpu),cpu_68k_bankaddress);
     }
     else if(offset == 2)
     {
         data=data>>4;
         //data=data&7;
-        bankaddress=data*0x100000;
-        neogeo_set_main_cpu_bank_address(space, bankaddress);
-        logerror("offset: %06x PC %06x: set banking %04x\n\n",offset,cpu_get_pc(space->cpu),bankaddress);
+        cpu_68k_bankaddress=data*0x100000;
+        neogeo_set_main_cpu_bank_address(space, cpu_68k_bankaddress);
+        logerror("offset: %06x PC %06x: set banking %04x\n\n",offset,cpu_get_pc(space->cpu),cpu_68k_bankaddress);
     }
 }
 
@@ -1093,9 +1093,9 @@ static READ16_HANDLER ( mv0_bankswitch_r )
 
 static WRITE16_HANDLER ( mv0_bankswitch_w )
 {
-    Uint32 bankaddress = ( mv0_bank_ram[ 0 ] >> 8 ) + ( mv0_bank_ram[ 1 ] << 8 ) + 0x100000;
+    Uint32 cpu_68k_bankaddress = ( mv0_bank_ram[ 0 ] >> 8 ) + ( mv0_bank_ram[ 1 ] << 8 ) + 0x100000;
     COMBINE_DATA ( &mv0_bank_ram[ offset ] );
-    neogeo_set_main_cpu_bank_address ( space, bankaddress );
+    neogeo_set_main_cpu_bank_address ( space, cpu_68k_bankaddress );
 }
 #endif
 

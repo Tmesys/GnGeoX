@@ -33,22 +33,22 @@ struct_gngeoxcontroller_player players[CONTROLLER_PLAYER_MAX];
 const Sint32 direction_vectors_2[8][2] =
 {
     /* this is left */
-    -32767, -16384,
-        /* this is up */
-        -16384, -32767,
-        /* this is right */
-        32767, -16384,
-        /* this is up */
-        16384, -32767,
-        /* this is bottom */
-        -16384, 32767,
-        /* this is left */
-        -32767, 16384,
-        /* this is bottom */
-        16384, 32767,
-        /* this is right */
-        32767, 32767
-    };
+    {-32767, -16384},
+    /* this is up */
+    {-16384, -32767},
+    /* this is right */
+    {32767, -16384},
+    /* this is up */
+    {16384, -32767},
+    /* this is bottom */
+    {-16384, 32767},
+    /* this is left */
+    {-32767, 16384},
+    /* this is bottom */
+    {16384, 32767},
+    /* this is right */
+    {32767, 32767}
+};
 /* ******************************************************************************************************************/
 /*!
 * \brief  Initializes event system.
@@ -615,7 +615,7 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
             }
             else
             {
-                zlog_info ( gngeox_config.loggingCat, "UP&LEFT" );
+                //zlog_info ( gngeox_config.loggingCat, "UP&LEFT" );
                 update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_LEFT );
                 update_controllers_button ( player_id, CONTROLLER_STATE_DOWN, PCNT_UP );
             }
@@ -716,7 +716,8 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
         }
         return;
     }
-    zlog_info ( gngeox_config.loggingCat, "Undetected x=%d y=%d", players[player_id].axis0_x_value, players[player_id].axis1_y_value );
+
+    zlog_warn ( gngeox_config.loggingCat, "Undetected x=%d y=%d", players[player_id].axis0_x_value, players[player_id].axis1_y_value );
 
 }
 /* ******************************************************************************************************************/

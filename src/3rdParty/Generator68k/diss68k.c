@@ -244,11 +244,11 @@ int diss68k_getdumpline ( uint32 addr68k, uint8* addr, char* dumpline )
 
     if ( iibp )
     {
-        sprintf ( p, " : %4d : %s\n", iibp->funcnum, dissline );
+        sprintf ( p, " : %4d : %s", iibp->funcnum, dissline );
     }
     else
     {
-        sprintf ( p, " :      : %s\n", dissline );
+        sprintf ( p, " :      : %s", dissline );
     }
 
     return words;

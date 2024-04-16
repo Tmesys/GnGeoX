@@ -25,6 +25,7 @@ typedef struct _t_ipclist
 } t_ipclist;
 
 extern uint8* cpu68k_ram;
+extern uint32* bankaddress;
 extern t_iib* cpu68k_iibtable[65536];
 extern void ( *cpu68k_functable[65536 * 2] ) ( t_ipc* ipc );
 extern int cpu68k_totalinstr;
@@ -42,7 +43,7 @@ extern unsigned int cpu68k_frozen;
 extern t_iib iibs[];
 extern int iibs_num;
 
-int cpu68k_init ( uint8* );
+int cpu68k_init ( uint8*, uint32 * );
 void cpu68k_printipc ( t_ipc* ipc );
 void cpu68k_ipc ( uint32 addr68k, uint8* addr, t_iib* iib, t_ipc* ipc );
 void cpu68k_reset ( void );

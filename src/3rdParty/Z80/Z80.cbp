@@ -64,15 +64,13 @@
 		<Linker>
 			<Add option="-m64" />
 		</Linker>
-		<Unit filename="MameZ80.new.c">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
 		<Unit filename="Z80.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Z80.h" />
+		<Unit filename="z80dasm.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -16,6 +16,8 @@ int diss68k_gettext ( t_ipc* ipc, char* text );
 /*** externed variables ***/
 
 uint8* cpu68k_ram = NULL;
+uint32 * bankaddress = NULL;
+
 t_iib* cpu68k_iibtable[65536];
 void ( *cpu68k_functable[65536 * 2] ) ( t_ipc* ipc );
 int cpu68k_totalinstr;
@@ -29,14 +31,12 @@ t_regs regs;
 uint8 movem_bit[256];
 t_ipclist* ipclist[LEN_IPCLISTTABLE];
 
-//extern uint8 current_cpu_bank;
-extern uint32 bankaddress;
 
 /*** global variables ***/
 
 /*** forward references ***/
 
-int cpu68k_init ( uint8* ram )
+int cpu68k_init ( uint8* ram, uint32 *bankaddressp )
 {
     t_iib* iib = NULL;
     uint16 bitmap = 0;
@@ -48,7 +48,14 @@ int cpu68k_init ( uint8* ram )
         return 1;
     }
 
+    if ( bankaddressp == NULL )
+    {
+        printf( "Invalid bank address pointer\n" );
+        return 1;
+    }
+
     cpu68k_ram = ram;
+    bankaddress = bankaddressp;
 
     memset ( cpu68k_iibtable, 0, sizeof ( cpu68k_iibtable ) );
     memset ( cpu68k_functable, 0, sizeof ( cpu68k_functable ) );
@@ -463,7 +470,7 @@ t_ipclist* cpu68k_makeipclist ( uint32 pc )
 
     if ( ( pc & 0xF00000 ) == 0x200000 )
     {
-        list->bank = bankaddress;
+        list->bank = *bankaddress;
     }
     else
     {

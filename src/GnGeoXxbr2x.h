@@ -19,9 +19,9 @@
 
 #define XBR(type, PE, PI, PH, PF, PG, PC, PD, PB, PA, G5, C4, G0, D0, C1, B1, F4, I4, H5, I5, A0, A1, N0, N1, N2, N3) \
 	if (PE != PH && PE != PF) { \
-		unsigned e = df3(PC, PE, PG) + df3(H5, PI, F4) + 4 * df(PH, PF); \
-		unsigned i = df3(PD, PH, I5) + df3(I4, PF, PB) + 4 * df(PE, PI); \
-		if (e < i) { \
+		unsigned e_def3 = df3(PC, PE, PG) + df3(H5, PI, F4) + 4 * df(PH, PF); \
+		unsigned i_def3 = df3(PD, PH, I5) + df3(I4, PF, PB) + 4 * df(PE, PI); \
+		if (e_def3 < i_def3) { \
 			int ex2 = PE != PC && PB != PC; \
 			int ex3 = PE != PG && PD != PG; \
 			unsigned ke = df(PF, PG); \

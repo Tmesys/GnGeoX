@@ -23,6 +23,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include "bstrlib.h"
 #include "zlog.h"
 
 #include "GnGeoXframeskip.h"
@@ -32,7 +33,7 @@
 
 SDL_bool skip_this_frame = SDL_FALSE;
 
-static char fps_str[32];
+static bstring fps_str = NULL;
 static SDL_bool skip_next_frame = SDL_FALSE;
 static Uint32 frame;
 static SDL_bool init_frame_skip = SDL_TRUE;
@@ -140,7 +141,13 @@ void neo_frame_skip ( void )
     {
         if ( get_ticks() - sec >= TICKS_PER_SEC )
         {
-            sprintf ( fps_str, "%2d", nb_frame - 1 );
+            if ( fps_str != NULL )
+            {
+                bdestroy ( fps_str );
+                fps_str = NULL;
+            }
+
+            fps_str = bformat ( "%2d", nb_frame - 1 );
 
             nb_frame = 0;
             sec = get_ticks();
@@ -157,9 +164,9 @@ void neo_frame_skip ( void )
 /* ******************************************************************************************************************/
 void neo_frame_skip_display ( void )
 {
-    if ( gngeox_config.showfps == SDL_TRUE )
+    if ( gngeox_config.showfps == SDL_TRUE && fps_str != NULL && fps_str->mlen > 0 )
     {
-        SDL_textout ( sdl_surface_buffer, visible_area.x + 8, visible_area.y, fps_str );
+        SDL_textout ( sdl_surface_buffer, visible_area.x + 8, visible_area.y, fps_str->data );
     }
 }
 

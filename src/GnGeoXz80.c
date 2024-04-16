@@ -21,7 +21,7 @@
 #include "zlog.h"
 #include "qlibc.h"
 
-#include "3rdParty/MameZ80/Z80.h"
+#include "3rdParty/Z80/Z80.h"
 #include "GnGeoXz80.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
@@ -249,6 +249,7 @@ void z80_writeport16 ( Uint16 port, Uint8 value )
     case ( 0xC ) :
         {
             neogeo_memory.z80_command_reply = value;
+            zlog_info ( gngeox_config.loggingCat, "[%x] Receive command %X", cpu_68k_getpc(), value );
         }
         break;
     case ( 0x18 ) :
@@ -301,6 +302,7 @@ Uint8 z80_readport16 ( Uint16 port )
             {
                 z80_set_nmi_line ( CLEAR_LINE );
             }
+            zlog_info ( gngeox_config.loggingCat, "[%x] Send reply %X", cpu_68k_getpc(), neogeo_memory.z80_command );
         }
         break;
     case ( 0x4 ) :
@@ -338,6 +340,18 @@ Uint8 z80_readport16 ( Uint16 port )
             cpu_z80_switchbank ( 3, port );
         }
         break;
+    /* @note (Tmesys#1#16/04/2024): This is some undocumented port used by ninjamas
+    sound driver :
+    First write to port 0xf some value 0x89
+    Then read port 0xe, and with 0xc0 (keep two upper bits),
+    return from routine if result is non zero. */
+/*
+    case ( 0x0e ) :
+        {
+            return_value = 0xc0;
+        }
+        break;
+*/
     default:
         {
             zlog_error ( gngeox_config.loggingCat, "Unknown port %x", QLOBYTE ( port ) );
@@ -346,19 +360,6 @@ Uint8 z80_readport16 ( Uint16 port )
     };
 
     return ( return_value );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Runs Z80 cpu.
-*
-* \param nb_cycle Number of clock cycles to execute at least.
-*/
-/* ******************************************************************************************************************/
-/* @note (Tmesys#1#12/04/2022): Should return clock cycles really executed (not needed ?), mamez80 gives back the information. */
-void neo_z80_run ( Sint32 nb_cycle )
-{
-    /* @note (Tmesys#1#10/04/2024):  */
-    z80_run ( nb_cycle );
 }
 /* ******************************************************************************************************************/
 /*!

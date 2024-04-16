@@ -41,7 +41,7 @@ Uint8* fix_usage = NULL;
 SDL_bool sram_lock = SDL_FALSE;
 
 /* @note (Tmesys#1#12/04/2022): This one is heavily used in neoboot but commented. */
-Uint32 bankaddress = 0;
+Uint32 cpu_68k_bankaddress = 0;
 
 static Uint16 neogeo_rng = 0x2345;
 /* ******************************************************************************************************************/
@@ -152,19 +152,19 @@ void switch_bank ( Uint32 address, Uint8 data )
     if ( address >= 0x2FFFF0 )
     {
         data = data & 0x7;
-        bankaddress = ( data + 1 ) * 0x100000;
+        cpu_68k_bankaddress = ( data + 1 ) * 0x100000;
     }
     else
     {
         return;
     }
 
-    if ( bankaddress >= neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size )
+    if ( cpu_68k_bankaddress >= neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size )
     {
-        bankaddress = 0x100000;
+        cpu_68k_bankaddress = 0x100000;
     }
 
-    cpu_68k_bankswitch ( bankaddress );
+    cpu_68k_bankswitch ( cpu_68k_bankaddress );
 }
 
 #ifdef _GNGEOX_MEMORY_C_

@@ -191,7 +191,6 @@ Uint32 interp_32_diff ( Uint32 p1, Uint32 p2 )
 Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 )
 {
     int r, g, b;
-    int y, u, v;
     int i1, i2;
 
     /* assume standard rgb formats */
