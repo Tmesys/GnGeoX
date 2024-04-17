@@ -145,8 +145,6 @@ SDL_bool neo_config_init ( char* filename )
 
     gngeox_config.transpack = qlisttbl_getint ( tbl, "graphics.transpack" );
 
-    gngeox_config.raster = qlisttbl_getint ( tbl, "system.raster" );
-
     gngeox_config.forcepal = qlisttbl_getint ( tbl, "system.forcepal" );
 
     gngeox_config.country = qlisttbl_getint ( tbl, "system.country" );
@@ -224,7 +222,6 @@ SDL_bool neo_config_parse_options ( int *argc, char ***argv )
         {"autoframeskip", 'k', OPTTYPE_BOOL, &gngeox_config.autoframeskip},
         {"vsync", 'y', OPTTYPE_BOOL, &gngeox_config.vsync},
         {"transpack", 'd', OPTTYPE_BOOL, &gngeox_config.transpack},
-        {"raster", 't', OPTTYPE_BOOL, &gngeox_config.raster},
         {"forcepal", 'u', OPTTYPE_BOOL, &gngeox_config.forcepal},
         {"country", 'n', OPTTYPE_UINT, &gngeox_config.country},
         {"systemtype", 'm', OPTTYPE_UINT, &gngeox_config.systemtype},

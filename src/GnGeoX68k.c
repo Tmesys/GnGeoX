@@ -41,7 +41,7 @@
 t_mem68k_def mem68k_def[] =
 {
     {
-        0x000, 0x1000, mem68k_memptr_bad,
+        0x000, 0xFFF, mem68k_memptr_bad,
         mem68k_fetch_invalid_byte, mem68k_fetch_invalid_word,
         mem68k_fetch_invalid_long,
         mem68k_store_invalid_byte, mem68k_store_invalid_word,
@@ -72,7 +72,7 @@ t_mem68k_def mem68k_def[] =
 
     /* BIOS */
     {
-        0xc00, 0xcFF, mem68k_memptr_bios,
+        0xc00, 0xCFF, mem68k_memptr_bios,
         mem68k_fetch_bios_byte, mem68k_fetch_bios_word,
         mem68k_fetch_bios_long,
         mem68k_store_invalid_byte, mem68k_store_invalid_word,
@@ -81,7 +81,7 @@ t_mem68k_def mem68k_def[] =
 
     /* SRAM */
     {
-        0xd00, 0xdFF, mem68k_memptr_bad,
+        0xD00, 0xDFF, mem68k_memptr_bad,
         mem68k_fetch_sram_byte, mem68k_fetch_sram_word,
         mem68k_fetch_sram_long,
         mem68k_store_sram_byte, mem68k_store_sram_word,
@@ -97,7 +97,7 @@ t_mem68k_def mem68k_def[] =
 
     /* VIDEO */
     {
-        0x3c0, 0x3c0, mem68k_memptr_bad,
+        0x3C0, 0x3C0, mem68k_memptr_bad,
         mem68k_fetch_video_byte, mem68k_fetch_video_word,
         mem68k_fetch_video_long,
         mem68k_store_video_byte, mem68k_store_video_word,
@@ -150,8 +150,8 @@ t_mem68k_def mem68k_def[] =
 
     /* SETTING DIVER */
     {
-        0x3A0, 0x3a0, mem68k_memptr_bad,
-        mem68k_fetch_invalid_byte, mem68k_fetch_invalid_word,
+        0x3A0, 0X3A0, mem68k_memptr_bad,
+        mem68k_fetch_setting_byte, mem68k_fetch_invalid_word,
         mem68k_fetch_invalid_long,
         mem68k_store_setting_byte, mem68k_store_setting_word,
         mem68k_store_setting_long
@@ -488,26 +488,14 @@ static Uint16 mem68k_fetch_video_word ( Uint32 address )
         /* @note (Tmesys#1#12/04/2022): inlined read_neo_control */
         Uint32 scan = 0;
 
-        if ( !gngeox_config.raster )
-        {
-            /* current scan-line */
-            scan = cpu_68k_getcycle() / 766.28;
+        /* current scan-line */
+        scan = cpu_68k_getcycle() / 766.28;
 
-            //  scan+=0x100;
-            //  if (scan >=0x200) scan=scan-0x108;
-            scan += 0xF8;
+        //  scan+=0x100;
+        //  if (scan >=0x200) scan=scan-0x108;
+        scan += 0xF8;
 
-            return ( scan << 7 ) | ( gngeox_config.forcepal << 3 ) | ( neogeo_frame_counter & 0x0007 ); /* frame counter */
-        }
-        else
-        {
-            scan = current_line /*+ 22*/; /* current scanline */
-            //scan+=0x110;
-            //if (scan >=0x200) scan=scan-0x108;
-            scan += 0xF8;
-
-            return ( scan << 7 ) | ( gngeox_config.forcepal << 3 ) | ( neogeo_frame_counter & 0x0007 ); /* frame counter */
-        }
+        return ( scan << 7 ) | ( gngeox_config.forcepal << 3 ) | ( neogeo_frame_counter & 0x0007 ); /* frame counter */
     }
 
     return ( 0 );
@@ -799,7 +787,7 @@ static Uint16 mem68k_fetch_memcrd_word ( Uint32 address )
 {
     address &= 0xFFF;
 
-    return ( neogeo_memory.memcard[address >> 1] | 0xff00 );
+    return ( neogeo_memory.memcard[address >> 1] | 0xFF00 );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1309,6 +1297,44 @@ static void mem68k_store_z80_long ( Uint32 address, Uint32 data )
 }
 /* ******************************************************************************************************************/
 /*!
+* \brief Fetches byte located in memory card.
+*
+* \attention Even byte are FF, Odd  byte are data
+* \param address Memory address to fetch from.
+* \return Fetched byte.
+*/
+/* ******************************************************************************************************************/
+static Uint8 mem68k_fetch_setting_byte ( Uint32 address )
+{
+    Uint8 result_value = 0;
+
+    switch ( address )
+    {
+    case ( REG_NOSHADOW ) :
+        {
+            /* @note (Tmesys#1#17/04/2024): Sengoku */
+            result_value = neogeo_memory.no_shadow;
+            zlog_warn ( gngeox_config.loggingCat, "REG_NOSHADOW %x", neogeo_memory.no_shadow );
+        }
+        break;
+    case ( REG_SHADOW ) :
+        {
+            result_value = neogeo_memory.shadow;
+            zlog_warn ( gngeox_config.loggingCat, "REG_SHADOW %x", neogeo_memory.shadow );
+        }
+        break;
+    default:
+        {
+            result_value = 0xF0;
+            zlog_error ( gngeox_config.loggingCat, "Unknown address %x", address );
+        }
+        break;
+    }
+
+    return ( result_value );
+}
+/* ******************************************************************************************************************/
+/*!
 * \brief Stores byte at a specified memory address in settings.
 *
 * \param address Memory address where to store.
@@ -1321,6 +1347,14 @@ static void mem68k_store_setting_byte ( Uint32 address, Uint8 data )
     {
     case ( REG_NOSHADOW ) :
         {
+            neogeo_memory.no_shadow = data;
+            zlog_warn ( gngeox_config.loggingCat, "REG_NOSHADOW %x", neogeo_memory.no_shadow );
+        }
+        break;
+    case ( REG_SHADOW ) :
+        {
+            neogeo_memory.shadow = data;
+            zlog_warn ( gngeox_config.loggingCat, "REG_SHADOW %x", neogeo_memory.shadow );
         }
         break;
     case ( REG_SWPBIOS ) :
@@ -1707,15 +1741,11 @@ void cpu_68k_init ( void )
 * \return Number of clocks executed too much.
 */
 /* ******************************************************************************************************************/
-Sint32 cpu_68k_run ( Uint32 nb_cycles )
+void cpu_68k_run ( Uint32 nb_cycles )
 {
-    Uint32 excedent_cycles = 0;
-
-    excedent_cycles = reg68k_external_execute ( nb_cycles );
+    reg68k_external_execute ( nb_cycles );
 
     cpu68k_endfield();
-
-    return ( excedent_cycles );
 }
 /* ******************************************************************************************************************/
 /*!

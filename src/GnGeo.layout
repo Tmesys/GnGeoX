@@ -2,9 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Linux X86_64 Release" />
-	<File name="GnGeoXym2610core.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXmain.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11746" topLine="332" />
+			<Cursor1 position="3130" topLine="97" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXglslblitter.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="25125" topLine="793" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXsoftblitter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -17,68 +22,9 @@
 			<Cursor1 position="3637" topLine="113" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXopenglblitter.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXroms.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1730" topLine="56" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXdebug.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="733" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXym2610core.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="72145" topLine="2435" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXym2610.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1035" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXprofiler.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2300" topLine="45" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXcontroller.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="25007" topLine="496" />
-		</Cursor>
-		<Folding>
-			<Collapse line="407" />
-			<Collapse line="429" />
-		</Folding>
-	</File>
-	<File name="GnGeoXmamelayer.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3547" topLine="136" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXhq2x.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3484" topLine="120" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXdrivers.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6067" topLine="36" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXpd4990a.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3240" topLine="148" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXversion.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="403" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXromsinit.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2712" topLine="49" />
+			<Cursor1 position="3825" topLine="2" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXneocrypt.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -86,19 +32,19 @@
 			<Cursor1 position="8111" topLine="107" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXmemory.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1796" topLine="46" />
-		</Cursor>
-	</File>
-	<File name="GnGeoX68k.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="62710" topLine="1707" />
-		</Cursor>
-	</File>
 	<File name="GnGeoXbios.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="636" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXframeskip.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1009" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXtranspack.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="150" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXsoftblitter.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -106,85 +52,39 @@
 			<Cursor1 position="4284" topLine="156" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXscreen.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="790" topLine="20" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXframeskip.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2430" topLine="91" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXdrivers.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="939" topLine="14" />
-		</Cursor>
-	</File>
 	<File name="GnGeoXscanline.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="667" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXemu.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXromsgno.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="776" topLine="18" />
+			<Cursor1 position="9704" topLine="299" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXdebug.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXneocrypt.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7482" topLine="218" />
-		</Cursor>
-		<Folding>
-			<Collapse line="348" />
-			<Collapse line="365" />
-			<Collapse line="370" />
-			<Collapse line="387" />
-			<Collapse line="404" />
-		</Folding>
-	</File>
-	<File name="GnGeoXemu.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7464" topLine="237" />
-		</Cursor>
-		<Folding>
-			<Collapse line="255" />
-			<Collapse line="283" />
-		</Folding>
-	</File>
-	<File name="GnGeoXym2610.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="967" topLine="27" />
+			<Cursor1 position="7940" topLine="255" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXz80.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXneoboot.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="13152" topLine="356" />
+			<Cursor1 position="1834" topLine="34" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXsound.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXglslblitter.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="876" topLine="1" />
+			<Cursor1 position="4675" topLine="113" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXsound.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXframeskip.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1780" topLine="43" />
+			<Cursor1 position="4293" topLine="141" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXconfig.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXxbr2x.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="747" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXmain.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3078" topLine="94" />
-		</Cursor>
-	</File>
-	<File name="GnGeoX68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9025" topLine="156" />
+			<Cursor1 position="1083" topLine="16" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXopenglblitter.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -192,9 +92,117 @@
 			<Cursor1 position="866" topLine="1" />
 		</Cursor>
 	</File>
+	<File name="GnGeoXemu.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8012" topLine="44" />
+		</Cursor>
+		<Folding>
+			<Collapse line="90" />
+			<Collapse line="113" />
+			<Collapse line="145" />
+		</Folding>
+	</File>
+	<File name="GnGeoXym2610.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1035" topLine="13" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXmamelayer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7240" topLine="184" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXinterp.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7509" topLine="190" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXz80.c" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12002" topLine="295" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXym2610.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4227" topLine="111" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXxbr2x.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1519" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXvideo.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22525" topLine="601" />
+		</Cursor>
+		<Folding>
+			<Collapse line="345" />
+		</Folding>
+	</File>
+	<File name="GnGeoXprofiler.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2300" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="GnGeoX68k.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="62487" topLine="1696" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXhq2x.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1000" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXdrivers.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6525" topLine="187" />
+		</Cursor>
+	</File>
 	<File name="GnGeoXscale.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="3236" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXneoboot.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="32240" topLine="855" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXinterp.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="965" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../README.md" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5709" topLine="96" />
+		</Cursor>
+	</File>
+	<File name="drivers_db.sql" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="68" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXym2610core.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21837" topLine="628" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXz80.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1201" topLine="32" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXversion.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="403" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXopenglblitter.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1730" topLine="56" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXromsgno.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -202,9 +210,39 @@
 			<Cursor1 position="1163" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXbios.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXpd4990a.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3433" topLine="89" />
+			<Cursor1 position="3240" topLine="148" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXconfig.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="766" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXscale.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="894" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXpd4990a.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1517" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXmamelayer.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3547" topLine="136" />
+		</Cursor>
+	</File>
+	<File name="GnGeoX68k.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8888" topLine="156" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXym2610core.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11746" topLine="332" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXvideotemplate.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -217,49 +255,29 @@
 			<Cursor1 position="1860" topLine="133" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXprofiler.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="980" topLine="19" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXglslblitter.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4675" topLine="113" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXconfig.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6108" topLine="212" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXpd4990a.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1517" topLine="26" />
-		</Cursor>
-	</File>
-	<File name="drivers_db.sql" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="68" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="GnGeoXscanline.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1680" topLine="42" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXscale.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXromsinit.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="894" topLine="22" />
+			<Cursor1 position="2712" topLine="49" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXglslblitter.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXroms.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="25125" topLine="793" />
+			<Cursor1 position="14189" topLine="402" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXromsinit.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXmemory.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="19174" topLine="570" />
+			<Cursor1 position="1796" topLine="46" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXmemory.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="981" topLine="31" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXcontroller.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -267,49 +285,64 @@
 			<Cursor1 position="3100" topLine="87" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXneocrypt.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXdebug.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11037" topLine="273" />
+			<Cursor1 position="733" topLine="12" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXneoboot.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXsound.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6237" topLine="171" />
+			<Cursor1 position="876" topLine="1" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXtranspack.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXromsinit.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="150" topLine="0" />
+			<Cursor1 position="19174" topLine="570" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXroms.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXprofiler.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="21288" topLine="649" />
+			<Cursor1 position="980" topLine="19" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXmamelayer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXhq2x.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7240" topLine="184" />
+			<Cursor1 position="3484" topLine="120" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXinterp.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXdrivers.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4801" topLine="138" />
+			<Cursor1 position="1205" topLine="16" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXframeskip.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXcontroller.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1009" topLine="6" />
+			<Cursor1 position="13356" topLine="399" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXroms.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXscreen.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3825" topLine="2" />
+			<Cursor1 position="790" topLine="20" />
 		</Cursor>
 	</File>
-	<File name="../README.md" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXbios.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1745" topLine="33" />
+			<Cursor1 position="1265" topLine="30" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXemu.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="900" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXdebug.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7356" topLine="385" />
+		</Cursor>
+	</File>
+	<File name="GnGeoXconfig.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="747" topLine="18" />
 		</Cursor>
 	</File>
 	<File name="GnGeoXvideo.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -317,38 +350,9 @@
 			<Cursor1 position="1179" topLine="27" />
 		</Cursor>
 	</File>
-	<File name="GnGeoXromsgno.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GnGeoXsound.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="10542" topLine="322" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXvideo.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="24821" topLine="364" />
-		</Cursor>
-		<Folding>
-			<Collapse line="345" />
-			<Collapse line="513" />
-		</Folding>
-	</File>
-	<File name="GnGeoXmemory.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="981" topLine="31" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXneoboot.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1834" topLine="34" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXinterp.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="965" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="GnGeoXhq2x.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1000" topLine="0" />
+			<Cursor1 position="1780" topLine="43" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -541,10 +541,10 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     |*     |     *|
     | * P1 |    * |
     |  *   |   *  |
-    |   *  |  *   |
-    | P2 * | *    |
-    |     *|*     |
-    D------C------D1 (X)
+    |   ###|###   |
+    |   #* | *#   |
+    |   # *|* #   |
+    D---#--C--#X--D1 (X)
     |     *|*     |
     |    * | *    |
     |   *  |  *   |
@@ -577,14 +577,10 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     */
 
     if (
-        ( players[player_id].axis0_x_value == -CONTROLLER_DEAD_ZONE
-          && players[player_id].axis1_y_value == -CONTROLLER_DEAD_ZONE ) ||
-        ( players[player_id].axis0_x_value == CONTROLLER_DEAD_ZONE
-          && players[player_id].axis1_y_value == CONTROLLER_DEAD_ZONE ) ||
-        ( players[player_id].axis0_x_value == -CONTROLLER_DEAD_ZONE
-          && players[player_id].axis1_y_value == CONTROLLER_DEAD_ZONE ) ||
-        ( players[player_id].axis0_x_value == CONTROLLER_DEAD_ZONE
-          && players[player_id].axis1_y_value == -CONTROLLER_DEAD_ZONE )
+        ( players[player_id].axis0_x_value >= -CONTROLLER_DEAD_ZONE
+          && players[player_id].axis0_x_value <= CONTROLLER_DEAD_ZONE ) &&
+        ( players[player_id].axis1_y_value >= -CONTROLLER_DEAD_ZONE
+          && players[player_id].axis1_y_value <= CONTROLLER_DEAD_ZONE )
     )
     {
         //zlog_info ( gngeox_config.loggingCat, "CENTER" );
@@ -592,8 +588,8 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     }
 
     /* direction UP / LEFT */
-    if ( players[player_id].axis0_x_value <= -CONTROLLER_DEAD_ZONE
-            && players[player_id].axis1_y_value <= -CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value <= 0
+            && players[player_id].axis1_y_value <= 0 )
     {
         Sint32 product = 0;
         product = ( direction_vectors_2[DIR_UL_L][VECT_X] * players[player_id].axis1_y_value )
@@ -624,8 +620,8 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     }
 
     /* direction UP / RIGHT */
-    if ( players[player_id].axis0_x_value >= CONTROLLER_DEAD_ZONE
-            && players[player_id].axis1_y_value <= -CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value >= 0
+            && players[player_id].axis1_y_value <= 0 )
     {
         Sint32 product = 0;
         product = ( direction_vectors_2[DIR_UR_R][VECT_X] * players[player_id].axis1_y_value )
@@ -656,8 +652,8 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     }
 
     /* direction BOTTOM / LEFT */
-    if ( players[player_id].axis0_x_value <= -CONTROLLER_DEAD_ZONE
-            && players[player_id].axis1_y_value >= CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value <= 0
+            && players[player_id].axis1_y_value >= 0 )
     {
         Sint32 product = 0;
         product = ( direction_vectors_2[DIR_BL_B][VECT_X] * players[player_id].axis1_y_value )
@@ -687,8 +683,8 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     }
 
     /* direction BOTTOM / RIGHT */
-    if ( players[player_id].axis0_x_value >= CONTROLLER_DEAD_ZONE
-            && players[player_id].axis1_y_value >= CONTROLLER_DEAD_ZONE )
+    if ( players[player_id].axis0_x_value >= 0
+            && players[player_id].axis1_y_value >= 0 )
     {
         Sint32 product = 0;
         product = ( direction_vectors_2[DIR_BR_B][VECT_X] * players[player_id].axis1_y_value )
@@ -718,7 +714,6 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     }
 
     zlog_warn ( gngeox_config.loggingCat, "Undetected x=%d y=%d", players[player_id].axis0_x_value, players[player_id].axis1_y_value );
-
 }
 /* ******************************************************************************************************************/
 /*!

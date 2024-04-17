@@ -38,5 +38,6 @@ typedef struct
 } struct_gngeoxdrivers_rom_def;
 
 struct_gngeoxdrivers_rom_def* neo_driver_load ( char* );
+void neo_driver_free ( struct_gngeoxdrivers_rom_def* );
 
 #endif

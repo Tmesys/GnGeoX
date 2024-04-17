@@ -54,6 +54,9 @@ typedef struct
     /* Inputs registers representation */
     Uint8 p1cnt, p2cnt, status_a, status_b;
     Uint8 test_switch;
+    /* @todo (Tmesys#1#17/04/2024): Futur use ? */
+    Uint8 shadow;
+    Uint8 no_shadow;
     /* Sound control registers representation */
     Uint8 z80_command;
     Uint8 z80_command_reply;

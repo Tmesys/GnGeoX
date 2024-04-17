@@ -20,13 +20,14 @@ uint32 * bankaddress = NULL;
 
 t_iib* cpu68k_iibtable[65536];
 void ( *cpu68k_functable[65536 * 2] ) ( t_ipc* ipc );
-int cpu68k_totalinstr;
-int cpu68k_totalfuncs;
+int cpu68k_totalinstr = 0;
+int cpu68k_totalfuncs = 0;
 
-unsigned int cpu68k_clocks;
-unsigned int cpu68k_frames;
+unsigned int cpu68k_clocks = 0;
+unsigned int cpu68k_extra_clocks = 0;
+unsigned int cpu68k_frames = 0;
 /* cpu frozen, do not interrupt, make pending */
-unsigned int cpu68k_frozen;
+unsigned int cpu68k_frozen = 0;
 t_regs regs;
 uint8 movem_bit[256];
 t_ipclist* ipclist[LEN_IPCLISTTABLE];
@@ -44,13 +45,13 @@ int cpu68k_init ( uint8* ram, uint32 *bankaddressp )
 
     if ( cpu68k_ram == NULL )
     {
-        printf( "Invalid RAM pointer\n" );
+        printf ( "Invalid RAM pointer\n" );
         return 1;
     }
 
     if ( bankaddressp == NULL )
     {
-        printf( "Invalid bank address pointer\n" );
+        printf ( "Invalid bank address pointer\n" );
         return 1;
     }
 
@@ -219,7 +220,7 @@ int cpu68k_init ( uint8* ram, uint32 *bankaddressp )
     if ( j != cpu68k_totalinstr )
     {
         printf ( "Instruction count not verified (%d/%d)\n",
-                         cpu68k_totalinstr, i );
+                 cpu68k_totalinstr, i );
         return 1;
     }
 
@@ -230,7 +231,7 @@ int cpu68k_init ( uint8* ram, uint32 *bankaddressp )
         for ( j = 0; j < 8; j++ )
         {
             if ( i & ( 1 << j ) )
-                break;
+            { break; }
         }
 
         movem_bit[i] = j;

@@ -157,7 +157,7 @@ Uint32 interp_32_diff ( Uint32 p1, Uint32 p2 )
 
     /* assume standard rgb formats */
     if ( ( p1 & 0xF8F8F8 ) == ( p2 & 0xF8F8F8 ) )
-        return 0;
+    { return 0; }
 
     i1 = p1;
     i2 = p2;
@@ -172,13 +172,13 @@ Uint32 interp_32_diff ( Uint32 p1, Uint32 p2 )
     v = -r + 2 * g - b;
 
     if ( y < -INTERP_Y_LIMIT_S2 || y > INTERP_Y_LIMIT_S2 )
-        return 1;
+    { return 1; }
 
     if ( u < -INTERP_U_LIMIT_S2 || u > INTERP_U_LIMIT_S2 )
-        return 1;
+    { return 1; }
 
     if ( v < -INTERP_V_LIMIT_S3 || v > INTERP_V_LIMIT_S3 )
-        return 1;
+    { return 1; }
 
     return 0;
 }
@@ -195,7 +195,7 @@ Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 )
 
     /* assume standard rgb formats */
     if ( ( p1 & 0xF8F8F8 ) == ( p2 & 0xF8F8F8 ) )
-        return 0;
+    { return 0; }
 
     i1 = p1;
     i2 = p2;
@@ -204,9 +204,9 @@ Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 )
     g = ( ( i1 & 0xFF00 ) - ( i2 & 0xFF00 ) ) >> 8;
     r = ( ( i1 & 0xFF0000 ) - ( i2 & 0xFF0000 ) ) >> 16;
 
-    if ( b < 0 ) b = -b;
-    if ( g < 0 ) g = -g;
-    if ( r < 0 ) r = -r;
+    if ( b < 0 ) { b = -b; }
+    if ( g < 0 ) { g = -g; }
+    if ( r < 0 ) { r = -r; }
 
     return 3 * r + 4 * g + 2 * b;
 }

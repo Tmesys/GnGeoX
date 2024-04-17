@@ -31,6 +31,7 @@ extern void ( *cpu68k_functable[65536 * 2] ) ( t_ipc* ipc );
 extern int cpu68k_totalinstr;
 extern int cpu68k_totalfuncs;
 extern unsigned int cpu68k_clocks;
+extern unsigned int cpu68k_extra_clocks;
 extern unsigned int cpu68k_clocks_curevent;
 extern unsigned int cpu68k_frames;
 extern unsigned int cpu68k_line;

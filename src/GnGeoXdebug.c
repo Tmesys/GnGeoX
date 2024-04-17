@@ -283,14 +283,7 @@ void cpu_68k_dpg_step ( void )
     {
         nb_cycle = line_cycle = 0;
 
-        if ( gngeox_config.raster )
-        {
-            update_screen();
-        }
-        else
-        {
-            neo_sys_interrupt();
-        }
+        update_screen();
 
         //state_handling(pending_save_state, pending_load_state);
         cpu_68k_interrupt ( 1 );
@@ -301,12 +294,9 @@ void cpu_68k_dpg_step ( void )
         {
             line_cycle = 0;
 
-            if ( gngeox_config.raster )
+            if ( update_scanline() )
             {
-                if ( update_scanline() )
-                {
-                    cpu_68k_interrupt ( 2 );
-                }
+                cpu_68k_interrupt ( 2 );
             }
         }
     }

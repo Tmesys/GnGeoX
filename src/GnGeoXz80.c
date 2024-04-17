@@ -65,7 +65,7 @@ static void cpu_z80_switchbank ( Uint8 bank, Uint16 port )
             }
             else
             {
-                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %d / size %d"
+                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %p / size %d"
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].p + new_start_offset
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].size );
             }
@@ -83,7 +83,7 @@ static void cpu_z80_switchbank ( Uint8 bank, Uint16 port )
             }
             else
             {
-                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %d / size %d"
+                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %p / size %d"
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].p + new_start_offset
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].size );
             }
@@ -101,7 +101,7 @@ static void cpu_z80_switchbank ( Uint8 bank, Uint16 port )
             }
             else
             {
-                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %d / size %d"
+                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %p / size %d"
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].p + new_start_offset
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].size );
             }
@@ -119,7 +119,7 @@ static void cpu_z80_switchbank ( Uint8 bank, Uint16 port )
             }
             else
             {
-                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %d / size %d"
+                zlog_error ( gngeox_config.loggingCat, "Bank address out of range %p / size %d"
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].p + ( 0x4000 * window_address_mult )
                              , neogeo_memory.rom.rom_region[REGION_AUDIO_CPU_CARTRIDGE].size );
             }
@@ -249,7 +249,6 @@ void z80_writeport16 ( Uint16 port, Uint8 value )
     case ( 0xC ) :
         {
             neogeo_memory.z80_command_reply = value;
-            zlog_info ( gngeox_config.loggingCat, "[%x] Receive command %X", cpu_68k_getpc(), value );
         }
         break;
     case ( 0x18 ) :
@@ -298,11 +297,8 @@ Uint8 z80_readport16 ( Uint16 port )
     case ( 0x0 ) :
         {
             return_value = neogeo_memory.z80_command;
-            if ( enable_nmi == SDL_TRUE )
-            {
-                z80_set_nmi_line ( CLEAR_LINE );
-            }
-            zlog_info ( gngeox_config.loggingCat, "[%x] Send reply %X", cpu_68k_getpc(), neogeo_memory.z80_command );
+            /* @note (Tmesys#1#17/04/2024): Disabling NMI do not disables acknowledge (ninjamas) ! */
+            z80_set_nmi_line ( CLEAR_LINE );
         }
         break;
     case ( 0x4 ) :
@@ -345,13 +341,13 @@ Uint8 z80_readport16 ( Uint16 port )
     First write to port 0xf some value 0x89
     Then read port 0xe, and with 0xc0 (keep two upper bits),
     return from routine if result is non zero. */
-/*
-    case ( 0x0e ) :
-        {
-            return_value = 0xc0;
-        }
-        break;
-*/
+    /*
+        case ( 0x0e ) :
+            {
+                return_value = 0xc0;
+            }
+            break;
+    */
     default:
         {
             zlog_error ( gngeox_config.loggingCat, "Unknown port %x", QLOBYTE ( port ) );

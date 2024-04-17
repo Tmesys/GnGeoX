@@ -78,7 +78,7 @@ unsigned int reg68k_external_execute ( unsigned int clocks )
     static t_iib* step_piib = NULL;
     static int clks = 0;
 
-    clks = clocks;
+    clks = ( clocks - cpu68k_extra_clocks );
 
     if ( regs.pending && ( ( regs.sr.sr_int >> 8 ) & 7 ) < regs.pending )
     {
@@ -159,6 +159,8 @@ unsigned int reg68k_external_execute ( unsigned int clocks )
         }
     }
     while ( clks > 0 );
+
+    cpu68k_extra_clocks = -clks;
 
     return -clks;                 /* i.e. number of clocks done too much */
 }

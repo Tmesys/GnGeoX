@@ -127,21 +127,21 @@ static void hq2x_32_def ( Uint32* restrict volatile dst0, Uint32* restrict volat
         mask = 0;
 
         if ( interp_32_diff ( c[0], c[4] ) )
-            mask |= 1 << 0;
+        { mask |= 1 << 0; }
         if ( interp_32_diff ( c[1], c[4] ) )
-            mask |= 1 << 1;
+        { mask |= 1 << 1; }
         if ( interp_32_diff ( c[2], c[4] ) )
-            mask |= 1 << 2;
+        { mask |= 1 << 2; }
         if ( interp_32_diff ( c[3], c[4] ) )
-            mask |= 1 << 3;
+        { mask |= 1 << 3; }
         if ( interp_32_diff ( c[5], c[4] ) )
-            mask |= 1 << 4;
+        { mask |= 1 << 4; }
         if ( interp_32_diff ( c[6], c[4] ) )
-            mask |= 1 << 5;
+        { mask |= 1 << 5; }
         if ( interp_32_diff ( c[7], c[4] ) )
-            mask |= 1 << 6;
+        { mask |= 1 << 6; }
         if ( interp_32_diff ( c[8], c[4] ) )
-            mask |= 1 << 7;
+        { mask |= 1 << 7; }
 
 #define P(a, b) dst ## b[a]
 #define MUR interp_32_diff(c[1], c[5])

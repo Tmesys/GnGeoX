@@ -118,6 +118,7 @@ static Uint32 mem68k_fetch_pal_long ( Uint32 ) __attribute__ ( ( warn_unused_res
 static Uint8 mem68k_fetch_video_byte ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint16 mem68k_fetch_video_word ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint32 mem68k_fetch_video_long ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
+static Uint8 mem68k_fetch_setting_byte ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint8 mem68k_fetch_ctl1_byte ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint16 mem68k_fetch_ctl1_word ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static Uint32 mem68k_fetch_ctl1_long ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
@@ -176,7 +177,7 @@ static Uint8* mem68k_memptr_ram ( Uint32 ) __attribute__ ( ( warn_unused_result 
 void cpu_68k_bankswitch ( Uint32 );
 void cpu_68k_reset ( void );
 void cpu_68k_init ( void );
-Sint32 cpu_68k_run ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
+void cpu_68k_run ( Uint32 );
 Uint32 cpu_68k_getpc ( void ) __attribute__ ( ( warn_unused_result ) );
 void cpu_68k_interrupt ( Sint32 );
 Sint32 cpu_68k_getcycle ( void ) __attribute__ ( ( warn_unused_result ) );

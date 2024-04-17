@@ -186,6 +186,28 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
 
     return ( drv );
 }
+/* ******************************************************************************************************************/
+/*!
+* \brief  Frees ROM definition ressources.
+*
+* \param  drv ROM definition.
+*/
+/* ******************************************************************************************************************/
+void neo_driver_free ( struct_gngeoxdrivers_rom_def* drv )
+{
+    for ( Uint32 loop = 0; loop < 32; loop++ )
+    {
+        if ( drv->rom[loop].filename != NULL )
+        {
+            bdestroy ( drv->rom[loop].filename );
+        }
+    }
+
+    bdestroy ( drv->longname );
+    bdestroy ( drv->name );
+    bdestroy ( drv->parent );
+    qalloc_delete ( drv );
+}
 
 #ifdef _GNGEOX_DRIVERS_C_
 #undef _GNGEOX_DRIVERS_C_

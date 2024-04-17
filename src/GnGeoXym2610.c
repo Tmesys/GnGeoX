@@ -151,7 +151,7 @@ void neo_ym2610_update ( void )
 
             if ( timer_count >= timer->target )
             {
-                qlist_popat ( ym2610_timers[loop1], loop2, NULL );
+                qlist_removeat ( ym2610_timers[loop1], loop2 );
                 /* @note (Tmesys#1#13/04/2024): Triggers Z80 irq and reloads timers */
                 YM2610TimerOver ( loop1 );
             }

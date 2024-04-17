@@ -420,10 +420,7 @@ static SDL_bool dr_load_roms ( struct_gngeoxroms_game_roms* rom )
     /* Close/clean up */
     qzip_close_file ( zip_file );
 
-    bdestroy ( drv->longname );
-    bdestroy ( drv->name );
-    bdestroy ( drv->parent );
-    qalloc_delete ( drv );
+    neo_driver_free ( drv );
 
     if ( rom->rom_region[REGION_AUDIO_DATA_2].size == 0 )
     {

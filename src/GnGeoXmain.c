@@ -26,6 +26,7 @@
 #include "zlog.h"
 #include "qlibc.h"
 
+#include "GnGeoXversion.h"
 #include "GnGeoXym2610.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXscreen.h"
@@ -45,6 +46,18 @@
 
 Sint32 main ( Sint32 argc, char* argv[] )
 {
+    printf ( "GnGeoX version %d.%d.%d.rev%d\n\n"
+             , GNGEOX_MAJOR
+             , GNGEOX_MINOR
+             , GNGEOX_BUILD
+             , GNGEOX_REVISION );
+
+    printf ( "-> Operating system : %s\n", qsys_info_osname () );
+    printf ( "-> Operating system version : %s\n", qsys_info_version () );
+    printf ( "-> Operating system release : %s\n", qsys_info_release () );
+    printf ( "-> System node : %s\n", qsys_info_node () );
+    printf ( "-> System machine : %s\n\n", qsys_info_machine () );
+
     SDL_zero ( gngeox_config );
 
     if ( qalloc_init ( ) == false )

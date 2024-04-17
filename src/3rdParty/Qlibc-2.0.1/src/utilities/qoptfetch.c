@@ -40,9 +40,7 @@
 
 static int countopts ( const struct opttype *opts )
 {
-    unsigned int i = 0;
-
-    for ( i = 0;
+    for ( unsigned int i = 0;
             /* longname and short name are both 0, OR */
             ! ( ( ( opts[i].longname == NULL ) && ( opts[i].shortname == '\0' ) ) ||
                 /* output type was unspecified OR */
