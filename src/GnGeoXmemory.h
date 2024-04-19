@@ -20,10 +20,14 @@
 #define WRITE_WORD(a,d)       (*(Uint16 *)(a) = (d))
 #define READ_BYTE(a)          (*(Uint8 *)(a))
 #define WRITE_BYTE(a,d)       (*(Uint8 *)(a) = (d))
+
 /* @note (Tmesys#1#12/07/2022): Not used, watch out was long. */
 #define SWAP_BYTE_ADDRESS(a)  ((Sint64)(a)^1)
 #define SWAP16(y) SDL_Swap16(y)
 #define SWAP32(y) SDL_Swap32(y)
+
+/* Since the JEIDA data bus is 16-bits wide, make sure to double the address for 8-bit cards if you choose to access their memory directly. */
+#define DECODE_MEMCARD_ADDRESS(_X_) (QBIT_RANGE_EXTRACT ( address, 0, 12 ) / 2)
 
 /* Programs are stored as BIGENDIAN */
 #  if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
@@ -38,12 +42,51 @@
 #    define READ_BYTE_ROM READ_BYTE
 #  endif
 
+typedef enum
+{
+    STATUS_B_START_P1 = 0,
+    STATUS_B_SELECT_P1 = 1,
+    STATUS_B_START_P2 = 2,
+    STATUS_B_SELECT_P2 = 3,
+    /* Memory card inserted if 00 */
+    STATUS_B_MEMCRD_INSERT_1 = 4,
+    STATUS_B_MEMCRD_INSERT_2 = 5,
+    /* Memory card write protected if 1 */
+    STATUS_B_MEMCRD_PROT = 6,
+    /* 0:AES / 1:MVS */
+    STATUS_B_SYS = 7,
+} enum_gngeoxmemory_start_select;
+
+typedef enum
+{
+    STATUS_A_COIN_P1 = 0,
+    STATUS_A_COIN_P2 = 1,
+    STATUS_A_SERVICE_P2 = 2,
+    STATUS_A_COIN_P3 = 3,
+    STATUS_A_COIN_P4 = 4,
+    STATUS_A_SLOT_P4 = 5,
+    STATUS_A_RTC_PULSE = 6,
+    STATUS_A_RTC_DATA = 7,
+} enum_gngeoxmemory_reg_status_a;
+
+typedef enum
+{
+    PCNT_UP = 0,
+    PCNT_DOWN = 1,
+    PCNT_LEFT = 2,
+    PCNT_RIGHT = 3,
+    PCNT_A = 4,
+    PCNT_B = 5,
+    PCNT_C = 6,
+    PCNT_D = 7,
+} enum_gngeoxmemory_reg_pcnt;
+
 typedef struct
 {
     struct_gngeoxroms_game_roms rom;
     struct_gngeoxvideo_video vid;
-    Uint8 ram[0x10000];
-    Uint8 sram[0x10000];
+    Uint8 ram[65536];
+    Uint8 sram[65536];
     Uint8 memcard[2048];
     Uint8* fix_board_usage;
     Uint8* fix_game_usage;
@@ -90,6 +133,10 @@ void update_all_pal ( void );
 Uint16 sma_random ( void ) __attribute__ ( ( warn_unused_result ) );
 void dump_hardware_reg ( void );
 void switch_bank ( Uint32, Uint8 );
+void open_nvram ( void );
+void open_memcard ( void );
+void save_nvram ( void );
+void save_memcard ( void );
 
 extern Uint8 ( *mem68k_fetch_bksw_byte ) ( Uint32 );
 extern Uint16 ( *mem68k_fetch_bksw_word ) ( Uint32 );

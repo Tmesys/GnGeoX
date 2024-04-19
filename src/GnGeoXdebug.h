@@ -23,7 +23,8 @@
 static Uint32 gen68k_disassemble ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
 static void gen68k_dumpreg ( void );
 static void hexdump ( Uint32 );
-static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) );
+static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) );
+static void neo_sys_main_loop_debug ( void );
 #endif // _GNGEOX_DEBUG_C_
 
 void add_bt ( Uint32 );
@@ -34,6 +35,6 @@ void add_bp ( Sint32 );
 void del_bp ( Sint32 );
 void clear_bps ( void );
 void cpu_68k_dpg_step ( void );
-void debug_loop ( void );
+void neo_sys_debug_loop ( void );
 
 #endif // _GNGEOX_DEBUG_H_

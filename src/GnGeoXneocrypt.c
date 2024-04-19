@@ -831,9 +831,7 @@ void mslug3_decrypt_68k ( struct_gngeoxroms_game_roms* machine )
 
     for ( Sint32 i = 0; i < 0x0c0000 / 2; i++ )
     {
-        //rom[i] = rom[ ( 0x5d0000 / 2 ) + BITSWAP24 ( i, 23, 22, 21, 20, 19, 18, 15, 2, 1, 13, 3, 0, 9, 6, 16, 4, 11, 5, 7, 12, 17, 14, 10, 8 )];
-        /* @fixme (Tmesys#1#05/04/2024): From MAME */
-        rom[i] = rom[ ( 0x5d0000 / 2 ) + BITSWAP19 ( i, 18, 15, 2, 1, 13, 3, 0, 9, 6, 16, 4, 11, 5, 7, 12, 17, 14, 10, 8 )];
+        rom[i] = rom[ ( 0x5d0000 / 2 ) + BITSWAP24 ( i, 23, 22, 21, 20, 19, 18, 15, 2, 1, 13, 3, 0, 9, 6, 16, 4, 11, 5, 7, 12, 17, 14, 10, 8 )];
     }
 
     /* swap address lines for the banked part */
@@ -846,9 +844,7 @@ void mslug3_decrypt_68k ( struct_gngeoxroms_game_roms* machine )
 
         for ( Sint32 j = 0; j < 0x10000 / 2; j++ )
         {
-            //rom[i + j] = buffer[BITSWAP24 ( j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1 )];
-            /* @fixme (Tmesys#1#05/04/2024): From MAME */
-            rom[i + j] = buffer[BITSWAP15 ( j, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1 )];
+            rom[i + j] = buffer[BITSWAP24 ( j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1 )];
         }
     }
 }

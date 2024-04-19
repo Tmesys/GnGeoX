@@ -756,38 +756,29 @@ static Uint32 mem68k_fetch_coin_long ( Uint32 address )
 /*!
 * \brief Fetches byte located in memory card.
 *
-* \attention Even byte are FF, Odd  byte are data
+* \attention Odd byte are FF, Even  byte are data
 * \param address Memory address to fetch from.
 * \return Fetched byte.
 */
 /* ******************************************************************************************************************/
+/* @note (Tmesys#1#18/04/2024): Verified */
 static Uint8 mem68k_fetch_memcrd_byte ( Uint32 address )
 {
-    address &= 0xFFF;
-
-    if ( address & 1 )
-    {
-        return 0xFF;
-    }
-    else
-    {
-        return ( neogeo_memory.memcard[address >> 1] );
-    }
+    return ( neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )] );
 }
 /* ******************************************************************************************************************/
 /*!
 * \brief Fetches word located in memory card.
 *
-* \attention Even byte are FF, Odd  byte are data
 * \param address Memory address to fetch from.
 * \return Fetched word.
 */
 /* ******************************************************************************************************************/
 static Uint16 mem68k_fetch_memcrd_word ( Uint32 address )
 {
-    address &= 0xFFF;
-
-    return ( neogeo_memory.memcard[address >> 1] | 0xFF00 );
+    Uint16 result_value = QMAKEWORD16 ( neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )],
+                                        neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address ) + 1] );
+    return ( result_value );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -802,9 +793,13 @@ static Uint16 mem68k_fetch_memcrd_word ( Uint32 address )
 /* ******************************************************************************************************************/
 static Uint32 mem68k_fetch_memcrd_long ( Uint32 address )
 {
-    zlog_error ( gngeox_config.loggingCat, "Not implemented at address %x", address );
+    Uint16 lo_word = QMAKEWORD16 ( neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )],
+                                   neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address ) + 1] );
+    Uint16 hi_word = QMAKEWORD16 ( neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address ) + 2],
+                                   neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address ) + 3] );
+    Uint32 result_value = QMAKEWORD32 ( lo_word, hi_word );
 
-    return ( 0 );
+    return ( result_value );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -864,8 +859,7 @@ static void mem68k_store_invalid_long ( Uint32 address, Uint32 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_ram_byte ( Uint32 address, Uint8 data )
 {
-    address &= 0xffff;
-    WRITE_BYTE_ROM ( neogeo_memory.ram + address, data );
+    WRITE_BYTE_ROM ( neogeo_memory.ram + QLOWORD ( address ), data );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -877,8 +871,7 @@ static void mem68k_store_ram_byte ( Uint32 address, Uint8 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_ram_word ( Uint32 address, Uint16 data )
 {
-    address &= 0xffff;
-    WRITE_WORD_ROM ( neogeo_memory.ram + address, data );
+    WRITE_WORD_ROM ( neogeo_memory.ram + QLOWORD ( address ), data );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -890,8 +883,8 @@ static void mem68k_store_ram_word ( Uint32 address, Uint16 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_ram_long ( Uint32 address, Uint32 data )
 {
-    mem68k_store_ram_word ( address, data >> 16 );
-    mem68k_store_ram_word ( address + 2, data & 0xffff );
+    mem68k_store_ram_word ( address, QHIWORD ( data ) );
+    mem68k_store_ram_word ( address + 2, QLOWORD ( data ) );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -903,7 +896,6 @@ static void mem68k_store_ram_long ( Uint32 address, Uint32 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_bk_normal_byte ( Uint32 address, Uint8 data )
 {
-    //if (address<0x2FFFF0)
     switch_bank ( address, data );
 }
 /* ******************************************************************************************************************/
@@ -917,7 +909,8 @@ static void mem68k_store_bk_normal_byte ( Uint32 address, Uint8 data )
 static void mem68k_store_bk_normal_word ( Uint32 address, Uint16 data )
 {
     //if (address<0x2FFFF0)
-    if ( neogeo_memory.bksw_unscramble && ( address & 0xFF ) == neogeo_memory.bksw_unscramble[0] )
+    if ( neogeo_memory.bksw_unscramble &&
+            ( address & 0xFF ) == neogeo_memory.bksw_unscramble[0] )
     {
         /* unscramble bank number */
         data =
@@ -1453,10 +1446,10 @@ static void mem68k_store_setting_long ( Uint32 address, Uint32 data )
 * \param data Data to store.
 */
 /* ******************************************************************************************************************/
+/* @note (Tmesys#1#19/04/2024): Always stores a byte. */
 static void mem68k_store_memcrd_byte ( Uint32 address, Uint8 data )
 {
-    address &= 0xFFF;
-    neogeo_memory.memcard[address >> 1] = data;
+    neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )] = data;
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1468,8 +1461,7 @@ static void mem68k_store_memcrd_byte ( Uint32 address, Uint8 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_memcrd_word ( Uint32 address, Uint16 data )
 {
-    address &= 0xFFF;
-    neogeo_memory.memcard[address >> 1] = data & 0xff;
+    neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )] = QLOBYTE ( data );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1483,7 +1475,7 @@ static void mem68k_store_memcrd_word ( Uint32 address, Uint16 data )
 /* ******************************************************************************************************************/
 static void mem68k_store_memcrd_long ( Uint32 address, Uint32 data )
 {
-    zlog_error ( gngeox_config.loggingCat, "Not implemented at address %x : data %x", address, data );
+    neogeo_memory.memcard[DECODE_MEMCARD_ADDRESS ( address )] = QLOBYTE ( QLOWORD ( data ) );
 }
 /* ******************************************************************************************************************/
 /*!

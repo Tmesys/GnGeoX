@@ -125,7 +125,7 @@ Sint32 main ( Sint32 argc, char* argv[] )
 
     if ( gngeox_config.debug )
     {
-        debug_loop();
+        neo_sys_debug_loop();
     }
     else
     {

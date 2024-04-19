@@ -49,13 +49,17 @@ static Uint16 sound_buffer[BUFFER_LEN];
 /* ******************************************************************************************************************/
 static void neo_sound_feed_callback ( void* userdata, Uint8* stream, Sint32 len )
 {
+#ifdef ENABLE_PROFILER
     profiler_start ( PROF_SOUND );
+#endif // ENABLE_PROFILER
 
     /* @note (Tmesys#1#13/04/2024): Well, YM2610 expects length in 32 bits words, 16 bits for each channel.  */
     YM2610Update_stream ( len / 4, sound_buffer );
     memcpy ( stream, ( Uint8* ) sound_buffer, len );
 
+#ifdef ENABLE_PROFILER
     profiler_stop ( PROF_SOUND );
+#endif // ENABLE_PROFILER
 }
 /* ******************************************************************************************************************/
 /*!

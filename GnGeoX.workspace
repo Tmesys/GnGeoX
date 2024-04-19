@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="Workspace">
+	<Workspace title="GnGeoX Workspace">
 		<Project filename="src/3rdParty/Sqlite-3.8.1.11/Sqlite.cbp" />
 		<Project filename="src/3rdParty/Zlog-1.2.12/Zlog.cbp" />
 		<Project filename="src/3rdParty/Qlibc-2.0.1/Qlibc.cbp" />

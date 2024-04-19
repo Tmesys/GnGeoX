@@ -7,14 +7,14 @@
 			<Cursor1 position="512" topLine="327" />
 		</Cursor>
 	</File>
-	<File name="Z80.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Z80.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="156483" topLine="8322" />
+			<Cursor1 position="43744" topLine="1131" />
 		</Cursor>
 	</File>
-	<File name="Z80.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Z80.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="43353" topLine="1129" />
+			<Cursor1 position="144711" topLine="7934" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

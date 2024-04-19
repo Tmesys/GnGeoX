@@ -16,19 +16,19 @@ Simple DirectMedia Layer Version 2.0.0 or above.
 Version 2.0.0 or above.
 ### sqlite
 Rom driver database and tile transparency data database, version 3.8.1.11 (included in this code distribution) or above.
-### bstrlib :
+### bstrlib
 Customized version of the library by Paul Hsieh (included in this code distribution).
-### Qlib :
+### Qlib
 Customized version of the library by Seungyoung Kim (included in this code distribution).
-### Zlog :
+### Zlog
 Customized version of the library by Hardy Simpson (included in this code distribution).
-### generator68k :
+### generator68k
 Customized version of the library by James Ponder (included in this code distribution).
-### Z80 :
+### Z80
 Customized version of the library by Juergen Buchmueller (included in this code distribution).
-### OpenGL:
+### OpenGL
 For hardware accelerated blitters.
-### code::blocks:
+### code::blocks
 GnGeoX uses codeblocks workspace and project files to build binaries.
 
 ## INSTALLATION :

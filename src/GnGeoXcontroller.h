@@ -18,44 +18,6 @@
 
 #define CONTROLLER_DEAD_ZONE 128
 
-typedef enum
-{
-    PCNT_UP = 0,
-    PCNT_DOWN = 1,
-    PCNT_LEFT = 2,
-    PCNT_RIGHT = 3,
-    PCNT_A = 4,
-    PCNT_B = 5,
-    PCNT_C = 6,
-    PCNT_D = 7,
-} enum_gngeoxcontroller_button;
-
-typedef enum
-{
-    STATUS_B_START_P1 = 0,
-    STATUS_B_SELECT_P1 = 1,
-    STATUS_B_START_P2 = 2,
-    STATUS_B_SELECT_P2 = 3,
-    /* Memory card inserted if 00 */
-    STATUS_B_MEMCRD_INSERT_1 = 4,
-    STATUS_B_MEMCRD_INSERT_2 = 5,
-    /* Memory card write protected if 1 */
-    STATUS_B_MEMCRD_PROT = 6,
-    /* 0:AES / 1:MVS */
-    STATUS_B_SYS = 7,
-} enum_gngeoxcontroller_start_select;
-
-typedef enum
-{
-    STATUS_A_COIN_P1 = 0,
-    STATUS_A_COIN_P2 = 1,
-    STATUS_A_SERVICE_P2 = 2,
-    STATUS_A_COIN_P3 = 3,
-    STATUS_A_COIN_P4 = 4,
-    STATUS_A_SLOT_P4 = 5,
-    STATUS_A_RTC_PULSE = 6,
-    STATUS_A_RTC_DATA = 7,
-} enum_gngeoxcontroller_reg_status_a;
 
 typedef enum
 {
@@ -99,7 +61,7 @@ typedef struct
 } struct_gngeoxcontroller_player;
 
 #ifdef _GNGEOX_CONTROLLER_C_
-static void update_controllers_button ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state, enum_gngeoxcontroller_button );
+static void update_controllers_button ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state, enum_gngeoxmemory_reg_pcnt );
 static void update_controllers_start ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state );
 static void update_controllers_coin_select ( enum_gngeoxcontroller_player, enum_gngeoxcontroller_button_state );
 static SDL_bool neo_controllers_open ( Uint32, SDL_JoystickID );

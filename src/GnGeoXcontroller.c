@@ -22,12 +22,12 @@
 #include "zlog.h"
 #include "qlibc.h"
 
-#include "GnGeoXcontroller.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXscreen.h"
 #include "GnGeoXconfig.h"
+#include "GnGeoXcontroller.h"
 
 struct_gngeoxcontroller_player players[CONTROLLER_PLAYER_MAX];
 const Sint32 direction_vectors_2[8][2] =
@@ -55,7 +55,7 @@ const Sint32 direction_vectors_2[8][2] =
 *
 */
 /* ******************************************************************************************************************/
-static void update_controllers_button ( enum_gngeoxcontroller_player player, enum_gngeoxcontroller_button_state state, enum_gngeoxcontroller_button button )
+static void update_controllers_button ( enum_gngeoxcontroller_player player, enum_gngeoxcontroller_button_state state, enum_gngeoxmemory_reg_pcnt button )
 {
     switch ( state )
     {
@@ -526,6 +526,12 @@ void neo_controllers_update_axis ( SDL_JoystickID controller_id, Uint8 axis, Sin
     update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_DOWN );
     update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_RIGHT );
     update_controllers_button ( player_id, CONTROLLER_STATE_UP, PCNT_LEFT );
+
+    if ( player_id == -1 )
+    {
+        return;
+    }
+
 
     /*
     @note (Tmesys#1#14/04/2024):

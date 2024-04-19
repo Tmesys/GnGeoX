@@ -134,11 +134,15 @@ void neo_sys_interrupt ( void )
 
     if ( !skip_this_frame )
     {
+#ifdef ENABLE_PROFILER
         profiler_start ( PROF_VIDEO );
+#endif // ENABLE_PROFILER
 
         draw_screen();
 
+#ifdef ENABLE_PROFILER
         profiler_stop ( PROF_VIDEO );
+#endif // ENABLE_PROFILER
     }
 }
 /* ******************************************************************************************************************/
@@ -228,6 +232,10 @@ void neo_sys_main_loop ( void )
 
     while ( 1 )
     {
+#ifdef ENABLE_PROFILER
+        profiler_start ( PROF_ALL );
+#endif // ENABLE_PROFILER
+
         if ( neogeo_memory.test_switch == 1 )
         {
             neogeo_memory.test_switch = 0;
@@ -235,7 +243,9 @@ void neo_sys_main_loop ( void )
 
         neo_sys_update_events();
 
+#ifdef ENABLE_PROFILER
         profiler_start ( PROF_Z80 );
+#endif // ENABLE_PROFILER
 
         for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
         {
@@ -243,9 +253,15 @@ void neo_sys_main_loop ( void )
             neo_ym2610_update();
         }
 
+#ifdef ENABLE_PROFILER
         profiler_stop ( PROF_Z80 );
+#endif // ENABLE_PROFILER
 
         current_line = 0;
+
+#ifdef ENABLE_PROFILER
+        profiler_start ( PROF_68K );
+#endif // ENABLE_PROFILER
 
         for ( Uint32 i = 0; i < 264; i++ )
         {
@@ -257,6 +273,9 @@ void neo_sys_main_loop ( void )
             }
         }
 
+#ifdef ENABLE_PROFILER
+        profiler_stop ( PROF_68K );
+#endif // ENABLE_PROFILER
         //cpu_68k_run ( cpu_68k_timeslice_scanline );
 
         update_screen();
@@ -271,40 +290,9 @@ void neo_sys_main_loop ( void )
         cpu_68k_interrupt ( 1 );
 
 #ifdef ENABLE_PROFILER
+        profiler_stop ( PROF_ALL );
         profiler_show_stat();
 #endif
-        profiler_start ( PROF_ALL );
-    }
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Main loop for debugging
-*
-*/
-/* ******************************************************************************************************************/
-void neo_sys_main_loop_debug ( void )
-{
-    Uint32 cpu_68k_timeslice = 200000;
-    Uint32 cpu_68k_timeslice_scanline = ( cpu_68k_timeslice / 264.0 );
-    Uint32 cpu_z80_timeslice = 73333;
-    Uint32 tm_cycle = 0;
-
-    Uint32 cpu_z80_timeslice_interlace = cpu_z80_timeslice / ( float ) NB_INTERLACE;
-
-    neo_frame_skip_reset();
-    neo_ym2610_update();
-
-    if ( neogeo_memory.test_switch == 1 )
-    {
-        neogeo_memory.test_switch = 0;
-    }
-
-    neo_sys_update_events();
-
-    for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
-    {
-        z80_run ( cpu_z80_timeslice_interlace, 1 );
-        neo_ym2610_update();
     }
 }
 

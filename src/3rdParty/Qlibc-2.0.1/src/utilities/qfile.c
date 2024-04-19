@@ -202,12 +202,11 @@ void * qfile_load ( const char * filepath, size_t * nbytes )
         return NULL;
     }
 
-    ( ( char * ) buf ) [count] = '\0';
-
     if ( nbytes != NULL )
     {
         *nbytes = count;
     }
+
     return buf;
 }
 
@@ -313,8 +312,8 @@ void * qfile_read ( FILE * fp, size_t * nbytes )
  *   qfile_save("/tmp/integer.bin, (void*)&integer, sizeof(int));
  * @endcode
  */
-ssize_t qfile_save ( const char * filepath, const void * buf, size_t size,
-                     bool append )
+bool qfile_save ( const char * filepath, const void * buf, size_t size,
+                  bool append )
 {
     int fd;
 
@@ -344,13 +343,18 @@ ssize_t qfile_save ( const char * filepath, const void * buf, size_t size,
     }
     if ( fd < 0 )
     {
-        return -1;
+        return false;
     }
 
     ssize_t count = write ( fd, buf, size );
     close ( fd );
 
-    return count;
+    if ( size != count )
+    {
+        return false;
+    }
+
+    return true;
 }
 
 /**

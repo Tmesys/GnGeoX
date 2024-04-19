@@ -19,6 +19,8 @@
 
 #include <SDL2/SDL.h>
 #include "zlog.h"
+#include "qlibc.h"
+#include "bstrlib.h"
 
 #include "GnGeoXvideo.h"
 #include "GnGeoXym2610.h"
@@ -30,6 +32,7 @@
 #include "GnGeoX68k.h"
 #include "GnGeoXz80.h"
 #include "GnGeoXscanline.h"
+#include "GnGeoXconfig.h"
 
 struct_gngeoxmemory_neogeo neogeo_memory;
 
@@ -165,6 +168,138 @@ void switch_bank ( Uint32 address, Uint8 data )
     }
 
     cpu_68k_bankswitch ( cpu_68k_bankaddress );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Opens memcard.
+*
+* \param  name Todo.
+*
+*/
+/* ******************************************************************************************************************/
+void open_memcard ( void )
+{
+    Uint8 * buffer = NULL;
+    bstring fpath = NULL;
+
+    fpath = bfromcstr ( gngeox_config.savespath );
+    bcatcstr ( fpath, "/" );
+    bcatcstr ( fpath, gngeox_config.gamename );
+    bcatcstr ( fpath, ".sav" );
+
+    if ( qfile_exist ( fpath->data ) == false )
+    {
+        SDL_zero ( neogeo_memory.memcard );
+
+        if ( qfile_save ( fpath->data, neogeo_memory.memcard, sizeof ( neogeo_memory.memcard ), false ) == false )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Can not create file %s", fpath->data );
+        }
+
+        bdestroy ( fpath );
+        return;
+    }
+
+    buffer = qfile_load ( fpath->data, NULL );
+    if ( buffer == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not load file %s", fpath->data );
+        bdestroy ( fpath );
+        return;
+    }
+
+    memcpy ( neogeo_memory.memcard, buffer, sizeof ( neogeo_memory.memcard ) );
+    free ( buffer );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Saves memcard.
+*
+* \param  name Todo.
+*
+*/
+/* ******************************************************************************************************************/
+void save_memcard ( void )
+{
+    bstring fpath = NULL;
+
+    fpath = bfromcstr ( gngeox_config.savespath );
+    bcatcstr ( fpath, "/" );
+    bcatcstr ( fpath, gngeox_config.gamename );
+    bcatcstr ( fpath, ".sav" );
+
+    if ( qfile_save ( fpath->data, neogeo_memory.memcard, sizeof ( neogeo_memory.memcard ), false ) == false )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not save file %s", fpath->data );
+    }
+
+    bdestroy ( fpath );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Opens nvram.
+*
+* \param  name Todo.
+*
+*/
+/* ******************************************************************************************************************/
+void open_nvram ( void )
+{
+    Uint8 * buffer = NULL;
+    bstring fpath = NULL;
+
+    fpath = bfromcstr ( gngeox_config.nvrampath );
+    bcatcstr ( fpath, "/" );
+    bcatcstr ( fpath, gngeox_config.gamename );
+    bcatcstr ( fpath, ".nv" );
+
+    if ( qfile_exist ( fpath->data ) == false )
+    {
+        SDL_zero ( neogeo_memory.sram );
+
+        if ( qfile_save ( fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Can not create file %s", fpath->data );
+        }
+
+        bdestroy ( fpath );
+        return;
+    }
+
+    buffer = qfile_load ( fpath->data, NULL );
+    if ( buffer == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not load file %s", fpath->data );
+        bdestroy ( fpath );
+        return;
+    }
+
+    memcpy ( neogeo_memory.sram, buffer, sizeof ( neogeo_memory.sram ) );
+    free ( buffer );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Saves nvram.
+*
+* \param  name Todo.
+*
+*/
+/* ******************************************************************************************************************/
+void save_nvram ( void )
+{
+    bstring fpath = NULL;
+
+    fpath = bfromcstr ( gngeox_config.nvrampath );
+    bcatcstr ( fpath, "/" );
+    bcatcstr ( fpath, gngeox_config.gamename );
+    bcatcstr ( fpath, ".nv" );
+
+    if ( qfile_save ( fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not save file %s", fpath->data );
+    }
+
+    bdestroy ( fpath );
 }
 
 #ifdef _GNGEOX_MEMORY_C_

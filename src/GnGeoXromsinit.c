@@ -102,7 +102,7 @@ static Sint32 bankoffset_mslug3[64] =
     0x4c0000, /* rest not used? */
 };
 
-static Uint8 scramblecode_mslug3[7] = {0xE4, 14, 12, 15, 6, 3, 9,};
+static Uint8 scramblecode_mslug3[6] = { 14, 12, 15, 6, 3, 9 };
 
 static Sint32 bankoffset_kof2000[64] =
 {
@@ -264,7 +264,7 @@ static void init_mslug3 ( struct_gngeoxroms_game_roms* rom )
     if ( rom->need_decrypt )
     {
         mslug3_decrypt_68k ( rom );
-        kof99_neogeo_gfx_decrypt ( rom, 0xad );
+        kof99_neogeo_gfx_decrypt ( rom, 0xAD );
     }
 
     neogeo_fix_bank_type = 1;

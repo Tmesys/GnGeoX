@@ -264,8 +264,6 @@ void cpu_68k_dpg_step ( void )
 {
     static Uint32 nb_cycle = 0;
     static Uint32 line_cycle = 0;
-    Uint32 cpu_68k_timeslice = 200000;
-    Uint32 cpu_68k_timeslice_scanline = 200000 / ( float ) 262;
     Uint32 cycle = 0;
 
     if ( nb_cycle == 0 )
@@ -279,7 +277,7 @@ void cpu_68k_dpg_step ( void )
     line_cycle += cycle;
     nb_cycle += cycle;
 
-    if ( nb_cycle >= cpu_68k_timeslice )
+    if ( nb_cycle >= cpu_68k_timeslice_scanline )
     {
         nb_cycle = line_cycle = 0;
 
@@ -303,6 +301,30 @@ void cpu_68k_dpg_step ( void )
 }
 /* ******************************************************************************************************************/
 /*!
+* \brief Main loop for debugging
+*
+*/
+/* ******************************************************************************************************************/
+static void neo_sys_main_loop_debug ( void )
+{
+    neo_frame_skip_reset();
+    neo_ym2610_update();
+
+    if ( neogeo_memory.test_switch == 1 )
+    {
+        neogeo_memory.test_switch = 0;
+    }
+
+    neo_sys_update_events();
+
+    for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
+    {
+        z80_run ( cpu_z80_timeslice_interlace, 1 );
+        neo_ym2610_update();
+    }
+}
+/* ******************************************************************************************************************/
+/*!
 * \brief Todo.
 *
 * \param execstep Todo.
@@ -310,7 +332,7 @@ void cpu_68k_dpg_step ( void )
 * \return Todo.
 **/
 /* ******************************************************************************************************************/
-static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) )
+static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) )
 {
     char buf[200];
     char* args = NULL, *argsend = NULL;
@@ -529,90 +551,17 @@ static Sint32 cpu_68k_debuger ( void ( *execstep ) ( void ), void ( *dump ) ( vo
 *
 */
 /* ******************************************************************************************************************/
-void debug_loop ( void )
+void neo_sys_debug_loop ( void )
 {
     Sint32 a;
 
     do
     {
-        a = cpu_68k_debuger ( cpu_68k_dpg_step, /*dump_hardware_reg*/NULL );
+        a = cpu_68k_debugger ( cpu_68k_dpg_step, /*dump_hardware_reg*/NULL );
     }
     while ( a != -1 );
 }
 
-/*
-void debug_interf ( void )
-{
-    char in_buf[256];
-    char val[32];
-    char cmd;
-    Sint32 in_a, in_b, in_c;
-    Sint32 i, j;
-
-    while ( 1 )
-    {
-        printf ( "> " );
-        fflush ( stdout );
-        //    in_buf[0]=0;
-        // memset(in_buf,0,255);
-        //scanf("%s %s",in_buf);
-        fgets ( in_buf, 255, stdin );
-
-        switch ( in_buf[0] )
-        {
-            case 'q':
-            case 'c':
-                gngeoxdebug_debug_step = 0;
-                return;
-                break;
-
-            case 's':
-                gngeoxdebug_debug_step = 1;
-                return;
-
-            case 'b':
-                sscanf ( in_buf, "%c %x", &cmd, &in_a );
-                add_bp ( in_a );
-                break;
-
-            case 'B':
-                sscanf ( in_buf, "%c %x", &cmd, &in_a );
-                del_bp ( in_a );
-                break;
-
-            case 'd':
-                sscanf ( in_buf, "%c %s", &cmd, val );
-                in_a = strtol ( val, NULL, 0 );
-                cpu_68k_disassemble ( in_a, 10 );
-                break;
-
-            case 'p':
-                cpu_68k_dumpreg();
-                break;
-        }
-
-        printf ( "\n" );
-    }
-}
-
-Sint32 dbg_68k_run ( Uint32 nbcycle )
-{
-    Sint32 i = 0;
-
-    while ( i < nbcycle )
-    {
-        if ( check_bp ( cpu_68k_getpc() ) )
-        {
-            cpu_68k_disassemble ( cpu_68k_getpc(), 1 );
-            debug_interf();
-        }
-
-        i += reg68k_external_step();
-    }
-
-    return i;
-}
-*/
 #ifdef _GNGEOX_DEBUG_C_
 #undef _GNGEOX_DEBUG_C_
 #endif // _GNGEOX_DEBUG_C_

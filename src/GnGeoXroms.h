@@ -80,10 +80,6 @@ static void convert_all_tile ( struct_gngeoxroms_game_roms* );
 static SDL_bool dr_load_roms ( struct_gngeoxroms_game_roms* ) __attribute__ ( ( warn_unused_result ) );
 static SDL_bool dr_load_game ( char* ) __attribute__ ( ( warn_unused_result ) );
 static void dr_free_roms ( struct_gngeoxroms_game_roms* );
-static void open_nvram ( void );
-static void open_memcard ( void );
-static void save_nvram ( void );
-static void save_memcard ( void );
 #else
 extern Sint32 neogeo_fix_bank_type;
 #endif // _GNGEOX_ROMS_C_

@@ -524,7 +524,7 @@ void draw_screen ( void )
     SDL_LockSurface ( sdl_surface_buffer );
 
     /* Draw sprites */
-    for ( Uint32 count = 0; count < 0x300; count += 2 )
+    for ( Uint32 count = 0; count < 768; count += 2 )
     {
         t3 = READ_WORD ( &vidram[0x10000 + count] );
         t1 = READ_WORD ( &vidram[0x10400 + count] );
@@ -826,7 +826,7 @@ void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
     Sint32 sx = 0, sy = 0, my = 0, zx = 1, zy = 1;
     Sint32 offs = 0, y = 0;
     Sint32 tileno = 0, tileatr = 0;
-    Uint16 scb3 = 0, scb4 = 0, scb2 = 0;
+    Uint16 scb2 = 0, scb3 = 0, scb4 = 0;
     Uint8* vidram = neogeo_memory.vid.ram;
     static SDL_Rect clear_rect;
     Sint32 yy = 0;
