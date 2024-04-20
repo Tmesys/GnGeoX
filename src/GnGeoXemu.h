@@ -3,7 +3,7 @@
 *   \file    GnGeoXemu.h
 *   \brief   Emulation routines header ?
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version).
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X).
@@ -16,7 +16,10 @@
 #ifndef _GNGEOX_EMU_H_
 #define _GNGEOX_EMU_H_
 
-#define NB_INTERLACE 256
+#define EMU_NB_INTERLACE          256
+#define EMU_NB_SCANLINES_MVS      264
+#define EMU_NB_SCANLINES_AES_PAL  312
+#define EMU_NB_SCANLINES_AES_NTSC 264
 
 #ifdef _GNGEOX_EMU_C_
 static void neo_sys_reset ( void );

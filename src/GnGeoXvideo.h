@@ -3,7 +3,7 @@
 *   \file    GnGeoXvideo.h
 *   \brief   Video routines header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -36,7 +36,7 @@ typedef struct
     Uint32 size;  /* Tha allocated size of the cache */
     Uint32 total_bank;  /* total number of rom bank */
     Uint8** ptr/*[TOTAL_GFX_BANK]*/; /* ptr[i] Contain a pointer to cached data for bank i */
-    Sint32 max_slot; /* Maximal numer of bank that can be cached (depend on cache size) */
+    Sint32 max_slot; /* Maximal number of bank that can be cached (depend on cache size) */
     Sint32 slot_size;
     Sint32* usage;   /* contain index to the banks in used order */
     FILE* gno;
@@ -71,7 +71,7 @@ typedef struct
 } struct_gngeoxvideo_video;
 
 #ifdef _GNGEOX_VIDEO_C_
-static Uint32 alpha_blend ( Uint32, Uint32, Uint8 ) __attribute__ ( ( warn_unused_result ) );
+//static Uint32 alpha_blend ( Uint32, Uint32, Uint8 ) __attribute__ ( ( warn_unused_result ) );
 static Uint8* get_cached_sprite_ptr ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
 static void fix_value_init ( void );
 static void draw_fix_char ( Uint8*, Sint32, Sint32 );
@@ -87,5 +87,6 @@ void free_sprite_cache ( void );
 void draw_screen ( void );
 void draw_screen_scanline ( Sint32, Sint32, Sint32 );
 void SDL_textout ( SDL_Surface*, Sint32, Sint32, const char* );
+Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha );
 
 #endif

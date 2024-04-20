@@ -3,7 +3,7 @@
 *   \file    GnGeoXinterp.c
 *   \brief   Interpolation image effect routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -21,6 +21,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "GnGeoXscreen.h"
+#include "GnGeoXvideo.h"
 #include "GnGeoXinterp.h"
 
 /* ******************************************************************************************************************/
@@ -219,44 +220,6 @@ Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 )
 Uint32 interp_32_dist3 ( Uint32 p1, Uint32 p2, Uint32 p3 )
 {
     return interp_32_dist ( p1, p2 ) + interp_32_dist ( p2, p3 );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief  Interpolates screen.
-*
-*/
-/* ******************************************************************************************************************/
-void interp_32_screen ( void )
-{
-    SDL_Surface* tmp = NULL;
-    Uint32* dst = ( Uint32* ) sdl_surface_blend->pixels + 16 + ( 352 << 4 );
-    Uint32* src = ( Uint32* ) sdl_surface_buffer->pixels + 16 + ( 352 << 4 );
-    Uint32 s, d;
-
-    /* we copy pixels from buffer surface to blend surface */
-    for ( Uint8 w = 224; w > 0; w-- )
-    {
-        for ( Uint8 h = 160; h > 0; h-- )
-        {
-            s = * src;
-            d = * dst;
-
-            * ( Uint32* ) dst =
-                ( ( d & 0xf7def7de ) >> 1 ) + ( ( s & 0xf7def7de ) >> 1 ) +
-                ( s & d & 0x08210821 );
-
-            dst += 2;
-            src += 2;
-        }
-
-        src += 32; //(visible_area.x<<1);
-        dst += 32; //(visible_area.x<<1);
-    }
-
-    /* Swap Buffers */
-    tmp = sdl_surface_blend;
-    sdl_surface_blend = sdl_surface_buffer;
-    sdl_surface_buffer = tmp;
 }
 
 #ifdef _GNGEOX_INTERP_C_

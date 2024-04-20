@@ -3,7 +3,7 @@
 *   \file    GnGeoXym2610.c
 *   \brief   Yamaha YM2610 sound chip emulation interface.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00
@@ -122,12 +122,12 @@ SDL_bool neo_ym2610_init ( void )
     if ( gngeox_config.forcepal )
     {
         /* *(1<<TIMER_SH);*/
-        timer_increment = ( ( double ) ( 0.02 ) / NB_INTERLACE );
+        timer_increment = ( ( double ) ( 0.02 ) / EMU_NB_INTERLACE );
     }
     else
     {
         /* *(1<<TIMER_SH);*/
-        timer_increment = ( ( double ) ( 0.01666 ) / NB_INTERLACE );
+        timer_increment = ( ( double ) ( 0.01666 ) / EMU_NB_INTERLACE );
     }
 
     return ( SDL_TRUE );

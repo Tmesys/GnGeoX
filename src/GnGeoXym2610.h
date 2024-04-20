@@ -3,7 +3,7 @@
 *   \file    GnGeoXym2610.h
 *   \brief   Yamaha YM2610 sound chip emulation interface header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Mourad Reggadi (GnGeo-X)
 *   \version 01.00

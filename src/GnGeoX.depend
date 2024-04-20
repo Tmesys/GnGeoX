@@ -1,0 +1,730 @@
+# depslib dependency file v1.0
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoX68k.c
+	<stdlib.h>
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"3rdParty/Generator68k/generator.h"
+	"3rdParty/Generator68k/cpu68k.h"
+	"3rdParty/Generator68k/reg68k.h"
+	"3rdParty/Generator68k/mem68k.h"
+	"GnGeoX68k.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXemu.h"
+	"GnGeoXdebug.h"
+	"GnGeoXconfig.h"
+	"GnGeoXpd4990a.h"
+	"GnGeoXz80.h"
+	"GnGeoXscanline.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Zlog-1.2.12/src/zlog.h
+	<stdarg.h>
+	<stdio.h>
+
+1712181564 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/qlibc.h
+	"containers/qtreetbl.h"
+	"containers/qhashtbl.h"
+	"containers/qhasharr.h"
+	"containers/qlisttbl.h"
+	"containers/qlist.h"
+	"containers/qvector.h"
+	"containers/qqueue.h"
+	"containers/qstack.h"
+	"containers/qgrow.h"
+	"extensions/qaconf.h"
+	"extensions/qconfig.h"
+	"extensions/qdatabase.h"
+	"extensions/qlog.h"
+	"extensions/qtokenbucket.h"
+	"utilities/qcount.h"
+	"utilities/qencode.h"
+	"utilities/qfile.h"
+	"utilities/qhash.h"
+	"utilities/qio.h"
+	"utilities/qsocket.h"
+	"utilities/qstring.h"
+	"utilities/qsystem.h"
+	"utilities/qtime.h"
+	"utilities/qsort.h"
+	"utilities/qcdrom.h"
+	"utilities/qfastmem.h"
+	"utilities/qoptfetch.h"
+	"utilities/qalloc.h"
+	"utilities/qzip.h"
+	"ipc/qsem.h"
+	"ipc/qshm.h"
+
+1712072513 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qtreetbl.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qhashtbl.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qhasharr.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qlisttbl.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qlist.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1667129422 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qvector.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<pthread.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qqueue.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qstack.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qgrow.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qaconf.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1696881877 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qconfig.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	"../containers/qlisttbl.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qdatabase.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qlog.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<limits.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/extensions/qtokenbucket.h
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qcount.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qencode.h
+	<stdlib.h>
+	<stdbool.h>
+	"../containers/qlisttbl.h"
+
+1713473691 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qfile.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qhash.h
+	<stdlib.h>
+	<stdbool.h>
+	<stdint.h>
+	<sys/types.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qio.h
+	<stdlib.h>
+	<stdbool.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsocket.h
+	<stdlib.h>
+	<stdbool.h>
+	<netinet/in.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qstring.h
+	<stdlib.h>
+	<stdbool.h>
+	"../containers/qlist.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsystem.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qtime.h
+	<stdlib.h>
+	<stdbool.h>
+	<time.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsort.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qcdrom.h
+
+1697693595 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qfastmem.h
+
+1711747877 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qoptfetch.h
+
+1697967722 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qalloc.h
+
+1712856743 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qzip.h
+	<zlib.h>
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/ipc/qsem.h
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/ipc/qshm.h
+
+1713073209 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/generator.h
+	<config.h>
+	<SDL2/SDL_types.h>
+
+1713373345 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/cpu68k.h
+
+1713072468 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/reg68k.h
+
+1713123787 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/mem68k.h
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoX68k.h
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.h
+
+1713534874 /home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.h
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXmemory.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.h
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.h
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXpd4990a.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXz80.h
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscanline.h
+
+1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXbios.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXroms.h"
+	"GnGeoXbios.h"
+	"GnGeoXconfig.h"
+	"GnGeoXemu.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Bstrlib/bstrlib.h
+	<stdarg.h>
+	<string.h>
+	<limits.h>
+	<ctype.h>
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXbios.h
+
+1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"GnGeoXconfig.h"
+	"GnGeoXemu.h"
+	"GnGeoXscreen.h"
+	"GnGeoXeffects.h"
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXeffects.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXcontroller.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"GnGeoXvideo.h"
+	"GnGeoXroms.h"
+	"GnGeoXmemory.h"
+	"GnGeoXscreen.h"
+	"GnGeoXconfig.h"
+	"GnGeoXcontroller.h"
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXcontroller.h
+
+1713528005 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.c
+	<stdlib.h>
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"3rdParty/Generator68k/generator.h"
+	"3rdParty/Generator68k/cpu68k.h"
+	"3rdParty/Generator68k/reg68k.h"
+	"3rdParty/Generator68k/mem68k.h"
+	"GnGeoXdebug.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXconfig.h"
+	"GnGeoX68k.h"
+	"GnGeoXscreen.h"
+	"GnGeoXscanline.h"
+	"GnGeoXemu.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdrivers.c
+	<stdio.h>
+	<stdint.h>
+	<sys/stat.h>
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"sqlite3.h"
+	"bstrlib.h"
+	"GnGeoXdrivers.h"
+	"GnGeoXroms.h"
+	"GnGeoXconfig.h"
+
+1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Sqlite-3.8.1.11/sqlite3.h
+	<stdarg.h>
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXdrivers.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXeffects.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"GnGeoXeffects.h"
+	"GnGeoXhq2x.h"
+	"GnGeoXxbr2x.h"
+	"GnGeoXscale.h"
+	"GnGeoXscanline.h"
+	"GnGeoXconfig.h"
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXhq2x.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXxbr2x.h
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscale.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.c
+	<string.h>
+	<stdlib.h>
+	<time.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"GnGeoXemu.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXframeskip.h"
+	"GnGeoXpd4990a.h"
+	"GnGeoXprofiler.h"
+	"GnGeoXdebug.h"
+	"GnGeoXym2610.h"
+	"GnGeoXsound.h"
+	"GnGeoXscreen.h"
+	"GnGeoXneocrypt.h"
+	"GnGeoXconfig.h"
+	"GnGeoXcontroller.h"
+	"GnGeoX68k.h"
+	"GnGeoXz80.h"
+	"GnGeoXscanline.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.h
+
+1713527749 /home/mourad/Mega/Projets/gngeo/src/GnGeoXprofiler.h
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610.h
+
+1713527749 /home/mourad/Mega/Projets/gngeo/src/GnGeoXsound.h
+	<SDL2/SDL.h>
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXneocrypt.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.c
+	<unistd.h>
+	<sys/time.h>
+	<math.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"bstrlib.h"
+	"zlog.h"
+	"GnGeoXframeskip.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscreen.h"
+	"GnGeoXconfig.h"
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXglslblitter.c
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<GL/gl.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	<GL/glew.h>
+	<SDL2/SDL_opengles2.h>
+	<SDL2/SDL_opengles2_gl2.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscale.h"
+	"GnGeoXscanline.h"
+	"GnGeoXconfig.h"
+	"GnGeoXglslblitter.h"
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXglslblitter.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXhq2x.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXhq2x.h"
+	"GnGeoXinterp.h"
+
+1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.h
+
+1713537987 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXinterp.h"
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmain.c
+	<unistd.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<stdbool.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"version.h"
+	"GnGeoXym2610.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscreen.h"
+	"GnGeoXemu.h"
+	"GnGeoXsound.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXdebug.h"
+	"GnGeoXscale.h"
+	"GnGeoXscanline.h"
+	"GnGeoXtranspack.h"
+	"GnGeoXcontroller.h"
+	"GnGeoXframeskip.h"
+	"GnGeoXconfig.h"
+	"GnGeoXromsgno.h"
+
+1713538490 /home/mourad/Mega/Projets/gngeo/src/version.h
+
+1712778794 /home/mourad/Mega/Projets/gngeo/src/GnGeoXtranspack.h
+	<SDL2/SDL.h>
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXromsgno.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmamelayer.c
+	<string.h>
+	<stdio.h>
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"GnGeoXroms.h"
+	"GnGeoXmamelayer.h"
+	"GnGeoXconfig.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXmamelayer.h
+	<stdlib.h>
+	<string.h>
+
+1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmemory.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXvideo.h"
+	"GnGeoXym2610.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXpd4990a.h"
+	"GnGeoXtranspack.h"
+	"GnGeoX68k.h"
+	"GnGeoXz80.h"
+	"GnGeoXscanline.h"
+	"GnGeoXconfig.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXneoboot.c
+	<SDL2/SDL.h>
+	"qlibc.h"
+	"GnGeoXroms.h"
+	"GnGeoXneoboot.h"
+	"GnGeoXmamelayer.h"
+
+1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXneoboot.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXneocrypt.c
+	<SDL2/SDL.h>
+	"qlibc.h"
+	"GnGeoXroms.h"
+	"GnGeoXmamelayer.h"
+	"GnGeoXneocrypt.h"
+	"GnGeoXneocryptdata.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXneocryptdata.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXneocryptdata.c
+	<SDL2/SDL.h>
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXopenglblitter.c
+	<GL/gl.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_opengl.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscale.h"
+	"GnGeoXscanline.h"
+	"GnGeoXconfig.h"
+	"GnGeoXopenglblitter.h"
+	"GnGeoXeffects.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXopenglblitter.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXpd4990a.c
+	<time.h>
+	<SDL2/SDL.h>
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXpd4990a.h"
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXprofiler.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"GnGeoXprofiler.h"
+	"GnGeoXconfig.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.c
+	<stdio.h>
+	<stdint.h>
+	<stdlib.h>
+	<strings.h>
+	<string.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXdrivers.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXtranspack.h"
+	"GnGeoXconfig.h"
+	"GnGeoXbios.h"
+	"GnGeoXromsinit.h"
+	"GnGeoXromsgno.h"
+	"GnGeoXscreen.h"
+	"GnGeoXemu.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXromsinit.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXromsgno.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXroms.h"
+	"GnGeoXromsinit.h"
+	"GnGeoXromsgno.h"
+	"GnGeoXbios.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXconfig.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXromsinit.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXroms.h"
+	"GnGeoXromsinit.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXneocrypt.h"
+	"GnGeoXneoboot.h"
+	"GnGeoXconfig.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscale.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscale.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscanline.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscanline.h"
+	"GnGeoXroms.h"
+	"GnGeoXmemory.h"
+	"GnGeoXframeskip.h"
+
+1713538490 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"bstrlib.h"
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXroms.h"
+	"GnGeoXmemory.h"
+	"GnGeoXconfig.h"
+	"GnGeoXsoftblitter.h"
+	"GnGeoXopenglblitter.h"
+	"GnGeoXframeskip.h"
+	"GnGeoXpd4990a.h"
+	"GnGeoXeffects.h"
+	"GnGeoXinterp.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXsoftblitter.h
+
+1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXsoftblitter.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXscale.h"
+	"GnGeoXscanline.h"
+	"GnGeoXconfig.h"
+	"GnGeoXsoftblitter.h"
+	"GnGeoXeffects.h"
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXsound.c
+	<string.h>
+	<time.h>
+	<stdio.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	"zlog.h"
+	"GnGeoXsound.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXprofiler.h"
+	"GnGeoXym2610core.h"
+	"GnGeoXconfig.h"
+	"GnGeoXz80.h"
+	"GnGeoXym2610.h"
+
+1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.h
+
+1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXtranspack.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"sqlite3.h"
+	"bstrlib.h"
+	"GnGeoXtranspack.h"
+	"GnGeoXconfig.h"
+
+1713534497 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"zlog.h"
+	"qlibc.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXscreen.h"
+	"GnGeoXframeskip.h"
+	"GnGeoXtranspack.h"
+	"GnGeoXconfig.h"
+	"GnGeoXvideotemplate.h"
+	"GnGeoXvideotemplate.h"
+	"GnGeoXvideotemplate.h"
+
+1712741912 /home/mourad/Mega/Projets/gngeo/src/GnGeoXvideotemplate.h
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXxbr2x.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"GnGeoXscreen.h"
+	"GnGeoXvideo.h"
+	"GnGeoXinterp.h"
+	"GnGeoXxbr2x.h"
+
+1713527749 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610.c
+	<stdio.h>
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"3rdParty/Z80/Z80.h"
+	"GnGeoXym2610.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXz80.h"
+	"GnGeoXym2610core.h"
+	"GnGeoXconfig.h"
+	"GnGeoXemu.h"
+
+1713267786 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Z80/Z80.h
+	<stdint.h>
+
+1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdarg.h>
+	<math.h>
+	<SDL2/SDL.h>
+	<zlog.h>
+	"GnGeoXym2610.h"
+	"GnGeoXym2610core.h"
+
+1713527749 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXz80.c
+	<SDL2/SDL.h>
+	"zlog.h"
+	"qlibc.h"
+	"3rdParty/Z80/Z80.h"
+	"GnGeoXz80.h"
+	"GnGeoXroms.h"
+	"GnGeoXvideo.h"
+	"GnGeoXmemory.h"
+	"GnGeoXym2610.h"
+	"GnGeoXym2610core.h"
+	"GnGeoXconfig.h"
+

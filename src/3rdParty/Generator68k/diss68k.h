@@ -1,15 +1,11 @@
 /*****************************************************************************/
-/*     Generator - Sega Genesis emulation - (c) James Ponder 1997-1998       */
+/*     Generator - Sega Genesis emulation - (c) James Ponder 1997-2001       */
 /*****************************************************************************/
 /*                                                                           */
-/* compile.h                                                                 */
+/* diss68k.h                                                                  */
 /*                                                                           */
 /*****************************************************************************/
-#ifndef _COMPILE_H_
-#define _COMPILE_H_
-#include "generator.h"
-#include "cpu68k.h"
 
-void ( *compile_make ( t_ipclist* list ) ) ( struct _t_ipc* ipc );
-
-#endif
+int diss68k_gettext ( t_ipc* ipc, char* text );
+void diss68k_getoperand ( char* text, t_ipc* ipc, t_iib* iib, t_type type );
+void diss68k_getdumpline ( uint32 addr68k, char* dumpline );

@@ -10,8 +10,7 @@
 #include "def68k-iibs.h"
 #include "def68k-proto.h"
 #include "def68k-funcs.h"
-
-int diss68k_gettext ( t_ipc* ipc, char* text );
+#include "diss68k.h"
 
 /*** externed variables ***/
 

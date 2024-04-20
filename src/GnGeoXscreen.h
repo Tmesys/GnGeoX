@@ -3,7 +3,7 @@
 *   \file    GnGeoXscreen.c
 *   \brief   Screen routines header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -39,17 +39,19 @@ extern TTF_Font* sys_font;
 extern Sint32 yscreenpadding;
 extern Uint8 scale;
 extern Sint32 last_line;
+#else
+static void neo_screen_blend ( void );
 #endif // _GNGEOX_SCREEN_C_
 
 void print_blitter_list ( void );
 Uint8 get_blitter_by_name ( const char* ) __attribute__ ( ( warn_unused_result ) );
 SDL_bool neo_screen_init ( void ) __attribute__ ( ( warn_unused_result ) );
 SDL_bool neo_screen_resize ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
-void neo_screen_update ( void );
+void neo_screen_efects_apply ( void );
 void neo_screen_close ( void );
 void neo_screen_fullscreen ( void );
 void neo_screen_windowtitle_set ( void );
-void update_screen ( void );
+void neo_screen_update ( void );
 void neo_screen_capture ( void );
 
 #endif

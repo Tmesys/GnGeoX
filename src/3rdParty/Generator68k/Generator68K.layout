@@ -7,14 +7,9 @@
 			<Cursor1 position="317" topLine="9" />
 		</Cursor>
 	</File>
-	<File name="reg68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="cpu68k-4.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4249" topLine="150" />
-		</Cursor>
-	</File>
-	<File name="mem68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4953" topLine="175" />
+			<Cursor1 position="177267" topLine="5248" />
 		</Cursor>
 	</File>
 	<File name="cpu68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -22,9 +17,14 @@
 			<Cursor1 position="841" topLine="25" />
 		</Cursor>
 	</File>
-	<File name="diss68k.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="cpu68k-inline.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4465" topLine="178" />
+			<Cursor1 position="731" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="mem68k.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4953" topLine="175" />
 		</Cursor>
 	</File>
 	<File name="cpu68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -32,24 +32,24 @@
 			<Cursor1 position="621" topLine="24" />
 		</Cursor>
 	</File>
+	<File name="cpu68k-b.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1017" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="diss68k.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4465" topLine="178" />
+		</Cursor>
+	</File>
 	<File name="cpu68k-0.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="130000" topLine="3760" />
 		</Cursor>
 	</File>
-	<File name="cpu68k-inline.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="reg68k.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="731" topLine="24" />
-		</Cursor>
-	</File>
-	<File name="cpu68k-4.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="177267" topLine="5248" />
-		</Cursor>
-	</File>
-	<File name="cpu68k-b.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1017" topLine="8" />
+			<Cursor1 position="4249" topLine="150" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

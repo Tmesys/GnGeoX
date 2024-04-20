@@ -3,7 +3,7 @@
 *   \file    GnGeoXconfig.h
 *   \brief   New configuration routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -46,7 +46,7 @@ typedef struct
     char* effect;
     Uint16 scale;
     SDL_bool fullscreen;
-    SDL_bool interpolation;
+    SDL_bool blending;
     SDL_bool showfps;
     SDL_bool autoframeskip;
     SDL_bool vsync;

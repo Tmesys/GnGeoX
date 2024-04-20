@@ -7941,7 +7941,7 @@ int z80_run ( int cycles, int debug )
         if ( debug == 1 )
         {
             z80_dasm ( buf, _PCD );
-            printf ( "[%X] %s\n", _PCD, buf );
+            printf ( "PC[%X] : %s\n", _PCD, buf );
         }
         _R++;
         EXEC ( op, ROP() );

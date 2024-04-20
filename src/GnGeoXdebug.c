@@ -3,7 +3,7 @@
 *   \file    GnGeoXdebug.c
 *   \brief   68K debugging routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -24,24 +24,23 @@
 #include <SDL2/SDL_ttf.h>
 #include "zlog.h"
 
-#include "3rdParty/Generator68k/generator.h"
-#include "3rdParty/Generator68k/cpu68k.h"
-#include "3rdParty/Generator68k/reg68k.h"
-#include "3rdParty/Generator68k/mem68k.h"
+#include "generator.h"
+#include "cpu68k.h"
+#include "reg68k.h"
+#include "mem68k.h"
+#include "diss68k.h"
+
 #include "GnGeoXdebug.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoX68k.h"
-#include "GnGeoXscreen.h"
+//#include "GnGeoXscreen.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXemu.h"
 
 /* TODO: finish it ...... */
-
-/* @fixme (Tmesys#1#12/04/2022): Prototype should be in some gen68k library header */
-Sint32 diss68k_getdumpline ( Uint32 addr68k, Uint8* addr, char* dumpline );
 
 static Sint32 nb_breakpoints = 0;
 static Sint32 breakpoints[GNGEOXDEBUG_MAX_BREAK_POINT];
@@ -163,6 +162,29 @@ void clear_bps ( void )
 /*!
 * \brief Dumps 68k internal registers with printing.
 *
+*/
+/* ******************************************************************************************************************/
+static void gen68k_dumpreg ( void )
+{
+    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   %c%c%c%c%c %04x",
+                 regs.regs[0], regs.regs[4], regs.regs[8], regs.regs[12],
+                 ( ( regs.sr.sr_int >> 4 ) & 1 ? 'X' : '-' ),
+                 ( ( regs.sr.sr_int >> 3 ) & 1 ? 'N' : '-' ),
+                 ( ( regs.sr.sr_int >> 2 ) & 1 ? 'Z' : '-' ),
+                 ( ( regs.sr.sr_int >> 1 ) & 1 ? 'V' : '-' ),
+                 ( ( regs.sr.sr_int ) & 1 ? 'C' : '-' ), regs.sr.sr_int );
+    zlog_debug ( gngeox_config.loggingCat, "d1=%08x   d5=%08x   a1=%08x   a5=%08x",
+                 regs.regs[1], regs.regs[5], regs.regs[9], regs.regs[13] );
+    zlog_debug ( gngeox_config.loggingCat, "d2=%08x   d6=%08x   a2=%08x   a6=%08x",
+                 regs.regs[2], regs.regs[6], regs.regs[10], regs.regs[14] );
+    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   usp=%08x",
+                 regs.regs[3], regs.regs[7], regs.regs[11], regs.regs[15], regs.sp );
+
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief Dumps 68k internal registers with printing.
+*
 * \param program_counter Program counter.
 **/
 /* ******************************************************************************************************************/
@@ -213,91 +235,17 @@ static void hexdump ( Uint32 program_counter )
 * \brief Disassembles 68k opcode beginning at program counter offset with printing.
 *
 * \param program_counter Program counter.
-* \param nb_instr Number of instructions to disassemble.
 * \return Program counter after executing indicated instruction number.
 */
 /* ******************************************************************************************************************/
-static Uint32 gen68k_disassemble ( Sint32 program_counter, Sint32 nb_instr )
+static Uint32 gen68k_disassemble ( Sint32 program_counter )
 {
     char buf[512];
-    Uint8* addr = NULL;
 
-    for ( Sint32 index = 0; index < nb_instr; index++ )
-    {
-        addr = mem68k_memptr[program_counter >> 12] ( program_counter );
-        program_counter += diss68k_getdumpline ( program_counter, addr, buf ) * 2;
-        zlog_debug ( gngeox_config.loggingCat, "%s", buf );
-    }
+    diss68k_getdumpline ( program_counter, buf );
+    zlog_debug ( gngeox_config.loggingCat, "%s", buf );
 
     return ( program_counter );
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Dumps 68k internal registers with printing.
-*
-*/
-/* ******************************************************************************************************************/
-static void gen68k_dumpreg ( void )
-{
-    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   %c%c%c%c%c %04x",
-                 regs.regs[0], regs.regs[4], regs.regs[8], regs.regs[12],
-                 ( ( regs.sr.sr_int >> 4 ) & 1 ? 'X' : '-' ),
-                 ( ( regs.sr.sr_int >> 3 ) & 1 ? 'N' : '-' ),
-                 ( ( regs.sr.sr_int >> 2 ) & 1 ? 'Z' : '-' ),
-                 ( ( regs.sr.sr_int >> 1 ) & 1 ? 'V' : '-' ),
-                 ( ( regs.sr.sr_int ) & 1 ? 'C' : '-' ), regs.sr.sr_int );
-    zlog_debug ( gngeox_config.loggingCat, "d1=%08x   d5=%08x   a1=%08x   a5=%08x",
-                 regs.regs[1], regs.regs[5], regs.regs[9], regs.regs[13] );
-    zlog_debug ( gngeox_config.loggingCat, "d2=%08x   d6=%08x   a2=%08x   a6=%08x",
-                 regs.regs[2], regs.regs[6], regs.regs[10], regs.regs[14] );
-    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   usp=%08x",
-                 regs.regs[3], regs.regs[7], regs.regs[11], regs.regs[15], regs.sp );
-
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Debugs 68k step by step.
-*
-*/
-/* ******************************************************************************************************************/
-void cpu_68k_dpg_step ( void )
-{
-    static Uint32 nb_cycle = 0;
-    static Uint32 line_cycle = 0;
-    Uint32 cycle = 0;
-
-    if ( nb_cycle == 0 )
-    {
-        /* update event etc. */
-        neo_sys_main_loop_debug();
-    }
-
-    cycle = reg68k_external_step();
-    add_bt ( cpu_68k_getpc() );
-    line_cycle += cycle;
-    nb_cycle += cycle;
-
-    if ( nb_cycle >= cpu_68k_timeslice_scanline )
-    {
-        nb_cycle = line_cycle = 0;
-
-        update_screen();
-
-        //state_handling(pending_save_state, pending_load_state);
-        cpu_68k_interrupt ( 1 );
-    }
-    else
-    {
-        if ( line_cycle >= cpu_68k_timeslice_scanline )
-        {
-            line_cycle = 0;
-
-            if ( update_scanline() )
-            {
-                cpu_68k_interrupt ( 2 );
-            }
-        }
-    }
 }
 /* ******************************************************************************************************************/
 /*!
@@ -305,22 +253,52 @@ void cpu_68k_dpg_step ( void )
 *
 */
 /* ******************************************************************************************************************/
-static void neo_sys_main_loop_debug ( void )
+static void cpu_68k_dbg_step_68k ( void )
 {
-    neo_frame_skip_reset();
-    neo_ym2610_update();
+    static Uint32 current_slice = 0;
 
-    if ( neogeo_memory.test_switch == 1 )
+    if ( current_slice == 0 )
     {
-        neogeo_memory.test_switch = 0;
+        if ( neogeo_memory.test_switch == 1 )
+        {
+            neogeo_memory.test_switch = 0;
+        }
+
+        neo_sys_update_events();
+
+        for ( Uint32 i = 0; i < EMU_NB_INTERLACE; i++ )
+        {
+            z80_run ( cpu_z80_timeslice_interlace, 0 );
+            neo_ym2610_update();
+        }
+
+        current_line = 0;
     }
 
-    neo_sys_update_events();
+    reg68k_external_step();
+    gen68k_disassemble ( cpu_68k_getpc() );
 
-    for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
+    if ( update_scanline() )
     {
-        z80_run ( cpu_z80_timeslice_interlace, 1 );
-        neo_ym2610_update();
+        cpu_68k_interrupt ( 2 );
+    }
+
+    current_slice++;
+
+    if ( current_slice == ( cpu_68k_timeslice_scanline * EMU_NB_SCANLINES_MVS ) )
+    {
+        neo_screen_update();
+        neogeo_memory.watchdog++;
+
+        if ( neogeo_memory.watchdog > 7 )
+        {
+            zlog_info ( gngeox_config.loggingCat, "Watchdog Reset" );
+            cpu_68k_reset();
+        }
+
+        cpu_68k_interrupt ( 1 );
+
+        current_slice = 0;
     }
 }
 /* ******************************************************************************************************************/
@@ -332,7 +310,7 @@ static void neo_sys_main_loop_debug ( void )
 * \return Todo.
 **/
 /* ******************************************************************************************************************/
-static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) )
+static Sint32 cpu_68k_debugger ( void )
 {
     char buf[200];
     char* args = NULL, *argsend = NULL;
@@ -359,23 +337,14 @@ static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( v
         case ( '?' ) :
             {
                 printf ( "B [address]           Add a break-point at [address]\n"
-                         "T                     Show back-trace\n"
                          "N [address]           Del break-point at [address]\n"
+                         "T                     Show back-trace\n"
                          "R                     Run until break-point\n"
-                         "b [address]           Run continuously, break at PC=[address]\n"
                          "d [address]           Dump memory, starting at [address]\n"
-                         "h                     Hardware dump\n"
-                         "i [number]            Generate hardware interrupt [number]\n"
-                         "j [address]           Jump directly to [address]\n"
-                         "q                     Quit\n"
                          "r                     Show register dump and next instruction\n"
                          "t [hex number]        Trace through [hex number] instructions\n"
-                         "u [address]           Disassemble code, starting at [address]\n" );
-            }
-            break;
-        case ( 'T' ) :
-            {
-                show_bt();
+                         "u [address]           Disassemble code, starting at [address]\n"
+                         "q                     Quit\n" );
             }
             break;
         case ( 'B' ) :
@@ -412,84 +381,16 @@ static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( v
                 }
             }
             break;
+        case ( 'T' ) :
+            {
+                show_bt();
+            }
+            break;
         case ( 'R' ) :
             {
                 while ( check_bp ( cpu_68k_getpc() ) != SDL_TRUE )
                 {
-                    cpu_68k_dpg_step();
-                }
-
-                gen68k_dumpreg();
-                gen68k_disassemble ( regs.pc, 1 );
-            }
-            break;
-        case ( 'b' ) :
-            {
-                if ( args )
-                {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        do
-                        {
-                            cpu_68k_dpg_step();
-                            gen68k_disassemble ( regs.pc, 1 );
-                        }
-                        while ( cpu_68k_getpc() != pc );
-
-                        gen68k_dumpreg();
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
-                }
-            }
-            break;
-        case ( 'j' ) :
-            {
-                if ( args )
-                {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        regs.pc = pc;
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
-                }
-            }
-            break;
-        case ( 'r' ) :
-            {
-                gen68k_dumpreg();
-                gen68k_disassemble ( regs.pc, 1 );
-            }
-            break;
-        case ( 't' ) :
-            {
-                if ( args )
-                {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        for ( i = 0; i < pc; i++ )
-                        {
-                            cpu_68k_dpg_step();
-                        }
-
-                        gen68k_dumpreg();
-                        gen68k_disassemble ( regs.pc, 1 );
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
+                    cpu_68k_dbg_step_68k();
                 }
             }
             break;
@@ -509,6 +410,35 @@ static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( v
                 }
             }
             break;
+        case ( 'r' ) :
+            {
+                gen68k_dumpreg();
+                gen68k_disassemble ( regs.pc );
+            }
+            break;
+        case ( 't' ) :
+            {
+                if ( args )
+                {
+                    pc = strtoul ( args, &argsend, 0 );
+
+                    if ( args != argsend )
+                    {
+                        for ( i = 0; i < pc; i++ )
+                        {
+                            cpu_68k_dbg_step_68k();
+                        }
+
+                        gen68k_dumpreg();
+                        gen68k_disassemble ( regs.pc );
+                    }
+                    else
+                    {
+                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
+                    }
+                }
+            }
+            break;
         case ( 'u' ) :
             {
                 if ( args )
@@ -520,13 +450,9 @@ static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( v
                         asmpc = pc;
                     }
 
-                    asmpc = gen68k_disassemble ( asmpc, 16 );
+                    /* @fixme (Tmesys#1#20/04/2024): Before disassembling was for 16 instruction. */
+                    asmpc = gen68k_disassemble ( asmpc );
                 }
-            }
-            break;
-        case ( 'h' ) :
-            {
-                //dump_hardware_reg();
             }
             break;
         case ( 'q' ) :
@@ -557,7 +483,7 @@ void neo_sys_debug_loop ( void )
 
     do
     {
-        a = cpu_68k_debugger ( cpu_68k_dpg_step, /*dump_hardware_reg*/NULL );
+        a = cpu_68k_debugger ( );
     }
     while ( a != -1 );
 }

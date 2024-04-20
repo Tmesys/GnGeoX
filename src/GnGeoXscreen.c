@@ -3,7 +3,7 @@
 *   \file    GnGeoXscreen.c
 *   \brief   Screen routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -159,9 +159,9 @@ SDL_bool neo_screen_init ( void )
     }
 
     /* Interpolation surface */
-    if ( gngeox_config.interpolation == SDL_TRUE )
+    if ( gngeox_config.blending == SDL_TRUE )
     {
-        sdl_surface_blend = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 16, 0xF800, 0x7E0, 0x1F, 0 );
+        sdl_surface_blend = SDL_CreateRGBSurface ( SDL_SWSURFACE, 352, 256, 32, 0, 0, 0, 0 );
         if ( sdl_surface_blend == NULL )
         {
             zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
@@ -208,7 +208,7 @@ SDL_bool neo_screen_resize ( Sint32 width, Sint32 height )
 /* ******************************************************************************************************************/
 void neo_screen_close ( void )
 {
-    if ( gngeox_config.interpolation == SDL_TRUE )
+    if ( gngeox_config.blending == SDL_TRUE )
     {
         SDL_FreeSurface ( sdl_surface_blend );
     }
@@ -255,12 +255,11 @@ void neo_screen_windowtitle_set ( void )
 *
 */
 /* ******************************************************************************************************************/
-/* @todo (Tmesys#1#12/04/2024): This is more to me like effects update */
-void neo_screen_update ( void )
+void neo_screen_efects_apply ( void )
 {
-    if ( gngeox_config.interpolation == SDL_TRUE )
+    if ( gngeox_config.blending == SDL_TRUE )
     {
-        interp_32_screen();
+        neo_screen_blend();
     }
 
     /* @note (Tmesys#1#12/18/2022): Does not seem to have any effect ? */
@@ -280,12 +279,12 @@ void neo_screen_update ( void )
 *
 */
 /* ******************************************************************************************************************/
-/* @todo (Tmesys#1#12/04/2024): Rename function */
-void update_screen ( void )
+void neo_screen_update ( void )
 {
     if ( neogeo_memory.vid.irq2control & 0x40 )
     {
-        neogeo_memory.vid.irq2start = ( neogeo_memory.vid.irq2pos + 3 ) / 0x180;    /* ridhero gives 0x17d */
+        /* ridhero gives 0x17d */
+        neogeo_memory.vid.irq2start = ( neogeo_memory.vid.irq2pos + 3 ) / 0x180;
     }
     else
     {
@@ -362,6 +361,33 @@ Uint8 get_blitter_by_name ( const char* name )
     zlog_warn ( gngeox_config.loggingCat, "Forcing use of soft blitter." );
 
     return ( 0 );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Interpolates screen.
+*
+*/
+/* ******************************************************************************************************************/
+static void neo_screen_blend ( void )
+{
+    SDL_Surface* tmp = NULL;
+    Uint32* dst = ( Uint32* ) sdl_surface_blend->pixels; //+ 16 + ( 352 << 4 );
+    Uint32* src = ( Uint32* ) sdl_surface_buffer->pixels; // + 16 + ( 352 << 4 );
+
+    for ( Uint32 column = 0; column < sdl_surface_buffer->h; column++ )
+    {
+        for ( Uint32 row = 0; row < sdl_surface_buffer->w; row++ )
+        {
+            dst[column * sdl_surface_buffer->w + row] =
+                alpha_blend ( dst[column * sdl_surface_buffer->w + row],
+                              src[column * sdl_surface_buffer->w + row], 127 );
+        }
+    }
+
+    /* Swap Buffers */
+    tmp = sdl_surface_blend;
+    sdl_surface_blend = sdl_surface_buffer;
+    sdl_surface_buffer = tmp;
 }
 
 #ifdef _GNGEOX_SCREEN_C_

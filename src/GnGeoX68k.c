@@ -3,7 +3,7 @@
 *   \file    GnGeoX68k.c
 *   \brief   Interface to the generator68k emulator.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -23,10 +23,11 @@
 #include "zlog.h"
 #include "qlibc.h"
 
-#include "3rdParty/Generator68k/generator.h"
-#include "3rdParty/Generator68k/cpu68k.h"
-#include "3rdParty/Generator68k/reg68k.h"
-#include "3rdParty/Generator68k/mem68k.h"
+#include "generator.h"
+#include "cpu68k.h"
+#include "reg68k.h"
+#include "mem68k.h"
+
 #include "GnGeoX68k.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"

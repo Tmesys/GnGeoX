@@ -3,7 +3,7 @@
 *   \file    GnGeoXemu.c
 *   \brief   Emulation routines ?
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version).
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X).
@@ -69,7 +69,7 @@ SDL_bool neo_sys_init ( void )
     }
 
     cpu_68k_timeslice_scanline = ( cpu_68k_timeslice / 264.0 );
-    cpu_z80_timeslice_interlace = cpu_z80_timeslice / ( float ) NB_INTERLACE;
+    cpu_z80_timeslice_interlace = cpu_z80_timeslice / ( float ) EMU_NB_INTERLACE;
 
     cpu_68k_init();
 
@@ -247,7 +247,7 @@ void neo_sys_main_loop ( void )
         profiler_start ( PROF_Z80 );
 #endif // ENABLE_PROFILER
 
-        for ( Uint32 i = 0; i < NB_INTERLACE; i++ )
+        for ( Uint32 i = 0; i < EMU_NB_INTERLACE; i++ )
         {
             z80_run ( cpu_z80_timeslice_interlace, 0 );
             neo_ym2610_update();
@@ -263,7 +263,7 @@ void neo_sys_main_loop ( void )
         profiler_start ( PROF_68K );
 #endif // ENABLE_PROFILER
 
-        for ( Uint32 i = 0; i < 264; i++ )
+        for ( Uint32 i = 0; i < EMU_NB_SCANLINES_MVS; i++ )
         {
             cpu_68k_run ( cpu_68k_timeslice_scanline );
 
@@ -278,7 +278,7 @@ void neo_sys_main_loop ( void )
 #endif // ENABLE_PROFILER
         //cpu_68k_run ( cpu_68k_timeslice_scanline );
 
-        update_screen();
+        neo_screen_update();
         neogeo_memory.watchdog++;
 
         if ( neogeo_memory.watchdog > 7 )

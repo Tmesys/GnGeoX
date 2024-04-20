@@ -3,7 +3,7 @@
 *   \file    GnGeoXvideo.c
 *   \brief   Video routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -68,15 +68,15 @@ static Uint8 fix_shift[40];
 
 /* ******************************************************************************************************************/
 /*!
-* \brief  Applies alpha blending.
+* \brief  Applies alpha transparency.
 *
 * \param  dest Destination pixel in RGB24.
 * \param  src Source pixel in RGB24.
-* \param  Alpha value.
+* \param  alpha Alpha transparency value to apply.
 * \return Alpha blended pixel.
 */
 /* ******************************************************************************************************************/
-static Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha )
+Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha )
 {
     Uint32 or = 0, og = 0, ob = 0, dr = 0, dg = 0, db = 0, sr = 0, sg = 0, sb = 0;
     Uint32 beta = ( 255 - alpha );
@@ -810,7 +810,7 @@ void draw_screen ( void )
 
     neo_frame_skip_display();
 
-    neo_screen_update();
+    neo_screen_efects_apply();
 }
 /* ******************************************************************************************************************/
 /*!
@@ -1055,7 +1055,7 @@ void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
 
         neo_frame_skip_display();
 
-        neo_screen_update();
+        neo_screen_efects_apply();
     }
 }
 /* ******************************************************************************************************************/

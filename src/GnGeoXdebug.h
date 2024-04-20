@@ -3,7 +3,7 @@
 *   \file    GnGeoXdebug.h
 *   \brief   68K debugging routines header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -20,11 +20,11 @@
 #define GNGEOXDEBUG_MAX_BACK_TRACE 20
 
 #ifdef _GNGEOX_DEBUG_C_
-static Uint32 gen68k_disassemble ( Sint32, Sint32 ) __attribute__ ( ( warn_unused_result ) );
+static Uint32 gen68k_disassemble ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
 static void gen68k_dumpreg ( void );
 static void hexdump ( Uint32 );
-static Sint32 cpu_68k_debugger ( void ( *execstep ) ( void ), void ( *dump ) ( void ) );
-static void neo_sys_main_loop_debug ( void );
+static Sint32 cpu_68k_debugger ( void );
+static void cpu_68k_dbg_step_68k ( void );
 #endif // _GNGEOX_DEBUG_C_
 
 void add_bt ( Uint32 );
@@ -34,7 +34,6 @@ SDL_bool check_bp ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
 void add_bp ( Sint32 );
 void del_bp ( Sint32 );
 void clear_bps ( void );
-void cpu_68k_dpg_step ( void );
 void neo_sys_debug_loop ( void );
 
 #endif // _GNGEOX_DEBUG_H_

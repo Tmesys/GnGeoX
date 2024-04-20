@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Linux X86_64 Debug">
-				<Option output="../Lib/$(TARGET_NAME)/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../slib/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../build/$(TARGET_NAME)/$(PROJECT_NAME)/" />
 				<Option type="2" />
@@ -23,7 +23,7 @@
 				</Environment>
 			</Target>
 			<Target title="Linux X86_64 Release">
-				<Option output="../Lib/$(TARGET_NAME)/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../slib/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../build/$(TARGET_NAME)/$(PROJECT_NAME)/" />
 				<Option type="2" />
@@ -124,11 +124,13 @@
 		<Unit filename="diss68k.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="diss68k.h" />
 		<Unit filename="generator.h" />
 		<Unit filename="mem68k.h" />
 		<Unit filename="reg68k.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="reg68k.h" />
 		<Unit filename="tab68k.c">
 			<Option compilerVar="CC" />
 		</Unit>

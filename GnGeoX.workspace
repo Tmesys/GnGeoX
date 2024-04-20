@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="GnGeoX Workspace">
-		<Project filename="src/3rdParty/Sqlite-3.8.1.11/Sqlite.cbp" />
-		<Project filename="src/3rdParty/Zlog-1.2.12/Zlog.cbp" />
-		<Project filename="src/3rdParty/Qlibc-2.0.1/Qlibc.cbp" />
-		<Project filename="src/3rdParty/Bstrlib/Bstrlib.cbp" />
-		<Project filename="src/3rdParty/Generator68k/Def68K.cbp" />
-		<Project filename="src/3rdParty/Generator68k/Gen68KOps.cbp" />
-		<Project filename="src/3rdParty/Generator68k/Generator68K.cbp" />
-		<Project filename="src/3rdParty/Z80/Z80.cbp" />
-		<Project filename="src/GnGeo.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Sqlite-3.8.1.11/Sqlite.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Zlog-1.2.12/Zlog.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/Qlibc.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Bstrlib/Bstrlib.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Generator68k/Def68K.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Generator68k/Gen68KOps.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Generator68k/Generator68K.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/3rdParty/Z80/Z80.cbp" />
+		<Project filename="../../Mega/Projets/gngeo/src/GnGeoX.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

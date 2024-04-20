@@ -3,7 +3,7 @@
 *   \file    GnGeoXinterp.H
 *   \brief   Interpolation image effect routines header.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -44,6 +44,5 @@ Uint32 interp_32_71 ( Uint32 p1, Uint32 p2 );
 Uint32 interp_32_diff ( Uint32, Uint32 ) __attribute__ ( ( warn_unused_result ) );
 Uint32 interp_32_dist ( Uint32 p1, Uint32 p2 ) __attribute__ ( ( warn_unused_result ) );
 Uint32 interp_32_dist3 ( Uint32 p1, Uint32 p2, Uint32 p3 ) __attribute__ ( ( warn_unused_result ) );
-void interp_32_screen ( void );
 
 #endif // _GNGEOX_INTERP_H_

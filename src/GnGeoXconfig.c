@@ -3,7 +3,7 @@
 *   \file    GnGeoXconfig.c
 *   \brief   New configuration routines.
 *   \author  Mathieu Peponas, Espinetes, Ugenn (Original version)
-*   \author  James Ponder (68K emulation).
+*   \author  James Ponder (68K emulation) / Juergen Buchmueller (Z80 emulation) / Marat Fayzullin (Z80 disassembler).
 *   \author  Tatsuyuki Satoh, Jarek Burczynski, NJ pspmvs, ElSemi (YM2610 emulation).
 *   \author  Andrea Mazzoleni, Maxim Stepin (Scale/HQ2X/XBR2X effect).
 *   \author  Mourad Reggadi (GnGeo-X)
@@ -135,7 +135,7 @@ SDL_bool neo_config_init ( char* filename )
 
     gngeox_config.fullscreen = qlisttbl_getint ( tbl, "graphics.fullscreen" );
 
-    gngeox_config.interpolation = qlisttbl_getint ( tbl, "graphics.interpolation" );
+    gngeox_config.blending = qlisttbl_getint ( tbl, "graphics.blending" );
 
     gngeox_config.showfps = qlisttbl_getint ( tbl, "graphics.showfps" );
 
@@ -217,7 +217,7 @@ SDL_bool neo_config_parse_options ( int *argc, char ***argv )
         {"effect", 'e', OPTTYPE_STRING, &gngeox_config.effect},
         {"scale", 'h', OPTTYPE_UINT, &gngeox_config.scale},
         {"fullscreen", 'c', OPTTYPE_BOOL, &gngeox_config.fullscreen},
-        {"interpolation", 'i', OPTTYPE_BOOL, &gngeox_config.interpolation},
+        {"blending", 'i', OPTTYPE_BOOL, &gngeox_config.blending},
         {"showfps", 'p', OPTTYPE_BOOL, &gngeox_config.showfps},
         {"autoframeskip", 'k', OPTTYPE_BOOL, &gngeox_config.autoframeskip},
         {"vsync", 'y', OPTTYPE_BOOL, &gngeox_config.vsync},
