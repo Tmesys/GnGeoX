@@ -58,7 +58,8 @@ enum
     QVECTOR_THREADSAFE = ( 0x01 ), /*!< make it thread-safe */
     QVECTOR_RESIZE_DOUBLE = ( 0x02 ), /*!< double the size when vector is full*/
     QVECTOR_RESIZE_LINEAR = ( 0x04 ), /*!< add the size with initial num when vector is full*/
-    QVECTOR_RESIZE_EXACT = ( 0x08 ) /*!< add up as much as needed*/
+    QVECTOR_RESIZE_EXACT = ( 0x08 ), /*!< add up as much as needed*/
+    QVECTOR_RESIZE_NONE = ( 0x10 ) /*!< Do not add*/
 };
 
 extern qvector_t * qvector ( size_t max, size_t objsize, int options );

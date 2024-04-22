@@ -171,7 +171,7 @@ static void init_kof99 ( struct_gngeoxroms_game_roms* rom )
         kof99_neogeo_gfx_decrypt ( rom, 0x00 );
     }
 
-    neogeo_fix_bank_type = 0;
+    neo_rom_fix_bank_type = 0;
     neogeo_memory.bksw_offset = bankoffset_kof99;
     neogeo_memory.bksw_unscramble = scramblecode_kof99;
     neogeo_memory.sma_rng_addr = 0xF8FA;
@@ -186,7 +186,7 @@ static void init_kof99 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_kof99n ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -208,7 +208,7 @@ static void init_garou ( struct_gngeoxroms_game_roms* rom )
         kof99_neogeo_gfx_decrypt ( rom, 0x06 );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
     neogeo_memory.bksw_offset = bankoffset_garou;
     neogeo_memory.bksw_unscramble = scramblecode_garou;
     neogeo_memory.sma_rng_addr = 0xCCF0;
@@ -229,7 +229,7 @@ static void init_garouo ( struct_gngeoxroms_game_roms* rom )
         kof99_neogeo_gfx_decrypt ( rom, 0x06 );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
     neogeo_memory.bksw_offset = bankoffset_garouo;
     neogeo_memory.bksw_unscramble = scramblecode_garouo;
     neogeo_memory.sma_rng_addr = 0xCCF0;
@@ -267,7 +267,7 @@ static void init_mslug3 ( struct_gngeoxroms_game_roms* rom )
         kof99_neogeo_gfx_decrypt ( rom, 0xAD );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
     neogeo_memory.bksw_offset = bankoffset_mslug3;
     neogeo_memory.bksw_unscramble = scramblecode_mslug3;
     //neogeo_memory.sma_rng_addr=0xF8FA;
@@ -284,7 +284,7 @@ static void init_mslug3 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_mslug3h ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -317,7 +317,7 @@ static void init_mslug3b6 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_mslug4 ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -359,7 +359,7 @@ static void init_kof2000 ( struct_gngeoxroms_game_roms* rom )
         kof2000_neogeo_gfx_decrypt ( rom, 0x00 );
     }
 
-    neogeo_fix_bank_type = 2;
+    neo_rom_fix_bank_type = 2;
     neogeo_memory.bksw_offset = bankoffset_kof2000;
     neogeo_memory.bksw_unscramble = scramblecode_kof2000;
     neogeo_memory.sma_rng_addr = 0xD8DA;
@@ -374,7 +374,7 @@ static void init_kof2000 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_kof2000n ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 2;
+    neo_rom_fix_bank_type = 2;
 
     if ( rom->need_decrypt )
     {
@@ -391,7 +391,7 @@ static void init_kof2000n ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_kof2001 ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -408,7 +408,7 @@ static void init_kof2001 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_ganryu ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -424,7 +424,7 @@ static void init_ganryu ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_s1945p ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -440,7 +440,7 @@ static void init_s1945p ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_preisle2 ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -456,7 +456,7 @@ static void init_preisle2 ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_bangbead ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -472,7 +472,7 @@ static void init_bangbead ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_nitd ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -488,7 +488,7 @@ static void init_nitd ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_zupapa ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -504,7 +504,7 @@ static void init_zupapa ( struct_gngeoxroms_game_roms* rom )
 /* ******************************************************************************************************************/
 static void init_sengoku3 ( struct_gngeoxroms_game_roms* rom )
 {
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     if ( rom->need_decrypt )
     {
@@ -543,7 +543,7 @@ static void init_rotd ( struct_gngeoxroms_game_roms* rom )
         kof2000_neogeo_gfx_decrypt ( rom, 0x3f );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 }
 /* ******************************************************************************************************************/
 /*!
@@ -651,7 +651,7 @@ static void init_matrim ( struct_gngeoxroms_game_roms* rom )
         kof2000_neogeo_gfx_decrypt ( rom, 0x6a );
     }
 
-    neogeo_fix_bank_type = 2;
+    neo_rom_fix_bank_type = 2;
 }
 /* ******************************************************************************************************************/
 /*!
@@ -669,7 +669,7 @@ static void init_pnyaa ( struct_gngeoxroms_game_roms* rom )
         kof2000_neogeo_gfx_decrypt ( rom, 0x2e );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 }
 /* ******************************************************************************************************************/
 /*!
@@ -688,7 +688,7 @@ static void init_mslug5 ( struct_gngeoxroms_game_roms* rom )
         kof2000_neogeo_gfx_decrypt ( rom, 0x19 );
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
     //install_pvc_protection(r);
 }
 /* ******************************************************************************************************************/
@@ -713,7 +713,7 @@ static void init_ms5pcb ( struct_gngeoxroms_game_roms* rom )
         neo_pcm2_swap ( rom, 2 );
     }
 
-    neogeo_fix_bank_type = 2;
+    neo_rom_fix_bank_type = 2;
     //install_pvc_protection(r);
 }
 /* ******************************************************************************************************************/
@@ -733,7 +733,7 @@ static void init_ms5plus ( struct_gngeoxroms_game_roms* rom )
         //neogeo_bootleg_sx_decrypt(r, 1);
     }
 
-    neogeo_fix_bank_type = 1;
+    neo_rom_fix_bank_type = 1;
 
     //install_ms5plus_protection(r);
 }
@@ -747,7 +747,7 @@ static void init_ms5plus ( struct_gngeoxroms_game_roms* rom )
 void init_roms ( struct_gngeoxroms_game_roms* rom )
 {
     Sint32 i = 0;
-    neogeo_fix_bank_type = 0;
+    neo_rom_fix_bank_type = 0;
     neogeo_memory.bksw_handler = 0;
     neogeo_memory.bksw_unscramble = NULL;
     neogeo_memory.bksw_offset = NULL;

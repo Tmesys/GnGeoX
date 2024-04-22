@@ -3068,7 +3068,7 @@ void YM2610Reset ( void )
 /* YM2610 write */
 /* a = address */
 /* v = value   */
-Sint32 YM2610Write ( Sint32 a, Uint8 v )
+void YM2610Write ( Sint32 a, Uint8 v )
 {
     FM_OPN* OPN = &YM2610.OPN;
     Sint32 addr = 0;
@@ -3212,8 +3212,6 @@ Sint32 YM2610Write ( Sint32 a, Uint8 v )
         }
         break;
     }
-
-    return ( OPN->ST.irq );
 }
 
 Uint8 YM2610Read ( Sint32 a )
@@ -3259,7 +3257,7 @@ Uint8 YM2610Read ( Sint32 a )
     return ( 0 );
 }
 
-Sint32 YM2610TimerOver ( Sint32 ch )
+void YM2610TimerOver ( Sint32 ch )
 {
     FM_ST* ST = &YM2610.OPN.ST;
 
@@ -3280,8 +3278,6 @@ Sint32 YM2610TimerOver ( Sint32 ch )
             CSMKeyControll ( &YM2610.CH[2] );
         }
     }
-
-    return ( ST->irq );
 }
 
 /* Generate samples for one of the YM2610s */

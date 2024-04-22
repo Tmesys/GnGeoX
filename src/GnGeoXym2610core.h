@@ -106,14 +106,6 @@
 #define OUTD_LEFT   2
 #define OUTD_CENTER 3
 
-/* log output level */
-#define LOG_ERR  3      /* ERROR       */
-#define LOG_WAR  2      /* WARNING     */
-#define LOG_INF  1      /* INFORMATION */
-#define LOG_LEVEL LOG_INF
-
-#define LOG(n,x) if( (n)>=LOG_LEVEL ) logerror x
-
 /* @todo (Tmesys#1#12/05/2022): Suppress this one ? */
 #define FM_BUSY_CLEAR(ST) ((ST)->BusyExpire = 0)
 
@@ -147,9 +139,11 @@ typedef struct
     Uint32 rr; /* release rate */
     Uint8 ksr; /* key scale rate  :kcode>>(3-KSR) */
     Uint32 mul; /* multiple        :ML_TABLE[ML] */
-    /* Phase Generator */Uint32 phase; /* phase counter */
-    Uint32 Incr; /* phase step */
-    /* Envelope Generator */Uint8 state; /* phase type */
+    /* Phase Generator */
+    Uint32 phase; /* phase counter */
+    Sint32 Incr; /* phase step */
+    /* Envelope Generator */
+    Uint8 state; /* phase type */
     Uint32 tl; /* total level: TL << 3 */
     Sint32 volume; /* envelope counter */
     Uint32 sl; /* sustain level:sl_table[SL] */
@@ -165,7 +159,8 @@ typedef struct
     Uint8 ssg; /* SSG-EG waveform */
     Uint8 ssgn; /* SSG-EG negated output */
     Uint32 key; /* 0=last key was KEY OFF, 1=KEY ON */
-    /* LFO */Uint32 AMmask; /* AM enable flag */
+    /* LFO */
+    Uint32 AMmask; /* AM enable flag */
 
 } FM_SLOT;
 
@@ -352,9 +347,9 @@ static void TimerBOver ( FM_ST* );
 void YM2610Init ( Sint32 baseclock, Sint32, void*, Sint32, void*, Sint32, FM_TIMERHANDLER, FM_IRQHANDLER );
 void YM2610ChangeSamplerate ( Sint32 );
 void YM2610Reset ( void );
-Sint32 YM2610Write ( Sint32, Uint8 ) __attribute__ ( ( warn_unused_result ) );
+void YM2610Write ( Sint32, Uint8 );
 Uint8 YM2610Read ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
-Sint32 YM2610TimerOver ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
+void YM2610TimerOver ( Sint32 );
 void YM2610Update_stream ( Sint32, Uint16* );
 
 #endif // _GNGEOX_YM2610_CORE_H_

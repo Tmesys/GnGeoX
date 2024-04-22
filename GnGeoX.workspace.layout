@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveProject path="../../Mega/Projets/gngeo/src/GnGeoX.cbp" />
+	<ActiveProject path="src/GnGeoX.cbp" />
 	<PreferredTarget name="Linux X86_64 Debug" />
 </CodeBlocks_workspace_layout_file>

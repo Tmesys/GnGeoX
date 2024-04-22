@@ -19,21 +19,29 @@
 #define GNGEOXDEBUG_MAX_BREAK_POINT 500
 #define GNGEOXDEBUG_MAX_BACK_TRACE 20
 
+enum
+{
+    DEBUG_COMMAND = 0,
+    DEBUG_PARAM1 = 1,
+    DEBUG_PARAM2 = 2,
+};
+
 #ifdef _GNGEOX_DEBUG_C_
-static Uint32 gen68k_disassemble ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
+static void gen68k_disassemble ( Sint32 );
 static void gen68k_dumpreg ( void );
-static void hexdump ( Uint32 );
 static Sint32 cpu_68k_debugger ( void );
-static void cpu_68k_dbg_step_68k ( void );
+static void cpu_68k_dbg_step ( void );
+
+static SDL_bool neo_debug_back_trace_add ( Uint32 ) __attribute__ ( ( warn_unused_result ) );
+static void neo_debug_back_trace_print ( void );
+static SDL_bool neo_debug_break_point_check ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
+static SDL_bool neo_debug_break_point_add ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
+static SDL_bool neo_debug_break_point_delete ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
+static void neo_debug_break_point_clear ( void );
+static void neo_debug_break_point_print ( void );
+static void add_cond ( Uint8, Sint32, Uint32 );
 #endif // _GNGEOX_DEBUG_C_
 
-void add_bt ( Uint32 );
-void show_bt ( void );
-void add_cond ( Uint8, Sint32, Uint32 );
-SDL_bool check_bp ( Sint32 ) __attribute__ ( ( warn_unused_result ) );
-void add_bp ( Sint32 );
-void del_bp ( Sint32 );
-void clear_bps ( void );
-void neo_sys_debug_loop ( void );
+void neo_debug_loop ( void );
 
 #endif // _GNGEOX_DEBUG_H_

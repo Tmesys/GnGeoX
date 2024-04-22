@@ -57,8 +57,7 @@ void zlog_category_del ( zlog_category_t * a_category )
  */
 static void zlog_cateogry_overlap_bitmap ( zlog_category_t * a_category, zlog_rule_t * a_rule )
 {
-    int i;
-    for ( i = 0; i < sizeof ( a_rule->level_bitmap ); i++ )
+    for ( long unsigned int i = 0; i < sizeof ( a_rule->level_bitmap ); i++ )
     {
         a_category->level_bitmap[i] |= a_rule->level_bitmap[i];
     }

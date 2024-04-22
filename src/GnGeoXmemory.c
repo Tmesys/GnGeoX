@@ -187,11 +187,11 @@ void open_memcard ( void )
     bcatcstr ( fpath, gngeox_config.gamename );
     bcatcstr ( fpath, ".sav" );
 
-    if ( qfile_exist ( fpath->data ) == false )
+    if ( qfile_exist ( ( const char * ) fpath->data ) == false )
     {
         SDL_zero ( neogeo_memory.memcard );
 
-        if ( qfile_save ( fpath->data, neogeo_memory.memcard, sizeof ( neogeo_memory.memcard ), false ) == false )
+        if ( qfile_save ( ( const char * ) fpath->data, neogeo_memory.memcard, sizeof ( neogeo_memory.memcard ), false ) == false )
         {
             zlog_error ( gngeox_config.loggingCat, "Can not create file %s", fpath->data );
         }
@@ -200,7 +200,7 @@ void open_memcard ( void )
         return;
     }
 
-    buffer = qfile_load ( fpath->data, NULL );
+    buffer = qfile_load ( ( const char * ) fpath->data, NULL );
     if ( buffer == NULL )
     {
         zlog_error ( gngeox_config.loggingCat, "Can not load file %s", fpath->data );
@@ -253,11 +253,11 @@ void open_nvram ( void )
     bcatcstr ( fpath, gngeox_config.gamename );
     bcatcstr ( fpath, ".nv" );
 
-    if ( qfile_exist ( fpath->data ) == false )
+    if ( qfile_exist ( ( const char* ) fpath->data ) == false )
     {
         SDL_zero ( neogeo_memory.sram );
 
-        if ( qfile_save ( fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
+        if ( qfile_save ( ( const char* ) fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
         {
             zlog_error ( gngeox_config.loggingCat, "Can not create file %s", fpath->data );
         }
@@ -266,7 +266,7 @@ void open_nvram ( void )
         return;
     }
 
-    buffer = qfile_load ( fpath->data, NULL );
+    buffer = qfile_load ( ( const char* ) fpath->data, NULL );
     if ( buffer == NULL )
     {
         zlog_error ( gngeox_config.loggingCat, "Can not load file %s", fpath->data );
@@ -294,7 +294,7 @@ void save_nvram ( void )
     bcatcstr ( fpath, gngeox_config.gamename );
     bcatcstr ( fpath, ".nv" );
 
-    if ( qfile_save ( fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
+    if ( qfile_save ( ( const char* ) fpath->data, neogeo_memory.sram, sizeof ( neogeo_memory.sram ), false ) == false )
     {
         zlog_error ( gngeox_config.loggingCat, "Can not save file %s", fpath->data );
     }

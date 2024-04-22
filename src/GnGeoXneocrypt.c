@@ -180,39 +180,23 @@ static void neogeo_gfx_decrypt ( struct_gngeoxroms_game_roms* machine, Sint32 ex
     Sint32 rom_size = 0;
     Uint8* buf = NULL;
     Uint8* rom = NULL;
-    Sint32 cnt = 0;
 
     rom_size = memory_region_length ( machine, GNGEO_MEMORYREGION_SPRITES );
     buf = alloc_array_or_die ( Uint8, rom_size );
     rom = memory_region ( machine, GNGEO_MEMORYREGION_SPRITES );
 
-    // Data xor
-    cnt = 0;
-
     for ( Sint32 rpos = 0; rpos < ( rom_size / 4 ); rpos++ )
     {
         decrypt ( buf + 4 * rpos + 0, buf + 4 * rpos + 3, rom[4 * rpos + 0], rom[4 * rpos + 3], type0_t03, type0_t12, type1_t03, rpos, ( rpos >> 8 ) & 1 );
         decrypt ( buf + 4 * rpos + 1, buf + 4 * rpos + 2, rom[4 * rpos + 1], rom[4 * rpos + 2], type0_t12, type0_t03, type1_t12, rpos, ( ( rpos >> 16 ) ^ address_16_23_xor2[ ( rpos >> 8 ) & 0xff] ) & 1 );
-        /*
-                if ( cnt++ > 32768 )
-                {
-                    cnt = 0;
-                }
-        */
     }
 
-    cnt = 0;
 
     // Address xor
     for ( Sint32 rpos = 0; rpos < rom_size / 4; rpos++ )
     {
         Sint32 baser;
-        /*
-                if ( cnt++ > 32768 )
-                {
-                    cnt++;
-                }
-        */
+
         baser = rpos;
         baser ^= extra_xor;
         baser ^= address_8_15_xor1[ ( baser >> 16 ) & 0xff] << 8;

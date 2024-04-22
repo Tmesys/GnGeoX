@@ -66,7 +66,7 @@ SDL_bool neo_transpack_init ( void )
                     WHERE short_name = ? \
                     ORDER BY begin ASC;" );
 
-    result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );
+    result_code = sqlite3_prepare_v2 ( db_handle, ( const char* ) bsql->data, bsql->slen, &db_stmt, NULL );
     if ( result_code != SQLITE_OK )
     {
         zlog_error ( gngeox_config.loggingCat, "Preparing Fetch : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );

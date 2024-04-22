@@ -46,6 +46,7 @@ extern char * qsys_info_node ( void );
 extern char * qsys_info_version ( void );
 extern char * qsys_info_release ( void );
 extern char * qsys_info_machine ( void );
+extern void qsys_clrscr ( void );
 
 #ifdef __cplusplus
 }

@@ -26,7 +26,7 @@
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
 #include "GnGeoXscreen.h"
-#include "GnGeoXframeskip.h"
+#include "GnGeoXframecap.h"
 #include "GnGeoXtranspack.h"
 #include "GnGeoXconfig.h"
 
@@ -59,7 +59,8 @@ Uint32 ddaxskip_i[16] =
 Uint32 neogeo_frame_counter = 0;
 Uint32 neogeo_frame_counter_speed = 8;
 Uint32 frame_counter = 0;
-char* dda_x_skip = NULL;
+
+static char* dda_x_skip = NULL;
 static char dda_y_skip[17];
 static char full_y_skip[16] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 static Uint32 dda_y_skip_i = 0;
@@ -107,9 +108,10 @@ Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha )
 * \return SDL_FALSE when error, SDL_TRUE otherwise.
 */
 /* ******************************************************************************************************************/
-void SDL_textout ( SDL_Surface* dest, Sint32 x, Sint32 y, const char* string )
+void SDL_textout ( Sint32 x, Sint32 y, const char* string )
 {
     SDL_Surface* sdl_surface_text = NULL;
+    SDL_Surface* sdl_surface_output = NULL;
     SDL_Rect dest_area;
     SDL_Color sys_font_color = {255, 150, 0, 1};
 
@@ -124,7 +126,17 @@ void SDL_textout ( SDL_Surface* dest, Sint32 x, Sint32 y, const char* string )
     dest_area.h = sdl_surface_text->h;
     dest_area.w = sdl_surface_text->w;
 
-    if ( SDL_BlitSurface ( sdl_surface_text, NULL, dest, &dest_area ) < 0 )
+    if ( gngeox_config.effect_index == 0 )
+    {
+        sdl_surface_output = sdl_surface_buffer;
+    }
+    else
+    {
+        sdl_surface_output = sdl_surface_screen;
+
+    }
+
+    if ( SDL_BlitSurface ( sdl_surface_text, NULL, sdl_surface_output, &dest_area ) < 0 )
     {
         zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
         return;
@@ -353,8 +365,8 @@ static void draw_fix_char ( Uint8* buf, Sint32 start, Sint32 end )
     SDL_Rect clip;
     Sint32 ystart = 1, yend = 32;
 
-    banked = ( current_fix == neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_CARTRIDGE].p && neogeo_fix_bank_type && neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_CARTRIDGE].size > 0x1000 ) ? 1 : 0;
-    if ( banked && neogeo_fix_bank_type == 1 )
+    banked = ( current_fix == neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_CARTRIDGE].p && neo_rom_fix_bank_type && neogeo_memory.rom.rom_region[REGION_FIXED_LAYER_CARTRIDGE].size > 0x1000 ) ? 1 : 0;
+    if ( banked && neo_rom_fix_bank_type == 1 )
     {
         Sint32 garoubank = 0;
         Sint32 k = 0;
@@ -402,7 +414,7 @@ static void draw_fix_char ( Uint8* buf, Sint32 start, Sint32 end )
 
             if ( banked )
             {
-                switch ( neogeo_fix_bank_type )
+                switch ( neo_rom_fix_bank_type )
                 {
                 /* Garou, MSlug 3 */
                 case ( 1 ) :
@@ -417,7 +429,7 @@ static void draw_fix_char ( Uint8* buf, Sint32 start, Sint32 end )
                     break;
                 default :
                     {
-                        zlog_error ( gngeox_config.loggingCat, "Unknown fix bank type %d", neogeo_fix_bank_type );
+                        zlog_error ( gngeox_config.loggingCat, "Unknown fix bank type %d", neo_rom_fix_bank_type );
                     }
                     break;
                 }
@@ -808,8 +820,6 @@ void draw_screen ( void )
     draw_fix_char ( sdl_surface_buffer->pixels, 0, 0 );
     SDL_UnlockSurface ( sdl_surface_buffer );
 
-    neo_frame_skip_display();
-
     neo_screen_efects_apply();
 }
 /* ******************************************************************************************************************/
@@ -821,7 +831,7 @@ void draw_screen ( void )
 * \param  refresh Tile number.
 */
 /* ******************************************************************************************************************/
-void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
+void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, SDL_bool refresh )
 {
     Sint32 sx = 0, sy = 0, my = 0, zx = 1, zy = 1;
     Sint32 offs = 0, y = 0;
@@ -1049,11 +1059,9 @@ void draw_screen_scanline ( Sint32 start_line, Sint32 end_line, Sint32 refresh )
         }
     } /* for count */
 
-    if ( refresh )
+    if ( refresh == SDL_TRUE )
     {
         draw_fix_char ( sdl_surface_buffer->pixels, 0, 0 );
-
-        neo_frame_skip_display();
 
         neo_screen_efects_apply();
     }

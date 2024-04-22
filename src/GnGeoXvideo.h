@@ -85,8 +85,8 @@ void init_video ( void );
 SDL_bool init_sprite_cache ( Uint32, Uint32 ) __attribute__ ( ( warn_unused_result ) );
 void free_sprite_cache ( void );
 void draw_screen ( void );
-void draw_screen_scanline ( Sint32, Sint32, Sint32 );
-void SDL_textout ( SDL_Surface*, Sint32, Sint32, const char* );
+void draw_screen_scanline ( Sint32, Sint32, SDL_bool );
+void SDL_textout ( Sint32, Sint32, const char* );
 Uint32 alpha_blend ( Uint32 dest, Uint32 src, Uint8 alpha );
 
 #endif

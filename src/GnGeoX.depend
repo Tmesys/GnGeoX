@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoX68k.c
+1713627152 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoX68k.c
 	<stdlib.h>
 	<SDL2/SDL.h>
 	"zlog.h"
 	"qlibc.h"
-	"3rdParty/Generator68k/generator.h"
-	"3rdParty/Generator68k/cpu68k.h"
-	"3rdParty/Generator68k/reg68k.h"
-	"3rdParty/Generator68k/mem68k.h"
+	"generator.h"
+	"cpu68k.h"
+	"reg68k.h"
+	"mem68k.h"
 	"GnGeoX68k.h"
 	"GnGeoXroms.h"
 	"GnGeoXvideo.h"
@@ -23,7 +23,7 @@
 	<stdarg.h>
 	<stdio.h>
 
-1712181564 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/qlibc.h
+1713702701 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/qlibc.h
 	"containers/qtreetbl.h"
 	"containers/qhashtbl.h"
 	"containers/qhasharr.h"
@@ -84,7 +84,7 @@
 	<stdbool.h>
 	<stdint.h>
 
-1667129422 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qvector.h
+1713639684 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/containers/qvector.h
 	<stdlib.h>
 	<stdbool.h>
 	<stdint.h>
@@ -166,7 +166,7 @@
 	<stdbool.h>
 	"../containers/qlist.h"
 
-1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsystem.h
+1713702735 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qsystem.h
 
 1642852777 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Qlibc-2.0.1/include/utilities/qtime.h
 	<stdlib.h>
@@ -196,23 +196,23 @@
 
 1713373345 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/cpu68k.h
 
-1713072468 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/reg68k.h
+1713626185 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/reg68k.h
 
 1713123787 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/mem68k.h
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoX68k.h
 
-1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.h
+1713717848 /home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.h
 
-1713534874 /home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.h
+1713765507 /home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.h
 
 1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXmemory.h
 
-1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.h
+1713728220 /home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.h
 
-1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.h
+1713716052 /home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.h
 
-1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.h
+1713569697 /home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.h
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXpd4990a.h
 
@@ -220,7 +220,7 @@
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscanline.h
 
-1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXbios.c
+1713671386 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXbios.c
 	<SDL2/SDL.h>
 	"zlog.h"
 	"qlibc.h"
@@ -240,7 +240,7 @@
 
 1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXbios.h
 
-1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.c
+1713569691 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXconfig.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"zlog.h"
@@ -250,11 +250,11 @@
 	"GnGeoXscreen.h"
 	"GnGeoXeffects.h"
 
-1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.h
+1713569877 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.h
 
 1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXeffects.h
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXcontroller.c
+1713671440 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXcontroller.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"zlog.h"
@@ -268,16 +268,20 @@
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXcontroller.h
 
-1713528005 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.c
+1713723918 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdebug.c
 	<stdlib.h>
 	<stdio.h>
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"zlog.h"
-	"3rdParty/Generator68k/generator.h"
-	"3rdParty/Generator68k/cpu68k.h"
-	"3rdParty/Generator68k/reg68k.h"
-	"3rdParty/Generator68k/mem68k.h"
+	"bstrlib.h"
+	"qlibc.h"
+	"Z80.h"
+	"generator.h"
+	"cpu68k.h"
+	"reg68k.h"
+	"mem68k.h"
+	"diss68k.h"
 	"GnGeoXdebug.h"
 	"GnGeoXroms.h"
 	"GnGeoXvideo.h"
@@ -287,8 +291,11 @@
 	"GnGeoXscreen.h"
 	"GnGeoXscanline.h"
 	"GnGeoXemu.h"
+	"GnGeoXym2610.h"
+	"GnGeoXroms.h"
+	"version.h"
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdrivers.c
+1713671770 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXdrivers.c
 	<stdio.h>
 	<stdint.h>
 	<sys/stat.h>
@@ -324,13 +331,14 @@
 
 1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXscale.h
 
-1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.c
+1713728213 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXemu.c
 	<string.h>
 	<stdlib.h>
 	<time.h>
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"zlog.h"
+	"Z80.h"
 	"GnGeoXemu.h"
 	"GnGeoXroms.h"
 	"GnGeoXvideo.h"
@@ -349,7 +357,7 @@
 	"GnGeoXz80.h"
 	"GnGeoXscanline.h"
 
-1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.h
+1713665371 /home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.h
 
 1713527749 /home/mourad/Mega/Projets/gngeo/src/GnGeoXprofiler.h
 
@@ -360,10 +368,7 @@
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXneocrypt.h
 
-1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.c
-	<unistd.h>
-	<sys/time.h>
-	<math.h>
+1713768078 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXframeskip.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"bstrlib.h"
@@ -402,16 +407,16 @@
 	"GnGeoXhq2x.h"
 	"GnGeoXinterp.h"
 
-1713527750 /home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.h
+1713569495 /home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.h
 
-1713537987 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.c
+1713569480 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXinterp.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"GnGeoXscreen.h"
 	"GnGeoXvideo.h"
 	"GnGeoXinterp.h"
 
-1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmain.c
+1713726999 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmain.c
 	<unistd.h>
 	<stdlib.h>
 	<stdio.h>
@@ -439,7 +444,7 @@
 	"GnGeoXconfig.h"
 	"GnGeoXromsgno.h"
 
-1713538490 /home/mourad/Mega/Projets/gngeo/src/version.h
+1713759044 /home/mourad/Mega/Projets/gngeo/src/version.h
 
 1712778794 /home/mourad/Mega/Projets/gngeo/src/GnGeoXtranspack.h
 	<SDL2/SDL.h>
@@ -460,7 +465,7 @@
 	<stdlib.h>
 	<string.h>
 
-1713527752 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmemory.c
+1713675580 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXmemory.c
 	<SDL2/SDL.h>
 	"zlog.h"
 	"qlibc.h"
@@ -486,7 +491,7 @@
 
 1713527752 /home/mourad/Mega/Projets/gngeo/src/GnGeoXneoboot.h
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXneocrypt.c
+1713675658 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXneocrypt.c
 	<SDL2/SDL.h>
 	"qlibc.h"
 	"GnGeoXroms.h"
@@ -529,7 +534,7 @@
 	"GnGeoXprofiler.h"
 	"GnGeoXconfig.h"
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.c
+1713717660 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXroms.c
 	<stdio.h>
 	<stdint.h>
 	<stdlib.h>
@@ -567,7 +572,7 @@
 	"GnGeoXmemory.h"
 	"GnGeoXconfig.h"
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXromsinit.c
+1713717608 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXromsinit.c
 	<SDL2/SDL.h>
 	"zlog.h"
 	"qlibc.h"
@@ -587,7 +592,7 @@
 	"GnGeoXvideo.h"
 	"GnGeoXscale.h"
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscanline.c
+1713760245 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscanline.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"GnGeoXscreen.h"
@@ -597,7 +602,7 @@
 	"GnGeoXmemory.h"
 	"GnGeoXframeskip.h"
 
-1713538490 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.c
+1713764728 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXscreen.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
@@ -649,9 +654,9 @@
 	"GnGeoXz80.h"
 	"GnGeoXym2610.h"
 
-1713527751 /home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.h
+1713676059 /home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.h
 
-1713527750 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXtranspack.c
+1713675886 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXtranspack.c
 	<SDL2/SDL.h>
 	"zlog.h"
 	"qlibc.h"
@@ -660,7 +665,7 @@
 	"GnGeoXtranspack.h"
 	"GnGeoXconfig.h"
 
-1713534497 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.c
+1713765495 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXvideo.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_ttf.h>
 	"zlog.h"
@@ -686,7 +691,7 @@
 	"GnGeoXinterp.h"
 	"GnGeoXxbr2x.h"
 
-1713527749 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610.c
+1713675989 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610.c
 	<stdio.h>
 	<SDL2/SDL.h>
 	"zlog.h"
@@ -704,7 +709,7 @@
 1713267786 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Z80/Z80.h
 	<stdint.h>
 
-1713527751 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.c
+1713676034 source:/home/mourad/Mega/Projets/gngeo/src/GnGeoXym2610core.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -727,4 +732,6 @@
 	"GnGeoXym2610.h"
 	"GnGeoXym2610core.h"
 	"GnGeoXconfig.h"
+
+1713626410 /home/mourad/Mega/Projets/gngeo/src/3rdParty/Generator68k/diss68k.h
 

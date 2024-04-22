@@ -164,13 +164,14 @@ qvector_t * qvector ( size_t max, size_t objsize, int options )
     }
 
     vector->options = 0;
-    if ( options & QVECTOR_RESIZE_DOUBLE )
+    switch ( options & QVECTOR_THREADSAFE )
     {
-        vector->options |= QVECTOR_RESIZE_DOUBLE;
-    }
-    else
-    {
-        if ( options & QVECTOR_RESIZE_LINEAR )
+    case ( QVECTOR_RESIZE_DOUBLE ) :
+        {
+            vector->options |= QVECTOR_RESIZE_DOUBLE;
+        }
+        break;
+    case ( QVECTOR_RESIZE_LINEAR ) :
         {
             vector->options |= QVECTOR_RESIZE_LINEAR;
             if ( max == 0 )
@@ -182,10 +183,25 @@ qvector_t * qvector ( size_t max, size_t objsize, int options )
                 vector->initnum = max;
             }
         }
-        else
+        break;
+    case ( QVECTOR_RESIZE_EXACT ) :
         {
             vector->options |= QVECTOR_RESIZE_EXACT;
         }
+        break;
+    case ( QVECTOR_RESIZE_NONE ) :
+        {
+            vector->options |= QVECTOR_RESIZE_NONE;
+        }
+        break;
+        /*
+            default:
+                {
+                    errno = EINVAL;
+                    return NULL;
+                }
+                break;
+        */
     }
 
     /* Member methods */
@@ -410,20 +426,39 @@ bool qvector_addat ( qvector_t * vector, int index, const void * data )
     if ( vector->num >= vector->max )
     {
         size_t newmax = vector->max + 1;
-        if ( vector->options & QVECTOR_RESIZE_DOUBLE )
+
+        switch ( vector->options & QVECTOR_THREADSAFE )
         {
-            newmax = ( vector->max + 1 ) * 2;
-        }
-        else
-        {
-            if ( vector->options & QVECTOR_RESIZE_LINEAR )
+        case ( QVECTOR_RESIZE_DOUBLE ) :
+            {
+                newmax = ( vector->max + 1 ) * 2;
+            }
+            break;
+        case ( QVECTOR_RESIZE_LINEAR ) :
             {
                 newmax = vector->max + vector->initnum;
             }
-            else
+            break;
+        case ( QVECTOR_RESIZE_EXACT ) :
             {
                 newmax = vector->max + 1;
             }
+            break;
+        case ( QVECTOR_RESIZE_NONE ) :
+            {
+                vector->unlock ( vector );
+                errno = ENOBUFS;
+                return false;
+            }
+            break;
+            /*
+                default:
+                    {
+                        errno = EINVAL;
+                        return NULL;
+                    }
+                    break;
+            */
         }
 
         bool result = resize ( vector, newmax );
@@ -891,13 +926,12 @@ void qvector_clear ( qvector_t * vector )
     vector->lock ( vector );
 
     /* @note (Tmesys#1#06/14/20): Do not zero object size ! */
-    if ( vector->data != NULL )
+    if ( vector->max > 0 )
     {
-        free ( vector->data );
-        vector->data = NULL;
+        memset ( vector->data, 0, ( vector->max * vector->objsize ) * sizeof ( char ) );
     }
     vector->num = 0;
-    vector->max = 0;
+    /* @fixme (Tmesys#1#21/04/2024): Do not zero max ! */
 
     vector->unlock ( vector );
 }
@@ -1267,7 +1301,8 @@ static bool remove_at ( qvector_t * vector, int index )
     {
         index += vector->num;
     }
-    if ( index >= vector->num )
+
+    if ( index > vector->num )
     {
         if ( vector->num == 0 )
         {
@@ -1279,6 +1314,13 @@ static bool remove_at ( qvector_t * vector, int index )
             errno = ERANGE;
             return false;
         }
+    }
+
+    /* @note (Tmesys#1#21/04/2024): borderline case */
+    if ( index == 1 && index > vector->num )
+    {
+        qvector_clear ( vector );
+        return true;
     }
 
     for ( int i = index + 1; i < vector->num; i++ )

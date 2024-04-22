@@ -13,7 +13,7 @@
 #define ZLOG_INT32_LEN   sizeof("-2147483648") - 1
 #define ZLOG_INT64_LEN   sizeof("-9223372036854775808") - 1
 
-#if ((__GNU__ == 2) && (__GNUC_MINOR__ < 8))
+#if ((__GNUC__ == 2) && (__GNUC_MINOR__ < 8))
 #define ZLOG_MAX_UINT32_VALUE  (uint32_t) 0xffffffffLL
 #else
 #define ZLOG_MAX_UINT32_VALUE  (uint32_t) 0xffffffff

@@ -24,12 +24,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "zlog.h"
+#include "Z80.h"
 
 #include "GnGeoXemu.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXvideo.h"
 #include "GnGeoXmemory.h"
-#include "GnGeoXframeskip.h"
+#include "GnGeoXframecap.h"
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXprofiler.h"
 #include "GnGeoXdebug.h"
@@ -108,42 +109,6 @@ static void neo_sys_reset ( void )
     }
 
     cpu_68k_reset();
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Handles NeoGeo interrupt.
-*
-*/
-/* ******************************************************************************************************************/
-void neo_sys_interrupt ( void )
-{
-    pd4990a_addretrace();
-
-    if ( ! ( neogeo_memory.vid.irq2control & 0x8 ) )
-    {
-        if ( frame_counter >= neogeo_frame_counter_speed )
-        {
-            frame_counter = 0;
-            neogeo_frame_counter++;
-        }
-
-        frame_counter++;
-    }
-
-    neo_frame_skip ( );
-
-    if ( !skip_this_frame )
-    {
-#ifdef ENABLE_PROFILER
-        profiler_start ( PROF_VIDEO );
-#endif // ENABLE_PROFILER
-
-        draw_screen();
-
-#ifdef ENABLE_PROFILER
-        profiler_stop ( PROF_VIDEO );
-#endif // ENABLE_PROFILER
-    }
 }
 /* ******************************************************************************************************************/
 /*!
@@ -227,14 +192,13 @@ void neo_sys_update_events ( void )
 /* ******************************************************************************************************************/
 void neo_sys_main_loop ( void )
 {
-    neo_frame_skip_reset();
-    neo_ym2610_update();
-
     while ( 1 )
     {
 #ifdef ENABLE_PROFILER
         profiler_start ( PROF_ALL );
 #endif // ENABLE_PROFILER
+
+        neo_frame_cap_start();
 
         if ( neogeo_memory.test_switch == 1 )
         {
@@ -288,6 +252,8 @@ void neo_sys_main_loop ( void )
         }
 
         cpu_68k_interrupt ( 1 );
+
+        neo_frame_cap_stop();
 
 #ifdef ENABLE_PROFILER
         profiler_stop ( PROF_ALL );

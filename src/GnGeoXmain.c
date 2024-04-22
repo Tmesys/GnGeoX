@@ -40,7 +40,7 @@
 #include "GnGeoXscanline.h"
 #include "GnGeoXtranspack.h"
 #include "GnGeoXcontroller.h"
-#include "GnGeoXframeskip.h"
+#include "GnGeoXframecap.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoXromsgno.h"
 
@@ -104,8 +104,6 @@ Sint32 main ( Sint32 argc, char* argv[] )
     atexit ( neo_controllers_close );
     zlog_info ( gngeox_config.loggingCat, "Controllers initialization OK" );
 
-    neo_frame_skip_reset();
-
     if ( init_game ( gngeox_config.gamename ) == SDL_FALSE )
     {
         zlog_error ( gngeox_config.loggingCat, "Can't init %s", gngeox_config.gamename );
@@ -123,9 +121,12 @@ Sint32 main ( Sint32 argc, char* argv[] )
         exit ( EXIT_SUCCESS );
     }
 
+    neo_frame_cap_init();
+    atexit ( neo_frame_cap_close );
+
     if ( gngeox_config.debug )
     {
-        neo_sys_debug_loop();
+        neo_debug_loop();
     }
     else
     {

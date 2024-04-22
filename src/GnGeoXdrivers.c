@@ -68,7 +68,7 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
                     WHERE short_name = '%s';"
                      , game_name );
 
-    result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );
+    result_code = sqlite3_prepare_v2 ( db_handle, ( const char* ) bsql->data, bsql->slen, &db_stmt, NULL );
     if ( result_code != SQLITE_OK )
     {
         zlog_error ( gngeox_config.loggingCat, "Preparing Fetch : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
@@ -84,11 +84,11 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
         /* short_name */
         drv->name = bfromcstr ( game_name );
         /* long_name */
-        drv->longname = bfromcstr ( sqlite3_column_text ( db_stmt, 0 ) );
+        drv->longname = bfromcstr ( ( const char * ) sqlite3_column_text ( db_stmt, 0 ) );
         /* year */
         drv->year = sqlite3_column_int ( db_stmt, 1 );
         /* short_name_parent */
-        drv->parent = bfromcstr ( sqlite3_column_text ( db_stmt, 2 ) );
+        drv->parent = bfromcstr ( ( const char * ) sqlite3_column_text ( db_stmt, 2 ) );
     }
     else
     {
@@ -106,7 +106,7 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
                     ORDER BY region ASC;"
                      , game_name );
 
-    result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );
+    result_code = sqlite3_prepare_v2 ( db_handle, ( const char * ) bsql->data, bsql->slen, &db_stmt, NULL );
     if ( result_code != SQLITE_OK )
     {
         zlog_error ( gngeox_config.loggingCat, "Preparing Fetch : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
@@ -142,7 +142,7 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
                     ORDER BY region ASC;"
                      , game_name );
 
-    result_code = sqlite3_prepare_v2 ( db_handle, bsql->data, bsql->slen, &db_stmt, NULL );
+    result_code = sqlite3_prepare_v2 ( db_handle, ( const char * ) bsql->data, bsql->slen, &db_stmt, NULL );
     if ( result_code != SQLITE_OK )
     {
         zlog_error ( gngeox_config.loggingCat, "Preparing Fetch : %d (%s)", result_code, sqlite3_errmsg ( db_handle ) );
@@ -155,7 +155,7 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
     while ( sqlite3_step ( db_stmt ) == SQLITE_ROW )
     {
         /* filename */
-        drv->rom[drv->nb_romfile].filename = bfromcstr ( sqlite3_column_text ( db_stmt, 0 ) );
+        drv->rom[drv->nb_romfile].filename = bfromcstr ( ( const char * ) sqlite3_column_text ( db_stmt, 0 ) );
         /* region */
         drv->rom[drv->nb_romfile].region = sqlite3_column_int ( db_stmt, 1 );
         /* src */
@@ -165,7 +165,7 @@ struct_gngeoxdrivers_rom_def* neo_driver_load ( char* game_name )
         /* size */
         drv->rom[drv->nb_romfile].size = sqlite3_column_int ( db_stmt, 4 );
         /* crc */
-        drv->rom[drv->nb_romfile].crc = ( Uint32 ) strtol ( sqlite3_column_text ( db_stmt, 5 ), NULL, 16 ) ;
+        drv->rom[drv->nb_romfile].crc = ( Uint32 ) strtol ( ( const char * ) sqlite3_column_text ( db_stmt, 5 ), NULL, 16 ) ;
 
         drv->nb_romfile++;
     }

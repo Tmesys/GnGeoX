@@ -98,8 +98,8 @@ static int syslog_level_atoi ( char * str )
 zlog_level_t * zlog_level_new ( char * line )
 {
     zlog_level_t * a_level = NULL;
-    int i;
-    int nscan;
+    long unsigned int  i = 0;
+    int nscan = 0;
     char str[MAXLEN_CFG_LINE + 1];
     int l = 0;
     char sl[MAXLEN_CFG_LINE + 1];

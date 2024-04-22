@@ -49,7 +49,7 @@ SDL_bool neo_bios_load ( struct_gngeoxroms_game_roms* rom )
     fpath = bfromcstr ( gngeox_config.biospath );
     bcatcstr ( fpath, "/neogeo.zip" );
 
-    zip_file = qzip_open_file ( fpath->data );
+    zip_file = qzip_open_file ( ( const char * ) fpath->data );
     if ( zip_file == NULL )
     {
         zlog_error ( gngeox_config.loggingCat, "Opening file : %s", fpath->data );

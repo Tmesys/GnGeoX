@@ -23,6 +23,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "zlog.h"
+#include "bstrlib.h"
+#include "qlibc.h"
+#include "Z80.h"
 
 #include "generator.h"
 #include "cpu68k.h"
@@ -36,17 +39,15 @@
 #include "GnGeoXmemory.h"
 #include "GnGeoXconfig.h"
 #include "GnGeoX68k.h"
-//#include "GnGeoXscreen.h"
+#include "GnGeoXscreen.h"
 #include "GnGeoXscanline.h"
 #include "GnGeoXemu.h"
+#include "GnGeoXym2610.h"
+#include "GnGeoXroms.h"
+#include "version.h"
 
-/* TODO: finish it ...... */
-
-static Sint32 nb_breakpoints = 0;
-static Sint32 breakpoints[GNGEOXDEBUG_MAX_BREAK_POINT];
-static Uint32 backtrace[GNGEOXDEBUG_MAX_BACK_TRACE];
-static Uint32 pc = 0;
-
+static qvector_t *breakpoints = NULL;
+static qvector_t *backtrace = NULL;
 /* ******************************************************************************************************************/
 /*!
 * \brief  Adds a back trace.
@@ -54,14 +55,23 @@ static Uint32 pc = 0;
 * \param  program_counter Program counter.
 */
 /* ******************************************************************************************************************/
-void add_bt ( Uint32 program_counter )
+static SDL_bool neo_debug_back_trace_add ( Uint32 program_counter )
 {
-    for ( Sint32 index = ( GNGEOXDEBUG_MAX_BACK_TRACE - 2 ); index >= 0; index-- )
+    if ( qvector_size ( backtrace ) == GNGEOXDEBUG_MAX_BACK_TRACE )
     {
-        backtrace[index + 1] = backtrace[index];
+        if ( qvector_removefirst ( backtrace ) == false )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Can not make room for new back-trace" );
+            return ( SDL_FALSE );
+        }
     }
 
-    backtrace[0] = program_counter;
+    if ( qvector_addlast ( backtrace, &program_counter ) == false )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not add back-trace" );
+        return ( SDL_FALSE );
+    }
+    return ( SDL_TRUE );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -69,11 +79,14 @@ void add_bt ( Uint32 program_counter )
 *
 */
 /* ******************************************************************************************************************/
-void show_bt ( void )
+static void neo_debug_back_trace_print ( void )
 {
-    for ( Sint32 index = GNGEOXDEBUG_MAX_BACK_TRACE - 1; index >= 0; index-- )
+    qvector_obj_t obj;
+    SDL_zero ( obj );
+
+    while ( qvector_getnext ( backtrace, &obj, false ) == true )
     {
-        zlog_info ( gngeox_config.loggingCat, "%08x\n", backtrace[index] );
+        gen68k_disassemble ( * ( ( Uint32 * ) obj.data ) );
     }
 }
 /* ******************************************************************************************************************/
@@ -85,9 +98,36 @@ void show_bt ( void )
 * \param  value Todo.
 */
 /* ******************************************************************************************************************/
-void add_cond ( Uint8 type, Sint32 reg, Uint32 value )
+static void add_cond ( Uint8 type, Sint32 reg, Uint32 value )
 {
     /* @todo (Tmesys#1#12/04/2022): Conditions to what ?? Should be implemented */
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Adds break points condition.
+*
+* \param  program_counter Program counter.
+*/
+/* ******************************************************************************************************************/
+/* 12655316 */
+static SDL_bool neo_debug_break_point_add ( Sint32 program_counter )
+{
+    if ( qvector_size ( breakpoints ) == GNGEOXDEBUG_MAX_BREAK_POINT )
+    {
+        if ( qvector_removefirst ( breakpoints ) == false )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Can not make room for new break-point" );
+            return ( SDL_FALSE );
+        }
+    }
+
+    if ( qvector_addlast ( breakpoints, &program_counter ) == false )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not feed break-point" );
+        return ( SDL_FALSE );
+    }
+
+    return ( SDL_TRUE );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -97,11 +137,14 @@ void add_cond ( Uint8 type, Sint32 reg, Uint32 value )
 * \return SDL_TRUE when program counter has a break point, SDL_FALSE otherwise.
 */
 /* ******************************************************************************************************************/
-SDL_bool check_bp ( Sint32 program_counter )
+static SDL_bool neo_debug_break_point_check ( Sint32 program_counter )
 {
-    for ( Sint32 index = 0; index < nb_breakpoints; index++ )
+    qvector_obj_t obj;
+    SDL_zero ( obj );
+
+    while ( qvector_getnext ( breakpoints, &obj, false ) == true )
     {
-        if ( breakpoints[index] == program_counter )
+        if ( * ( ( Uint32 * ) obj.data ) == program_counter )
         {
             return ( SDL_TRUE );
         }
@@ -111,37 +154,42 @@ SDL_bool check_bp ( Sint32 program_counter )
 }
 /* ******************************************************************************************************************/
 /*!
-* \brief  Adds break points condition.
-*
-* \param  program_counter Program counter.
-*/
-/* ******************************************************************************************************************/
-void add_bp ( Sint32 program_counter )
-{
-    if ( nb_breakpoints > GNGEOXDEBUG_MAX_BREAK_POINT )
-    {
-        zlog_error ( gngeox_config.loggingCat, "Too many breakpoints\n" );
-        return;
-    }
-
-    breakpoints[nb_breakpoints++] = program_counter;
-}
-/* ******************************************************************************************************************/
-/*!
 * \brief  Deletes break point.
 *
 * \param  program_counter Program counter.
 */
 /* ******************************************************************************************************************/
-void del_bp ( Sint32 program_counter )
+static SDL_bool neo_debug_break_point_delete ( Sint32 program_counter )
 {
-    for ( Sint32 index = 0; index < nb_breakpoints; index++ )
+    qvector_obj_t obj;
+    Uint32 index = 0;
+
+    SDL_zero ( obj );
+
+    while ( qvector_getnext ( breakpoints, &obj, false ) == true )
     {
-        if ( breakpoints[index] == program_counter )
+        if ( * ( ( Uint32 * ) obj.data ) == program_counter )
         {
-            breakpoints[index] = -1;
+            index = obj.index;
+            break;
         }
     }
+
+    if ( index != 0 )
+    {
+        if ( qvector_removeat ( breakpoints, index ) == false )
+        {
+            zlog_error ( gngeox_config.loggingCat, "Can not remove break-point %d", program_counter );
+            return ( SDL_FALSE );
+        }
+    }
+    else
+    {
+        zlog_error ( gngeox_config.loggingCat, "Break point %d not found", program_counter );
+        return ( SDL_FALSE );
+    }
+
+    return ( SDL_TRUE );
 }
 /* ******************************************************************************************************************/
 /*!
@@ -149,14 +197,25 @@ void del_bp ( Sint32 program_counter )
 *
 */
 /* ******************************************************************************************************************/
-void clear_bps ( void )
+static void neo_debug_break_point_clear ( void )
 {
-    for ( Sint32 index = 0; index < nb_breakpoints; index++ )
-    {
-        breakpoints[index] = -1;
-    }
+    qvector_clear ( breakpoints );
+}
+/* ******************************************************************************************************************/
+/*!
+* \brief  Prints all break points.
+*
+*/
+/* ******************************************************************************************************************/
+static void neo_debug_break_point_print ( void )
+{
+    qvector_obj_t obj;
+    SDL_zero ( obj );
 
-    nb_breakpoints = 0;
+    while ( qvector_getnext ( breakpoints, &obj, false ) == true )
+    {
+        zlog_debug ( gngeox_config.loggingCat, "[%d]", * ( ( Uint32 * ) obj.data ) );
+    }
 }
 /* ******************************************************************************************************************/
 /*!
@@ -166,7 +225,7 @@ void clear_bps ( void )
 /* ******************************************************************************************************************/
 static void gen68k_dumpreg ( void )
 {
-    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   %c%c%c%c%c %04x",
+    zlog_debug ( gngeox_config.loggingCat, "d0=%08x   d4=%08x   a0=%08x   a4=%08x   CCR=%c%c%c%c%c %04x",
                  regs.regs[0], regs.regs[4], regs.regs[8], regs.regs[12],
                  ( ( regs.sr.sr_int >> 4 ) & 1 ? 'X' : '-' ),
                  ( ( regs.sr.sr_int >> 3 ) & 1 ? 'N' : '-' ),
@@ -177,58 +236,9 @@ static void gen68k_dumpreg ( void )
                  regs.regs[1], regs.regs[5], regs.regs[9], regs.regs[13] );
     zlog_debug ( gngeox_config.loggingCat, "d2=%08x   d6=%08x   a2=%08x   a6=%08x",
                  regs.regs[2], regs.regs[6], regs.regs[10], regs.regs[14] );
-    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   usp=%08x",
+    zlog_debug ( gngeox_config.loggingCat, "d3=%08x   d7=%08x   a3=%08x   a7=%08x   SP=%08x",
                  regs.regs[3], regs.regs[7], regs.regs[11], regs.regs[15], regs.sp );
 
-}
-/* ******************************************************************************************************************/
-/*!
-* \brief Dumps 68k internal registers with printing.
-*
-* \param program_counter Program counter.
-**/
-/* ******************************************************************************************************************/
-static void hexdump ( Uint32 program_counter )
-{
-    Uint8 c, tmpchar[16];
-    Uint32 tmpaddr;
-    Sint32 i, j, k;
-    tmpaddr = program_counter & 0xFFFFFFF0;
-
-    for ( i = 0; i < 8; i++ )
-    {
-        zlog_debug ( gngeox_config.loggingCat, "%08X: %c", tmpaddr, ( program_counter == tmpaddr ) ? '>' : ' ' );
-
-        for ( j = 0; j < 16; j += 2 )
-        {
-            k = fetchword ( tmpaddr ) & 0xFFFF;
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-            tmpchar[j + 1] = k >> 8;
-            tmpchar[j    ] = k & 0xFF;
-#else
-            tmpchar[j    ] = k >> 8;
-            tmpchar[j + 1] = k & 0xFF;
-#endif
-            tmpaddr += 2;
-            zlog_debug ( gngeox_config.loggingCat, "%02X%02X%c",
-                         tmpchar[j], tmpchar[j + 1],
-                         ( ( program_counter            == tmpaddr ) && ( j != 14 ) ) ? '>' :
-                         ( ( ( program_counter & 0xFFFFFFFE ) == ( tmpaddr - 2 ) ) ? '<' : ' ' )
-                       );
-        }
-
-        for ( j = 0; j < 16; j++ )
-        {
-            c = tmpchar[j];
-
-            if ( ( c < 32 ) || ( c > 126 ) )
-            {
-                c = '.';
-            }
-
-            printf ( "%c", c );
-        }
-    }
 }
 /* ******************************************************************************************************************/
 /*!
@@ -238,22 +248,20 @@ static void hexdump ( Uint32 program_counter )
 * \return Program counter after executing indicated instruction number.
 */
 /* ******************************************************************************************************************/
-static Uint32 gen68k_disassemble ( Sint32 program_counter )
+static void gen68k_disassemble ( Sint32 program_counter )
 {
     char buf[512];
 
     diss68k_getdumpline ( program_counter, buf );
     zlog_debug ( gngeox_config.loggingCat, "%s", buf );
-
-    return ( program_counter );
 }
 /* ******************************************************************************************************************/
 /*!
-* \brief Main loop for debugging
+* \brief 68k instruction step by step.
 *
 */
 /* ******************************************************************************************************************/
-static void cpu_68k_dbg_step_68k ( void )
+static void cpu_68k_dbg_step ( void )
 {
     static Uint32 current_slice = 0;
 
@@ -312,147 +320,135 @@ static void cpu_68k_dbg_step_68k ( void )
 /* ******************************************************************************************************************/
 static Sint32 cpu_68k_debugger ( void )
 {
-    char buf[200];
-    char* args = NULL, *argsend = NULL;
+    char buffer[50];
+    char command = '0';
+    Uint32 program_counter = 0;
+    Uint32 instruction_counter = 0;
+
+    bstring command_line = NULL;
+    bstringList command_parse = NULL;
     Uint8 debug_end = 0;
-    Uint32 hex = 0;
-    Uint32 asmpc = 0;
-    Sint32 i = 0;
+
+    qsys_clrscr();
+    printf ( "GnGeoX 68k live debugger v%d.%d\n\n"
+             , GNGEOX_MAJOR
+             , GNGEOX_MINOR );
+    printf ( "Cartridge : %s [%s]\n"
+             , neogeo_memory.rom.info.name
+             , neogeo_memory.rom.info.longname );
+
+    for ( Uint32 i = 0; i < REGION_MAX; i++ )
+    {
+        printf ( "->ROM type [%s] size : %d bytes\n\n", neo_rom_region_name[i], neogeo_memory.rom.rom_region[i].size );
+    }
 
     do
     {
-        printf ( "cpu1> " );
+        printf ( "68k> " );
         fflush ( stdout );
-        fgets ( buf, 200, stdin );
+        SDL_zero ( buffer );
+        fgets ( buffer, 50, stdin );
 
-        args = buf + 1;
+        command_line = bfromcstr ( ( const char * ) buffer );
+        btrimws ( command_line );
 
-        while ( ( *args ) && ( ( *args ) < 32 ) )
+        if ( command_line->slen == 0 )
         {
-            args++;
+            zlog_error ( gngeox_config.loggingCat, "Invalid debugger command" );
+            bdestroy ( command_line );
+            continue;
         }
 
-        switch ( buf[0] )
+        command_parse = bsplit ( command_line, ' ' );;
+        bdestroy ( command_line );
+
+        command = * ( command_parse->entry[DEBUG_COMMAND]->data );
+
+        /* @todo (Tmesys#1#21/04/2024): Parameters checking. */
+        switch ( command )
         {
         case ( '?' ) :
             {
-                printf ( "B [address]           Add a break-point at [address]\n"
-                         "N [address]           Del break-point at [address]\n"
-                         "T                     Show back-trace\n"
-                         "R                     Run until break-point\n"
-                         "d [address]           Dump memory, starting at [address]\n"
-                         "r                     Show register dump and next instruction\n"
-                         "t [hex number]        Trace through [hex number] instructions\n"
-                         "u [address]           Disassemble code, starting at [address]\n"
-                         "q                     Quit\n" );
+                printf ( "Command list :\n"
+                         "  a [address]           Add a break-point at [address]\n"
+                         "  d [address]           Del break-point at [address]\n"
+                         "  c                     Clear all break-points\n"
+                         "  p                     Print break-points\n"
+                         "  T                     Print back-trace\n"
+                         "  R                     Run until break-point\n"
+                         "  r                     Print register dump actual state\n"
+                         "  t [number]            Trace through [number] instructions and stop\n"
+                         "  u [address]           Disassemble code, starting at [address]\n"
+                         "  q                     Quit\n" );
             }
             break;
-        case ( 'B' ) :
+        case ( 'a' ) :
             {
-                if ( args )
+                program_counter = strtoul ( ( const char * ) command_parse->entry[DEBUG_PARAM1]->data, NULL, 0 );
+                if ( neo_debug_break_point_add ( program_counter ) == SDL_TRUE )
                 {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        add_bp ( pc );
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
-                }
-            }
-            break;
-        case ( 'N' ) :
-            {
-                if ( args )
-                {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        del_bp ( pc );
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
-                }
-            }
-            break;
-        case ( 'T' ) :
-            {
-                show_bt();
-            }
-            break;
-        case ( 'R' ) :
-            {
-                while ( check_bp ( cpu_68k_getpc() ) != SDL_TRUE )
-                {
-                    cpu_68k_dbg_step_68k();
+                    printf ( "OK\n" ) ;
                 }
             }
             break;
         case ( 'd' ) :
             {
-                if ( args )
+                program_counter = strtoul ( ( const char * ) command_parse->entry[DEBUG_PARAM1]->data, NULL, 0 );
+                if ( neo_debug_break_point_delete ( program_counter ) == SDL_TRUE )
                 {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        hex = pc;
-                    }
-
-                    hexdump ( hex );
-                    hex += 0x80;
+                    printf ( "OK\n" ) ;
+                }
+            }
+            break;
+        case ( 'c' ) :
+            {
+                neo_debug_break_point_clear();
+            }
+            break;
+        case ( 'p' ) :
+            {
+                neo_debug_break_point_print();
+            }
+            break;
+        case ( 'T' ) :
+            {
+                neo_debug_back_trace_print();
+            }
+            break;
+        case ( 'R' ) :
+            {
+                while ( neo_debug_break_point_check ( cpu_68k_getpc() ) != SDL_TRUE )
+                {
+                    neo_debug_back_trace_add ( cpu_68k_getpc() );
+                    cpu_68k_dbg_step();
                 }
             }
             break;
         case ( 'r' ) :
             {
                 gen68k_dumpreg();
-                gen68k_disassemble ( regs.pc );
             }
             break;
         case ( 't' ) :
             {
-                if ( args )
+                instruction_counter = strtoul ( ( const char * ) command_parse->entry[DEBUG_PARAM1]->data, NULL, 0 );
+                while ( instruction_counter-- )
                 {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        for ( i = 0; i < pc; i++ )
-                        {
-                            cpu_68k_dbg_step_68k();
-                        }
-
-                        gen68k_dumpreg();
-                        gen68k_disassemble ( regs.pc );
-                    }
-                    else
-                    {
-                        zlog_error ( gngeox_config.loggingCat, "Invalid input" );
-                    }
+                    neo_debug_back_trace_add ( cpu_68k_getpc() );
+                    cpu_68k_dbg_step();
                 }
             }
             break;
+        /* @todo (Tmesys#1#21/04/2024): Should have end instruction parameter. */
         case ( 'u' ) :
             {
-                if ( args )
+                program_counter = strtoul ( ( const char * ) command_parse->entry[DEBUG_PARAM1]->data, NULL, 0 );
+                neo_debug_break_point_add ( program_counter );
+                while ( neo_debug_break_point_check ( cpu_68k_getpc() ) != SDL_TRUE )
                 {
-                    pc = strtoul ( args, &argsend, 0 );
-
-                    if ( args != argsend )
-                    {
-                        asmpc = pc;
-                    }
-
-                    /* @fixme (Tmesys#1#20/04/2024): Before disassembling was for 16 instruction. */
-                    asmpc = gen68k_disassemble ( asmpc );
+                    cpu_68k_dbg_step();
                 }
+                neo_debug_break_point_delete ( program_counter );
             }
             break;
         case ( 'q' ) :
@@ -466,6 +462,8 @@ static Sint32 cpu_68k_debugger ( void )
             }
             break;
         }
+
+        bstrListDestroy ( command_parse );
     }
     while ( debug_end == 0 );
 
@@ -477,15 +475,28 @@ static Sint32 cpu_68k_debugger ( void )
 *
 */
 /* ******************************************************************************************************************/
-void neo_sys_debug_loop ( void )
+void neo_debug_loop ( void )
 {
-    Sint32 a;
+    SDL_MinimizeWindow ( sdl_window );
 
-    do
+    backtrace = qvector ( GNGEOXDEBUG_MAX_BACK_TRACE, sizeof ( Uint32 ), QVECTOR_THREADSAFE | QVECTOR_RESIZE_NONE );
+    if ( backtrace == NULL )
     {
-        a = cpu_68k_debugger ( );
+        zlog_error ( gngeox_config.loggingCat, "Can not allocate back-trace" );
+        return;
     }
-    while ( a != -1 );
+
+    breakpoints = qvector ( GNGEOXDEBUG_MAX_BREAK_POINT, sizeof ( Uint32 ), QVECTOR_THREADSAFE | QVECTOR_RESIZE_NONE );
+    if ( breakpoints == NULL )
+    {
+        zlog_error ( gngeox_config.loggingCat, "Can not allocate back-trace" );
+        return;
+    }
+
+    while ( cpu_68k_debugger ( ) != -1 );
+
+    qvector_free ( backtrace );
+    qvector_free ( breakpoints );
 }
 
 #ifdef _GNGEOX_DEBUG_C_

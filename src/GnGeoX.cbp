@@ -14,13 +14,11 @@
 				<Option object_output="../build/$(TARGET_NAME)/$(PROJECT_NAME)/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-f mslug2" />
+				<Option parameters="-f mslug" />
 				<Option host_application="/home/mourad/Mega/Projets/gngeo/Bin/GnGeo_Debug_X86_64" />
 				<Option run_host_application_in_terminal="1" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="3rdParty/Sqlite-3.8.1.11" />
-					<Add directory="3rdParty/Bstrlib" />
 				</Compiler>
 				<Linker>
 					<Add library="Generator68K_Debug_X86_64" />
@@ -37,18 +35,16 @@
 			</Target>
 			<Target title="Linux X86_64 Release">
 				<Option platforms="Unix;" />
-				<Option output="../bin/$(PROJECT_NAME)_$(config)_$(platform)" prefix_auto="1" extension_auto="1" />
+				<Option output="../bin/gngeox" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin/" />
 				<Option object_output="../build/$(TARGET_NAME)/$(PROJECT_NAME)/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-t aodk" />
+				<Option parameters="-f mslug2" />
 				<Option host_application="/home/mourad/Mega/Developpement/gngeo/Bin/GnGeo_Release_X86_64" />
 				<Option run_host_application_in_terminal="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add directory="3rdParty/Sqlite-3.8.1.11" />
-					<Add directory="3rdParty/Bstrlib" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -83,11 +79,12 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-m64" />
+			<Add directory="3rdParty/Sqlite-3.8.1.11" />
 			<Add directory="3rdParty/Zlog-1.2.12/src" />
 			<Add directory="3rdParty/Qlibc-2.0.1/include" />
-			<Add directory="3rdParty/Kubazip-0.2.6/src" />
-			<Add directory="3rdParty/Xbrlib-1.0.0" />
+			<Add directory="3rdParty/Bstrlib" />
 			<Add directory="3rdParty/Generator68k" />
+			<Add directory="3rdParty/Z80" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
@@ -133,10 +130,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="GnGeoXemu.h" />
-		<Unit filename="GnGeoXframeskip.c">
+		<Unit filename="GnGeoXframecap.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="GnGeoXframeskip.h" />
+		<Unit filename="GnGeoXframecap.h" />
 		<Unit filename="GnGeoXglslblitter.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -248,8 +245,8 @@
 		<Unit filename="version.h" />
 		<Extensions>
 			<AutoVersioning>
-				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
-				<Settings autoincrement="1" date_declarations="1" use_define="1" update_manifest="1" do_auto_increment="1" ask_to_increment="0" language="C" svn="0" svn_directory="" header_path="version.h" />
+				<Scheme minor_max="50" build_max="0" rev_max="0" rev_rand_max="1" build_times_to_increment_minor="100" />
+				<Settings autoincrement="1" date_declarations="1" use_define="1" update_manifest="0" do_auto_increment="1" ask_to_increment="1" language="C" svn="0" svn_directory="" header_path="version.h" />
 				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
 				<Code header_guard="GNGEOX_VERSION_H" namespace="AutoVersion" prefix="GNGEOX" />
 			</AutoVersioning>

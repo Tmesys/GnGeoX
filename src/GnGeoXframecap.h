@@ -14,20 +14,20 @@
 *   \note    .
 */
 
-#ifndef _GNGEOX_FRAMESKIP_H_
-#define _GNGEOX_FRAMESKIP_H_
+#ifndef _GNGEOX_FRAMECAP_H_
+#define _GNGEOX_FRAMECAP_H_
 
 #define TICKS_PER_SEC 1000000UL
 #define MAX_FRAMESKIP 10
 
-extern SDL_bool skip_this_frame;
-
 #ifdef _GNGEOX_FRAMESKIP_C_
-static Uint32 get_ticks ( void ) __attribute__ ( ( warn_unused_result ) );
+static void neo_frame_rate_callback ( void );
 #endif // _GNGEOX_FRAMESKIP_C_
 
-void neo_frame_skip_reset ( void );
-void neo_frame_skip ( void );
-void neo_frame_skip_display ( void );
+void neo_frame_rate_display ( void );
+void neo_frame_cap_init ( void );
+void neo_frame_cap_start ( void );
+void neo_frame_cap_stop ( void );
+void neo_frame_cap_close ( void );
 
-#endif // _GNGEOX_FRAMESKIP_H_
+#endif // _GNGEOX_FRAMECAP_H_

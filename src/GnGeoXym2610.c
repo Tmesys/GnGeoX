@@ -143,9 +143,9 @@ void neo_ym2610_update ( void )
     /* 16ms par frame */
     timer_count += timer_increment;
 
-    for ( Sint32 loop1 = 0; loop1 < YM2610_MAX_TIMERS ; loop1++ )
+    for ( Uint32 loop1 = 0; loop1 < YM2610_MAX_TIMERS ; loop1++ )
     {
-        for ( Sint32 loop2 = 0; loop2 < ym2610_timers[loop1]->num ; loop2++ )
+        for ( Uint32 loop2 = 0; loop2 < ym2610_timers[loop1]->num ; loop2++ )
         {
             struct_gngeoxtimer_timer * timer = qlist_getat ( ym2610_timers[loop1], loop2, NULL, true );
 

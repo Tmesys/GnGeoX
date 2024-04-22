@@ -259,7 +259,7 @@ static SDL_bool neo_controllers_open ( Uint32 player_index, SDL_JoystickID contr
 
     players[player_index].controller_id = SDL_JoystickInstanceID ( SDL_GameControllerGetJoystick ( players[player_index].controller ) );
     players[player_index].controller_guid = SDL_JoystickGetDeviceGUID ( controller_id );
-    SDL_JoystickGetGUIDString ( players[player_index].controller_guid, &guid_string, 100 );
+    SDL_JoystickGetGUIDString ( players[player_index].controller_guid, ( char* ) &guid_string, 100 );
 
     mapping_string = SDL_GameControllerMappingForGUID ( players[player_index].controller_guid );
     if ( mapping_string == NULL )

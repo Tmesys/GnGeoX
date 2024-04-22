@@ -81,7 +81,8 @@ static SDL_bool dr_load_roms ( struct_gngeoxroms_game_roms* ) __attribute__ ( ( 
 static SDL_bool dr_load_game ( char* ) __attribute__ ( ( warn_unused_result ) );
 static void dr_free_roms ( struct_gngeoxroms_game_roms* );
 #else
-extern Sint32 neogeo_fix_bank_type;
+extern Sint32 neo_rom_fix_bank_type;
+extern char * neo_rom_region_name[];
 #endif // _GNGEOX_ROMS_C_
 
 SDL_bool allocate_region ( struct_gngeoxroms_rom_region*, Uint32, enum_gngeoxroms_region_type ) __attribute__ ( ( warn_unused_result ) );

@@ -179,3 +179,20 @@ char * qsys_info_machine ( void )
 
     return buf1.machine;
 }
+
+/**
+ * Clears terminal screen.
+ *
+ * @return Name of the hardware type on which the system is running.
+ *
+ */
+void qsys_clrscr ( void )
+{
+    #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+        system("clear");
+    #else
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #endif
+    #endif
+}

@@ -25,7 +25,7 @@
 #include "GnGeoXscanline.h"
 #include "GnGeoXroms.h"
 #include "GnGeoXmemory.h"
-#include "GnGeoXframeskip.h"
+#include "GnGeoXframecap.h"
 
 Sint32 current_line = 0;
 
@@ -181,7 +181,6 @@ Sint32 update_scanline ( void )
 
     if ( neogeo_memory.vid.irq2control & 0x10 )
     {
-
         if ( current_line == neogeo_memory.vid.irq2start )
         {
             if ( neogeo_memory.vid.irq2control & 0x80 )
@@ -195,12 +194,9 @@ Sint32 update_scanline ( void )
 
     if ( neogeo_memory.vid.irq2taken )
     {
-        if ( !skip_this_frame )
+        if ( ( last_line >= 21 ) && ( current_line >= 20 ) )
         {
-            if ( ( last_line >= 21 ) && ( current_line >= 20 ) )
-            {
-                draw_screen_scanline ( last_line - 21, current_line - 20, 0 );
-            }
+            draw_screen_scanline ( last_line - 21, current_line - 20, SDL_FALSE );
         }
 
         last_line = current_line;

@@ -34,7 +34,7 @@
 #include "GnGeoXconfig.h"
 #include "GnGeoXsoftblitter.h"
 #include "GnGeoXopenglblitter.h"
-#include "GnGeoXframeskip.h"
+#include "GnGeoXframecap.h"
 #include "GnGeoXpd4990a.h"
 #include "GnGeoXeffects.h"
 #include "GnGeoXinterp.h"
@@ -115,7 +115,7 @@ void neo_screen_capture ( void )
 /* ******************************************************************************************************************/
 SDL_bool neo_screen_init ( void )
 {
-    if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER ) < 0 )
+    if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER | SDL_INIT_TIMER ) < 0 )
     {
         zlog_error ( gngeox_config.loggingCat, "%s", SDL_GetError() );
         return ( SDL_FALSE );
@@ -271,6 +271,8 @@ void neo_screen_efects_apply ( void )
         ( *effect[gngeox_config.effect_index].update ) ();
     }
 
+    neo_frame_rate_display();
+
     ( *blitter[gngeox_config.blitter_index].update ) ();
 }
 /* ******************************************************************************************************************/
@@ -291,18 +293,15 @@ void neo_screen_update ( void )
         neogeo_memory.vid.irq2start = 1000;
     }
 
-    if ( !skip_this_frame )
+    if ( last_line < 21 )
     {
-        if ( last_line < 21 )
-        {
-            /* there was no IRQ2 while the beam was in the
-                                 * visible area -> no need for scanline rendering */
-            draw_screen();
-        }
-        else
-        {
-            draw_screen_scanline ( last_line - 21, 262, 1 );
-        }
+        /* there was no IRQ2 while the beam was in the
+                             * visible area -> no need for scanline rendering */
+        draw_screen();
+    }
+    else
+    {
+        draw_screen_scanline ( last_line - 21, 262, SDL_TRUE );
     }
 
     last_line = 0;
@@ -316,8 +315,6 @@ void neo_screen_update ( void )
     }
 
     frame_counter++;
-
-    neo_frame_skip ( );
 }
 /* ******************************************************************************************************************/
 /*!

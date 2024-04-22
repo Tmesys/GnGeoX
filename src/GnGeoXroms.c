@@ -47,8 +47,8 @@
 #include "GnGeoXscreen.h"
 #include "GnGeoXemu.h"
 
-Sint32 neogeo_fix_bank_type = 0;
-char * region_name[] =
+Sint32 neo_rom_fix_bank_type = 0;
+char * neo_rom_region_name[] =
 {
     "audio cpu bios",
     "audio cpu cartridge",
@@ -84,7 +84,7 @@ static void setup_misc_patch ( void )
         /* patch out protection checks */
         Uint8* RAM = neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].p;
 
-        for ( Sint32 i = 0; i < neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size; i += 2 )
+        for ( Uint32 i = 0; i < neogeo_memory.rom.rom_region[REGION_MAIN_CPU_CARTRIDGE].size; i += 2 )
         {
             if ( ( READ_WORD_ROM ( &RAM[i + 0] ) == 0x0243 )
                     && ( READ_WORD_ROM ( &RAM[i + 2] ) == 0x0001 ) && /* andi.w  #$1, D3 */
@@ -276,7 +276,7 @@ static SDL_bool load_region ( qzip_file_t* pz_file, struct_gngeoxroms_game_roms*
 {
     qzip_entry_t* zip_entry = NULL;
 
-    zlog_info ( gngeox_config.loggingCat, "Loading file %s in (%s) region", drv->rom[index].filename->data, region_name[drv->rom[index].region] );
+    zlog_info ( gngeox_config.loggingCat, "Loading file %s in (%s) region", drv->rom[index].filename->data, neo_rom_region_name[drv->rom[index].region] );
 
     zip_entry = qzip_open_entry ( pz_file, drv->rom[index].filename->data, drv->rom[index].crc );
     if ( zip_entry == NULL )
@@ -356,8 +356,8 @@ static SDL_bool dr_load_roms ( struct_gngeoxroms_game_roms* rom )
         return ( SDL_FALSE );
     }
 
-    rom->info.name = strdup ( drv->name->data );
-    rom->info.longname = strdup ( drv->longname->data );
+    rom->info.name = strdup ( ( const char* ) drv->name->data );
+    rom->info.longname = strdup ( ( const char* ) drv->longname->data );
     rom->info.year = drv->year;
     rom->info.flags = 0;
 
@@ -399,7 +399,7 @@ static SDL_bool dr_load_roms ( struct_gngeoxroms_game_roms* rom )
                 zlog_info ( gngeox_config.loggingCat, "Get file from parent" );
 
                 /* Open Parent. For now, only one parent is supported, no recursion */
-                gzp_file = open_rom_zip ( gngeox_config.rompath, drv->parent->data );
+                gzp_file = open_rom_zip ( gngeox_config.rompath, ( const char* ) drv->parent->data );
                 if ( gzp_file == NULL )
                 {
                     zlog_error ( gngeox_config.loggingCat, "Parent %s/%s.zip not found", gngeox_config.rompath, gngeox_config.gamename );
@@ -465,7 +465,7 @@ static qzip_file_t* open_rom_zip ( const char* rom_path, const char* name )
     bcatcstr ( fpath, name );
     bcatcstr ( fpath, ".zip" );
 
-    zip_file = qzip_open_file ( fpath->data );
+    zip_file = qzip_open_file ( ( const char* ) fpath->data );
 
     bdestroy ( fpath );
 
@@ -636,7 +636,7 @@ static SDL_bool dr_load_game ( char* name )
         return ( SDL_FALSE );
     }
 
-    /* TODO *///neogeo_fix_bank_type =0;
+    /* TODO *///neo_rom_fix_bank_type =0;
     /* TODO */
     //  set_bankswitchers(0);
 
